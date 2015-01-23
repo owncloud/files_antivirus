@@ -9,11 +9,11 @@
 namespace OCA\Files_Antivirus;
 
 class Notification {
-	public static function sendMail($path){
+	public static function sendMail($user, $path){
 		if (!\OCP\User::isLoggedIn()){
 			return;
 		}
-		$email = \OCP\Config::getUserValue(\OCP\User::getUser(), 'settings', 'email', '');
+		$email = \OCP\Config::getUserValue($user, 'settings', 'email', '');
 		\OCP\Util::writeLog('files_antivirus', 'Email: '.$email, \OCP\Util::DEBUG);
 		if (!empty($email)) {
 			$defaults = new \OCP\Defaults();
@@ -25,7 +25,7 @@ class Notification {
 			$from = \OCP\Util::getDefaultEmailAddress('security-noreply');
 			\OCP\Util::sendMail(
 					$email,
-					\OCP\User::getUser(),
+					$user,
 					\OCP\Util::getL10N('files_antivirus')->t('Malware detected'),
 					$msg,
 					$from,
