@@ -87,17 +87,14 @@ abstract class Scanner {
 			
 			$fileStatus = self::scanFile($filesView, $path);
 			$result = $fileStatus->getNumericStatus();
-			$account = \OCP\User::getUser();
-			if (!$account){
-				$account = 'Guest';
-			}
+			$owner = $filesView->getOwner($path);
 			$result = Status::SCANRESULT_INFECTED;
 			switch($result) {
 				case Status::SCANRESULT_UNCHECKED:
 					//TODO: Show warning to the user: The file can not be checked
 					\OCP\Util::writeLog(
 						'files_antivirus', 
-						'Account:' . $account . ' .File:' . $path
+						'Account: ' . $owner . ' File: ' . $path
 							. ' could not be scanned. Details: ' . $fileStatus->getDetails(),
 						\OCP\Util::WARN
 					);
@@ -106,12 +103,12 @@ abstract class Scanner {
 					\OCP\Util::writeLog(
 						'files_antivirus', 
 						'Virus(es) found: ' . $fileStatus->getDetails() 
-							. 'Account:' . $account . ' .File:' . $path,
+							. 'Account: ' . $owner . ' File: ' . $path,
 						\OCP\Util::WARN
 					);
 					//remove file
 					$filesView->unlink($path);
-					Notification::sendMail($path);
+					Notification::sendMail($owner, $path);
 					$message = \OCP\Util::getL10N('files_antivirus')->t("Virus detected! Can't upload the file %s", array(basename($path)));
 					\OCP\JSON::error(array("data" => array( "message" => $message)));
 					exit();
