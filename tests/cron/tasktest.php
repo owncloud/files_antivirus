@@ -6,15 +6,20 @@
  * See the COPYING-README file.
  */
 
-use \OCA\Files_Antivirus\Db\RuleMapper;
-use \OCA\Files_Antivirus\Item;
-use \OCA\Files_Antivirus\ScannerFactory;
-use \OCA\Files_Antivirus\BackgroundScanner;
+use OCA\Files_Antivirus\ScannerFactory;
+use OCA\Files_Antivirus\BackgroundScanner;
+use OCA\Files_Antivirus\Tests\Testbase;
 
-class Test_Files_Antivirus_Cron_TaskTest extends \OCA\Files_Antivirus\Tests\Testbase {
+/** @var  ScannerFactory */
+	protected $scannerFactory;
+
+class Test_Files_Antivirus_Cron_TaskTest extends Testbase {
+	/** @var  ScannerFactory */
+	protected $scannerFactory;
+
 	public function setUp(){
 		parent::setUp();
-		//Bgscanner requires at least one user on the current instance
+		//Background scanner requires at least one user on the current instance
 		$userManager = $this->application->getContainer()->query('ServerContainer')->getUserManager();
 		$results = $userManager->search('', 1, 0);
 
@@ -28,12 +33,13 @@ class Test_Files_Antivirus_Cron_TaskTest extends \OCA\Files_Antivirus\Tests\Test
 	}
 	
 	public function testRun(){
-		$backgroudScanner = new BackgroundScanner(
+		$backgroundScanner = new BackgroundScanner(
 				$this->scannerFactory,
-				$this->container->query('ServerContainer')->getUserManager(),
-				$this->l10n
+				$this->l10n,
+				$this->container->getServer()->getRootFolder(),
+				$this->container->getServer()->getUserSession()
 		);
-		$bgScan = $backgroudScanner->run();
+		$bgScan = $backgroundScanner->run();
 		$this->assertNull($bgScan);
 	}
 }
