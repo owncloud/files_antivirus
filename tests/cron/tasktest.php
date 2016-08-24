@@ -10,9 +10,6 @@ use OCA\Files_Antivirus\ScannerFactory;
 use OCA\Files_Antivirus\BackgroundScanner;
 use OCA\Files_Antivirus\Tests\Testbase;
 
-/** @var  ScannerFactory */
-	protected $scannerFactory;
-
 class Test_Files_Antivirus_Cron_TaskTest extends Testbase {
 	/** @var  ScannerFactory */
 	protected $scannerFactory;
