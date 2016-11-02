@@ -15,31 +15,31 @@ use OCA\Files_Antivirus\Item;
 
 class BackgroundScanner {
 
-	/**
-	 * @var ScannerFactory
-	 */
+	/** @var ScannerFactory */
 	private $scannerFactory;
 	
-	/**
-	 * @var IUserManager 
-	 */
+	/** @var IUserManager */
 	private $userManager;
-	
-	/**
-	 * @var IL10N
-	 */
+
+	/** @var IL10N */
 	private $l10n;
-	
+
+	/** @var  AppConfig  */
+	private $appConfig;
+
 	/**
 	 * A constructor
+	 *
 	 * @param \OCA\Files_Antivirus\ScannerFactory $scannerFactory
+	 * @param AppConfig $appConfig
 	 * @param IUserManager $userManager
 	 * @param IL10N $l10n
 	 */
-	public function __construct(ScannerFactory $scannerFactory, IUserManager $userManager, IL10N $l10n){
+	public function __construct(ScannerFactory $scannerFactory, AppConfig $appConfig, IUserManager $userManager, IL10N $l10n){
 		$this->scannerFactory = $scannerFactory;
 		$this->userManager = $userManager;
 		$this->l10n = $l10n;
+		$this->appConfig = $appConfig;
 	}
 	
 	/**
