@@ -11,8 +11,6 @@ namespace OCA\Files_Antivirus;
 use OCP\IUserManager;
 use OCP\IL10N;
 
-use OCA\Files_Antivirus\Item;
-
 class BackgroundScanner {
 
 	/** @var ScannerFactory */
@@ -65,14 +63,13 @@ class BackgroundScanner {
 		try {
 			$result = $stmt->execute(array($dirMimetypeId, 'local::%', 'home::%', 'files/%'));
 			if (\OCP\DB::isError($result)) {
-				\OCP\Util::writeLog('files_antivirus', __METHOD__. 'DB error: ' . \OCP\DB::getErrorMessage($result), \OCP\Util::ERROR);
+				\OCP\Util::writeLog('files_antivirus', __METHOD__. 'DB error: ' . \OCP\DB::getErrorMessage(), \OCP\Util::ERROR);
 				return;
 			}
 		} catch(\Exception $e) {
 			\OCP\Util::writeLog('files_antivirus', __METHOD__.', exception: '.$e->getMessage(), \OCP\Util::ERROR);
 			return;
 		}
-	
 		$view = new \OC\Files\View('/');
 		while ($row = $result->fetchRow()) {
 			$path = $view->getPath($row['fileid']);

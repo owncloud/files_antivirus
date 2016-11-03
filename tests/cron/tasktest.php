@@ -12,6 +12,8 @@ use \OCA\Files_Antivirus\ScannerFactory;
 use \OCA\Files_Antivirus\BackgroundScanner;
 
 class Test_Files_Antivirus_Cron_TaskTest extends \OCA\Files_Antivirus\Tests\Testbase {
+	protected $scannerFactory;
+
 	public function setUp(){
 		parent::setUp();
 		//Bgscanner requires at least one user on the current instance
@@ -28,12 +30,13 @@ class Test_Files_Antivirus_Cron_TaskTest extends \OCA\Files_Antivirus\Tests\Test
 	}
 	
 	public function testRun(){
-		$backgroudScanner = new BackgroundScanner(
+		$backgroundScanner = new BackgroundScanner(
 				$this->scannerFactory,
+				$this->container->query('AppConfig'),
 				$this->container->query('ServerContainer')->getUserManager(),
 				$this->l10n
 		);
-		$bgScan = $backgroudScanner->run();
+		$bgScan = $backgroundScanner->run();
 		$this->assertNull($bgScan);
 	}
 }
