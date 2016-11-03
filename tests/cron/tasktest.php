@@ -33,6 +33,7 @@ class Test_Files_Antivirus_Cron_TaskTest extends Testbase {
 		$backgroundScanner = new BackgroundScanner(
 				$this->scannerFactory,
 				$this->l10n,
+				$this->container->query('AppConfig'),
 				$this->container->getServer()->getRootFolder(),
 				$this->container->getServer()->getUserSession()
 		);
