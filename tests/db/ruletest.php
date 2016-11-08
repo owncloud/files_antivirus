@@ -28,11 +28,14 @@ class Test_Files_Antivirus_Db_RuleTest extends \OCA\Files_Antivirus\Tests\Testba
 			'description' => "",
 			'status' => \OCA\Files_Antivirus\Status::SCANRESULT_CLEAN
 		];
-		
+
 		$rule = Rule::fromParams($data);
+		$actual = $rule->jsonSerialize();
+		$this->assertArrayHasKey('id', $actual);
+		unset($actual['id']);
 		$this->assertEquals(
-				$expected,
-				$rule->jsonSerialize()
+			$expected,
+			$actual
 		);
 	}
 }
