@@ -6,11 +6,12 @@
  * See the COPYING-README file.
  */
 
-namespace OCA\Files_Antivirus\Cron;
+namespace OCA\Files_antivirus\Tests;
 
 use OCA\Files_Antivirus\Activity;
 
-class Test_Files_Antivirus_ActivityTest extends \OCA\Files_Antivirus\Tests\Testbase {
+class ActivityTest extends TestBase {
+	/** @var  Activity */
 	protected $activity;
 	
 	public function setUp(){

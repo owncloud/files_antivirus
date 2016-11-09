@@ -46,4 +46,9 @@ class Test_Files_Antivirus_Item extends \OCA\Files_Antivirus\Tests\Testbase {
 		$chunk = $item->fread();
 		$this->assertEquals(self::CONTENT, $chunk);
 	}
+
+	public function tearDown() {
+		parent::tearDown();
+		\OC_Util::tearDownFS();
+	}
 }
