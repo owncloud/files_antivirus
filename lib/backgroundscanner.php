@@ -14,7 +14,8 @@ use OCP\IL10N;
 use OCA\Files_Antivirus\Item;
 
 class BackgroundScanner {
-
+	const BATCH_SIZE = 10;
+	
 	/**
 	 * @var ScannerFactory
 	 */
@@ -84,7 +85,6 @@ class BackgroundScanner {
 				->andWhere(
 					$qb->expr()->neq('fc.size', $qb->expr()->literal('0'))
 				)
-				->setMaxResults(5)
 			;
 			$result = $qb->execute();
 		} catch(\Exception $e) {
@@ -94,18 +94,21 @@ class BackgroundScanner {
 
 
 		$view = new \OC\Files\View('');
-		try {
-			while ($row = $result->fetch()) {
+		$cnt = 0;
+		while (($row = $result->fetch()) && $cnt < self::BATCH_SIZE) {
+			try {
 				$path = $view->getPath($row['fileid']);
 				if (!is_null($path)) {
 					$item = new Item($this->l10n, $view, $path, $row['fileid']);
 					$scanner = $this->scannerFactory->getScanner();
 					$status = $scanner->scan($item);
 					$status->dispatch($item, true);
+ 					// increased only for successfully scanned files
+					$cnt = $cnt + 1;
 				}
+			} catch (\Exception $e){
+				\OC::$server->getLogger()->debug( __METHOD__ . ', exception: ' . $e->getMessage(), ['app' => 'files_antivirus']);
 			}
-		} catch (\Exception $e){
-			\OC::$server->getLogger()->error( __METHOD__ . ', exception: ' . $e->getMessage(), ['app' => 'files_antivirus']);
 		}
 		\OC_Util::tearDownFS();
 	}
