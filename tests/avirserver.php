@@ -1,8 +1,8 @@
 <?php
 
-namespace OCA\Files_antivirus\Tests;
+namespace OCA\Files_Antivirus\Tests;
 
-include __DIR__ . '/DummyClam.php';
+include __DIR__ . '/dummyclam.php';
 
 set_time_limit(0);
 $socketPath = 'tcp://0.0.0.0:5555';

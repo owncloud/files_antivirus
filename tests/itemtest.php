@@ -6,14 +6,14 @@
  * See the COPYING-README file.
  */
 
-namespace OCA\Files_antivirus\Tests;
+namespace OCA\Files_Antivirus\Tests;
 
 use OC\Files\Filesystem;
 use OC\Files\View;
 use OCA\Files_Antivirus\Item;
 
 // mmm. IDK why autoloader fails on this class
-include_once dirname(dirname(dirname(__DIR__))) . '/tests/lib/Util/User/Dummy.php';
+include_once dirname(dirname(dirname(__DIR__))) . '/tests/lib/util/user/dummy.php';
 
 class ItemTest extends TestBase {
 
