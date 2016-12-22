@@ -11,35 +11,35 @@ namespace OCA\Files_Antivirus;
 use OCP\IUserManager;
 use OCP\IL10N;
 
-use OCA\Files_Antivirus\Item;
-
 class BackgroundScanner {
 
-	/**
-	 * @var ScannerFactory
-	 */
+	const BATCH_SIZE = 10;
+
+	/** @var ScannerFactory */
 	private $scannerFactory;
 	
-	/**
-	 * @var IUserManager 
-	 */
+	/** @var IUserManager */
 	private $userManager;
-	
-	/**
-	 * @var IL10N
-	 */
+
+	/** @var IL10N */
 	private $l10n;
-	
+
+	/** @var  AppConfig  */
+	private $appConfig;
+
 	/**
 	 * A constructor
+	 *
 	 * @param \OCA\Files_Antivirus\ScannerFactory $scannerFactory
+	 * @param AppConfig $appConfig
 	 * @param IUserManager $userManager
 	 * @param IL10N $l10n
 	 */
-	public function __construct(ScannerFactory $scannerFactory, IUserManager $userManager, IL10N $l10n){
+	public function __construct(ScannerFactory $scannerFactory, AppConfig $appConfig, IUserManager $userManager, IL10N $l10n){
 		$this->scannerFactory = $scannerFactory;
 		$this->userManager = $userManager;
 		$this->l10n = $l10n;
+		$this->appConfig = $appConfig;
 	}
 	
 	/**
@@ -51,50 +51,77 @@ class BackgroundScanner {
 			return;
 		}
 		// locate files that are not checked yet
-		$dirMimetypeId = \OC::$server->getMimeTypeLoader()->getId('httpd/unix-directory');
-		$sql = 'SELECT `*PREFIX*filecache`.`fileid`, `*PREFIX*storages`.*'
-			.' FROM `*PREFIX*filecache`'
-			.' LEFT JOIN `*PREFIX*files_antivirus` ON `*PREFIX*files_antivirus`.`fileid` = `*PREFIX*filecache`.`fileid`'
-			.' JOIN `*PREFIX*storages` ON `*PREFIX*storages`.`numeric_id` = `*PREFIX*filecache`.`storage`'
-			.' WHERE `mimetype` != ?'
-			.' AND (`*PREFIX*storages`.`id` LIKE ? OR `*PREFIX*storages`.`id` LIKE ?)'
-			.' AND (`*PREFIX*files_antivirus`.`fileid` IS NULL OR `mtime` > `check_time`)'
-			.' AND `path` LIKE ?'
-			.' AND `*PREFIX*filecache`.`size` != 0';
-		$stmt = \OCP\DB::prepare($sql, 5);
+		$dirMimeTypeId = \OC::$server->getMimeTypeLoader()->getId('httpd/unix-directory');
 		try {
-			$result = $stmt->execute(array($dirMimetypeId, 'local::%', 'home::%', 'files/%'));
-			if (\OCP\DB::isError($result)) {
-				\OCP\Util::writeLog('files_antivirus', __METHOD__. 'DB error: ' . \OCP\DB::getErrorMessage($result), \OCP\Util::ERROR);
-				return;
-			}
+			$qb = \OC::$server->getDatabaseConnection()->getQueryBuilder();
+			$qb->select(['fc.fileid'])
+				->from('filecache', 'fc')
+				->leftJoin('fc', 'files_antivirus', 'fa', $qb->expr()->eq('fa.fileid', 'fc.fileid'))
+				->innerJoin(
+					'fc',
+					'storages',
+					'ss',
+					$qb->expr()->andX(
+						$qb->expr()->eq('fc.storage', 'ss.numeric_id'),
+						$qb->expr()->orX(
+							$qb->expr()->like('ss.id', $qb->expr()->literal('local::%')),
+							$qb->expr()->like('ss.id', $qb->expr()->literal('home::%'))
+						)
+					)
+				)
+				->where(
+					$qb->expr()->neq('fc.mimetype', $qb->expr()->literal($dirMimeTypeId))
+				)
+				->andWhere(
+					$qb->expr()->orX(
+						$qb->expr()->isNull('fa.fileid'),
+						$qb->expr()->gt('fc.mtime', 'fa.check_time')
+					)
+				)
+				->andWhere(
+					$qb->expr()->like('fc.path', $qb->expr()->literal('files/%'))
+				)
+				->andWhere(
+					$qb->expr()->neq('fc.size', $qb->expr()->literal('0'))
+				)
+			;
+			$result = $qb->execute();
 		} catch(\Exception $e) {
-			\OCP\Util::writeLog('files_antivirus', __METHOD__.', exception: '.$e->getMessage(), \OCP\Util::ERROR);
+			\OC::$server->getLogger()->error( __METHOD__ . ', exception: ' . $e->getMessage(), ['app' => 'files_antivirus']);
 			return;
 		}
-	
-		$view = new \OC\Files\View('/');
-		while ($row = $result->fetchRow()) {
-			$path = $view->getPath($row['fileid']);
-			if (!is_null($path)) {
-				$item = new Item($this->l10n, $view, $path, $row['fileid']);
-				$scanner = $this->scannerFactory->getScanner();
-				$status = $scanner->scan($item);					
-				$status->dispatch($item, true);
+
+		$view = new \OC\Files\View('');
+		$cnt = 0;
+		while (($row = $result->fetch()) && $cnt < self::BATCH_SIZE) {
+			try {
+				$path = $view->getPath($row['fileid']);
+				if (!is_null($path)) {
+					$item = new Item($this->l10n, $view, $path, $row['fileid']);
+					$scanner = $this->scannerFactory->getScanner();
+					$status = $scanner->scan($item);
+					$status->dispatch($item, true);
+ 					// increased only for successfully scanned files
+					$cnt = $cnt + 1;
+				}
+			} catch (\Exception $e){
+				\OC::$server->getLogger()->debug( __METHOD__ . ', exception: ' . $e->getMessage(), ['app' => 'files_antivirus']);
 			}
 		}
 		\OC_Util::tearDownFS();
 	}
-	
+
 	/**
 	 * A hack to access files and views. Better than before.
+	 *
+	 * @return bool
 	 */
 	protected function initFS(){
 		//Need any valid user to mount FS
 		$results = $this->userManager->search('', 2, 0);
 		$anyUser = array_pop($results);
 		if (is_null($anyUser)) {
-			\OCP\Util::writeLog('files_antivirus', "Failed to setup file system", \OCP\Util::ERROR);
+			\OC::$server->getLogger()->error("Failed to setup file system", ['app' => 'files_antivirus']);
 			return false;
 		}
 		\OC_Util::tearDownFS();
@@ -102,7 +129,6 @@ class BackgroundScanner {
 		return true;
 	}
 
-	
 	/**
 	 * @deprecated 
 	 */

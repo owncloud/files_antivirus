@@ -6,44 +6,57 @@
  * See the COPYING-README file.
  */
 
-use OC\Files\Storage\Temporary;
-use \OCA\Files_Antivirus\Item;
+namespace OCA\Files_Antivirus\Tests;
 
+use OC\Files\Filesystem;
+use OC\Files\View;
+use OCA\Files_Antivirus\Item;
 
-class Test_Files_Antivirus_Item extends \OCA\Files_Antivirus\Tests\Testbase {
-	
-	/**
-	 * @var Temporary
-	 */
-	private $storage;
-	
+// mmm. IDK why autoloader fails on this class
+include_once dirname(dirname(dirname(__DIR__))) . '/tests/lib/util/user/dummy.php';
+
+class ItemTest extends TestBase {
+
+	const UID = 'testo';
+	const PWD = 'test';
 	const CONTENT = 'LoremIpsum';
-	
-	public function setUp() {
-		parent::setUp();
-		
+
+	protected $view;
+
+	public static function setUpBeforeClass() {
+		parent::setUpBeforeClass();
 		\OC_User::clearBackends();
 		\OC_User::useBackend(new \Test\Util\User\Dummy());
-		\OC\Files\Filesystem::clearMounts();
+	}
+
+	public function setUp() {
+		parent::setUp();
 
 		//login
-		\OC_User::createUser('test', 'test');
-		\OC::$server->getSession()->set('user_id', 'test');
-		
-		$this->storage = new \OC\Files\Storage\Temporary(array());
-		\OC\Files\Filesystem::init('test', '');
-		\OC\Files\Filesystem::clearMounts();
-		\OC\Files\Filesystem::mount($this->storage, array(), '/');
-		\OC\Files\Filesystem::file_put_contents('file1', self::CONTENT);
-		
-		$this->config->method('getAvChunkSize')->willReturn('1024');
+		if (!\OC::$server->getUserManager()->get(self::UID)) {
+			\OC::$server->getUserManager()->createUser(self::UID, self::PWD);
+		}
+		\OC::$server->getUserSession()->login(self::UID, self::PWD);
+		\OC::$server->getSession()->set('user_id', self::UID);
+		\OC::$server->getUserFolder(self::UID);
+		\OC_Util::setupFS(self::UID);
+
+		$this->view = new View('/' . self::UID . '/files');
+		$this->view->file_put_contents('file1', self::CONTENT);
 	}
 	
 	public function testRead() {
-		$item = new Item($this->l10n, new \OC\Files\View(''), '/file1');
+		$item = new Item($this->l10n, $this->view, '/file1');
 		$this->assertTrue($item->isValid());
 		
 		$chunk = $item->fread();
 		$this->assertEquals(self::CONTENT, $chunk);
+	}
+
+	public static function tearDownAfterClass() {
+		parent::tearDownAfterClass();
+		\OC_Util::tearDownFS();
+		\OC::$server->getUserManager()->get(self::UID)->delete();
+		\OC_User::clearBackends();
 	}
 }

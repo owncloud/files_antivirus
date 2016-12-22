@@ -61,7 +61,7 @@ class AvirWrapper extends Wrapper{
 		if (is_resource($stream) && $this->isWritingMode($mode)) {
 			try {
 				$scanner = $this->scannerFactory->getScanner();
-				$scanner->initAsyncScan();
+				$scanner->initScanner();
 				return CallBackWrapper::wrap(
 					$stream,
 					null,
@@ -70,7 +70,7 @@ class AvirWrapper extends Wrapper{
 					}, 
 					function () use ($scanner, $path) {
 						$status = $scanner->completeAsyncScan();
-						if ($status->getNumericStatus() == \OCA\Files_Antivirus\Status::SCANRESULT_INFECTED){
+						if (intval($status->getNumericStatus()) === \OCA\Files_Antivirus\Status::SCANRESULT_INFECTED){
 							//prevent from going to trashbin
 							if (App::isEnabled('files_trashbin')) {
 								\OCA\Files_Trashbin\Storage::preRenameHook([]);

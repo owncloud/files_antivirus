@@ -45,7 +45,7 @@ var antivirusSettings = antivirusSettings || {
 		row = $(node).parent(),
 		data = {
 			id : row.data('id'),
-			status_type : row.find('.status-type select').val(),
+			statusType : row.find('.status-type select').val(),
 			match : row.children('.match').text(),
 			description : row.children('.description').text(),
 			status : row.find('.scan-result select').val()
@@ -131,19 +131,13 @@ var antivirusSettings = antivirusSettings || {
 
 function av_mode_show_options(str){
 	if ( str == 'daemon'){
-		$('p.av_socket').hide('slow');
-		$('p.av_host').show('slow');
-		$('p.av_port').show('slow');
-		$('p.av_path').hide('slow');
+		$('p.av_socket, p.av_path').hide('slow');
+		$('p.av_host, p.av_port').show('slow');
 	} else if ( str == 'socket' ) {
 		$('p.av_socket').show('slow');
-		$('p.av_path').hide('slow');
-		$('p.av_host').hide('slow');
-		$('p.av_port').hide('slow');
-        } else if (str == 'executable'){
-		$('p.av_socket').hide('slow');
-		$('p.av_host').hide('slow');
-		$('p.av_port').hide('slow');
+		$('p.av_path, p.av_host, p.av_port').hide('slow');
+	} else if (str == 'executable'){
+		$('p.av_socket, p.av_host, p.av_port').hide('slow');
 		$('p.av_path').show('slow');
 	}
 }
