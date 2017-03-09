@@ -18,4 +18,7 @@ For this app to be effective, the ClamAV virus definitions should be kept up to 
 		<owncloud min-version="10.0" max-version="10.0" />
 	</dependencies>
 	<ocsid>157439</ocsid>
+	<settings>
+		<admin>OCA\Files_Antivirus\AdminPanel</admin>
+	</settings>
 </info>
