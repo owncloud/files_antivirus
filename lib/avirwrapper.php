@@ -8,6 +8,7 @@
 
 namespace OCA\Files_Antivirus;
 
+use OC\Files\Filesystem;
 use OC\Files\Storage\Wrapper\Wrapper;
 use \OCP\App;
 use \OCP\IConfig;
@@ -73,7 +74,10 @@ class AvirWrapper extends Wrapper{
 						if (intval($status->getNumericStatus()) === \OCA\Files_Antivirus\Status::SCANRESULT_INFECTED){
 							//prevent from going to trashbin
 							if (App::isEnabled('files_trashbin')) {
-								\OCA\Files_Trashbin\Storage::preRenameHook([]);
+								\OCA\Files_Trashbin\Storage::preRenameHook([
+									Filesystem::signal_param_oldpath => '',
+									Filesystem::signal_param_newpath => ''
+								]);
 							}
 							
 							$owner = $this->getOwner($path);
