@@ -95,11 +95,13 @@ class Application extends App {
 				 * @var \OC\Files\Storage\Storage $storage
 				 */
 				if ($storage instanceof \OC\Files\Storage\Storage) {
+					$appConfig = $this->getContainer()->query('AppConfig');
 					$scannerFactory = $this->getContainer()->query('ScannerFactory');
 					$l10n = $this->getContainer()->query('L10N');
 					$logger = $this->getContainer()->query('Logger');
 					return new AvirWrapper([
 						'storage' => $storage,
+						'appConfig' => $appConfig,
 						'scannerFactory' => $scannerFactory,
 						'l10n' => $l10n,
 						'logger' => $logger

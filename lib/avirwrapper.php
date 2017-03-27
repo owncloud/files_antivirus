@@ -11,7 +11,6 @@ namespace OCA\Files_Antivirus;
 use OC\Files\Filesystem;
 use OC\Files\Storage\Wrapper\Wrapper;
 use \OCP\App;
-use \OCP\IConfig;
 use \OCP\IL10N;
 use \OCP\ILogger;
 use \OCP\Files\InvalidContentException;
@@ -25,7 +24,12 @@ class AvirWrapper extends Wrapper{
 	 * @var array 
 	 */
 	private $writingModes = array('r+', 'w', 'w+', 'a', 'a+', 'x', 'x+', 'c', 'c+');
-	
+
+	/**
+	 * @var AppConfig
+	 */
+	protected $appConfig;
+
 	/**
 	 * @var \OCA\Files_Antivirus\ScannerFactory
 	 */
@@ -46,6 +50,7 @@ class AvirWrapper extends Wrapper{
 	 */
 	public function __construct($parameters) {
 		parent::__construct($parameters);
+		$this->appConfig = $parameters['appConfig'];
 		$this->scannerFactory = $parameters['scannerFactory'];
 		$this->l10n = $parameters['l10n'];
 		$this->logger = $parameters['logger'];
@@ -59,7 +64,10 @@ class AvirWrapper extends Wrapper{
 	 */
 	public function fopen($path, $mode){
 		$stream = $this->storage->fopen($path, $mode);
-		if (is_resource($stream) && $this->isWritingMode($mode)) {
+		if (is_resource($stream)
+			&& $this->isWritingMode($mode)
+			&& $this->isScannableSize(basename($path))
+		) {
 			try {
 				$scanner = $this->scannerFactory->getScanner();
 				$scanner->initScanner();
@@ -135,5 +143,22 @@ class AvirWrapper extends Wrapper{
 			$mode
 		);
 		return in_array($cleanMode, $this->writingModes);
+	}
+
+	/**
+	 * checks the size for webdav PUT requests. defaults to true
+	 * @param $filename
+	 * @return bool
+	 */
+	private function isScannableSize($filename) {
+		$scanSizeLimit = intval($this->appConfig->getAvMaxFileSize());
+		$size = false;
+
+		// PUT via webdav
+		if ($_SERVER['REQUEST_METHOD'] === 'PUT' && isset($_SERVER['CONTENT_LENGTH'])) {
+			$size = $_SERVER['CONTENT_LENGTH'];
+		}
+
+		return $scanSizeLimit === -1 || $size === false || $scanSizeLimit >= $size;
 	}
 }
