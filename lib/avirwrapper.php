@@ -153,10 +153,10 @@ class AvirWrapper extends Wrapper{
 	private function isScannableSize($filename) {
 		$scanSizeLimit = intval($this->appConfig->getAvMaxFileSize());
 		$size = false;
-
+		
 		// PUT via webdav
-		if ($_SERVER['REQUEST_METHOD'] === 'PUT' && isset($_SERVER['CONTENT_LENGTH'])) {
-			$size = $_SERVER['CONTENT_LENGTH'];
+		if (isset($_SERVER['REQUEST_METHOD']) && isset($_SERVER['CONTENT_LENGTH']) && $_SERVER['REQUEST_METHOD'] === 'PUT'){
+			$size = intval($_SERVER['CONTENT_LENGTH']);
 		}
 
 		return $scanSizeLimit === -1 || $size === false || $scanSizeLimit >= $size;

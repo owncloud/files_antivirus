@@ -83,6 +83,7 @@ class AvirWrapperTest extends TestBase {
 		if ($storage instanceof Storage) {
 			return new AvirWrapper([
 				'storage' => $storage,
+				'appConfig' => $this->config,
 				'scannerFactory' => $this->scannerFactory,
 				'l10n' => $this->l10n,
 				'logger' => $this->container->query('Logger')
