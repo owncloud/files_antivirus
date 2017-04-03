@@ -1,8 +1,8 @@
-#ownCloud Antivirus App   
+# ownCloud Antivirus App   
 
 files_antivirus is an antivirus app for [ownCloud](https://github.com/owncloud) based on [ClamAV](http://www.clamav.net).
 
-##Details
+## Details
 
 The idea is to check for virus at upload-time, notifying the user (on screen and/or email) and
 remove the file if it's infected.
@@ -19,7 +19,7 @@ remove the file if it's infected.
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/owncloud/files_antivirus/badges/quality-score.png?b=stable8)](https://scrutinizer-ci.com/g/owncloud/files_antivirus/?branch=stable8)
 [![Code Coverage](https://scrutinizer-ci.com/g/owncloud/files_antivirus/badges/coverage.png?b=stable8)](https://scrutinizer-ci.com/g/owncloud/files_antivirus/?branch=stable8)
 
-##Status
+## Status
 
 The App is not complete yet, the following works/is done:
 * It can be configured to work with the executable or the daemon mode of ClamAV
@@ -30,11 +30,11 @@ The App is not complete yet, the following works/is done:
 * Tested in Linux only
 * Background Job to scan all files
 
-##In progress
+## In progress
 
 * Test uploading from clients
 
-##ToDo
+## ToDo
 
 * File size limit
 * Configurations Tuneups
