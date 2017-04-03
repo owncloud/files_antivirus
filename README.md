@@ -13,11 +13,11 @@ remove the file if it's infected.
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/owncloud/files_antivirus/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/owncloud/files_antivirus/?branch=master)
 [![Code Coverage](https://scrutinizer-ci.com/g/owncloud/files_antivirus/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/owncloud/files_antivirus/?branch=master)
 
-## QA metrics on stable8 branch:
+## QA metrics on stable9.1 branch:
 
-[![Build Status](https://travis-ci.org/owncloud/files_antivirus.svg?branch=stable8)](https://travis-ci.org/owncloud/files_antivirus/branches)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/owncloud/files_antivirus/badges/quality-score.png?b=stable8)](https://scrutinizer-ci.com/g/owncloud/files_antivirus/?branch=stable8)
-[![Code Coverage](https://scrutinizer-ci.com/g/owncloud/files_antivirus/badges/coverage.png?b=stable8)](https://scrutinizer-ci.com/g/owncloud/files_antivirus/?branch=stable8)
+[![Build Status](https://travis-ci.org/owncloud/files_antivirus.svg?branch=stable9.1)](https://travis-ci.org/owncloud/files_antivirus/branches)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/owncloud/files_antivirus/badges/quality-score.png?b=stable9.1)](https://scrutinizer-ci.com/g/owncloud/files_antivirus/?branch=stable9.1)
+[![Code Coverage](https://scrutinizer-ci.com/g/owncloud/files_antivirus/badges/coverage.png?b=stable9.1)](https://scrutinizer-ci.com/g/owncloud/files_antivirus/?branch=stable9.1)
 
 ## Status
 
@@ -43,7 +43,6 @@ The App is not complete yet, the following works/is done:
 
 ## Requirements
 
-* ownCloud 7
 * ClamAV (Binaries or a server running ClamAV in daemon mode)
 
 
