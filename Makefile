@@ -1,5 +1,6 @@
 # Makefile for building the project
 
+
 app_name=files_antivirus
 project_dir=$(CURDIR)/../$(app_name)
 build_dir=$(CURDIR)/build
