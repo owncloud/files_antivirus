@@ -164,7 +164,8 @@ class BackgroundScanner {
 		$mountCache = $mountProviderCollection->getMountCache();
 		$mounts = $mountCache->getMountsForFileId($fileId);
 		if (!empty($mounts)) {
-			$user = $mounts[0]->getUser();
+			$mount = reset($mounts);
+			$user = $mount->getUser();
 			if ($user instanceof IUser) {
 				return $user;
 			}
