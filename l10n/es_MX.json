@@ -1,4 +1,18 @@
 { "translations": {
+    "Saved" : "Guardado",
+    "Clean" : "Limpiar",
+    "Infected" : "Infectado",
+    "Unchecked" : "Sin seleccionar",
+    "Scanner exit status" : "Salir del estado del escaneo",
+    "Scanner output" : "Salida del escaner",
+    "Saving..." : "Guardando...",
+    "<strong>Infected file</strong> has been <strong>found</strong>" : "<strong>Archivo infectado</strong> ha sido <strong>encontrado</strong>",
+    "File %s is infected with %s" : "El archivo %s está infectado con %s",
+    "It is going to be deleted" : "Va a ser eliminado",
+    "Antivirus" : "Antivirus",
+    "Virus %s is detected in the file. Upload cannot be completed." : "Un virus %s fue detectado en el archivo. La carga no pudo ser completada",
+    "Virus detected! Can't upload the file %s" : "Virus detectado! No se pudo cargar el archivo %s",
+    "Malware detected" : "Malware detectado",
     "Greetings {user}," : "Hola {user},",
     "Sorry, but a malware was detected in a file you tried to upload and it had to be deleted." : "Lo sentimos, pero se ha detectado un malware en un archivo que trata de subir y tuvo que ser eliminado.",
     "This email is a notification from {host}. Please, do not reply." : "Esta es una notificación automática de {host}. Sírvase no responderla.",
@@ -20,11 +34,17 @@
     "Path to clamscan" : "Ruta al clamscan",
     "Path to clamscan executable." : "Ruta al ejecutable clamscan.",
     "Not required in Daemon Mode." : "No requerido en Modo Demonio.",
-    "Action for infected files found while scanning" : "Acción para los archivos infectados encontrados durante el escaneo",
+    "Extra command line options (comma-separated)" : "Opciones extra de linea de comandos ( separados por coma )",
     "Only log" : "Solo registrar",
     "Delete file" : "Eliminar archivo",
     "Save" : "Guardar",
     "Advanced" : "Avanzado",
-    "Description" : "Descripción"
+    "Rules" : "Reglas",
+    "Clear All" : "Limpiar todo",
+    "Reset to defaults" : "Restablecer los valores predeterminados",
+    "Scanner exit status or signature to search" : "Salir del estado del escaneo o buscar firmas",
+    "Description" : "Descripción",
+    "Mark as" : "Marcar como",
+    "Add a rule" : "Agregar regla"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

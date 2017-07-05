@@ -37,7 +37,6 @@ OC.L10N.register(
     "Path to clamscan executable." : "Lokasi eksekutor clamscan.",
     "Not required in Daemon Mode." : "Tidak diperlukan dalam Mode Daemon.",
     "Extra command line options (comma-separated)" : "Opsi baris perintah ekstra (pisahkan dengan koma)",
-    "Action for infected files found while scanning" : "Tindakan untuk berkas yang terinfeksi saat pemindaian",
     "Only log" : "Log saja",
     "Delete file" : "Hapus berkas",
     "Save" : "Simpan",

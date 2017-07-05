@@ -34,7 +34,6 @@
     "Path to clamscan executable." : "Putanja do izvršnog fajla clamscan.",
     "Not required in Daemon Mode." : "Nije obavezno u režimu demona.",
     "Extra command line options (comma-separated)" : "Dodatne opcije komandne linije (razdvoj zapetom)",
-    "Action for infected files found while scanning" : "Radnja za zaražene fajlove pronađene pri skeniranju",
     "Only log" : "Samo zabeleži",
     "Delete file" : "Obriši fajl",
     "Save" : "Sačuvaj",

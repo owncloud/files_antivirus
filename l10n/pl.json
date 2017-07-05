@@ -31,11 +31,13 @@
     "Port number of Antivirus Host." : "Numer portu serwera antywirusowego.",
     "Stream Length" : "Długość strumienia",
     "ClamAV StreamMaxLength value in bytes." : "ClamAV StreamMaxLength wartości w bajtach.",
+    "bytes" : "bajtów",
     "Path to clamscan" : "Ścieżka do clamscan",
     "Path to clamscan executable." : "Scieżka do pliku wykonywalnego clamscan",
     "Not required in Daemon Mode." : "Nie jest wymagany w trybie demona",
     "Extra command line options (comma-separated)" : "Dodatkowe opcje linii komend (oddzielone przecinkami)",
-    "Action for infected files found while scanning" : "Działania dla zainfekowanych plików znalezionych podczas skanowania",
+    "File size limit, -1 means no limit" : "Limit rozmiaru pliku, -1 oznacza brak limitu",
+    "When infected files were found during a background scan" : "Gdy zainfekowane pliki zostały wykryte podczas skanowania w tle",
     "Only log" : "Tylko loguj",
     "Delete file" : "Usuń plik",
     "Save" : "Zapisz",
@@ -48,5 +50,5 @@
     "Description" : "Opis",
     "Mark as" : "Oznacz jako",
     "Add a rule" : "Dodaj regułę"
-},"pluralForm" :"nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);"
+},"pluralForm" :"nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);"
 }

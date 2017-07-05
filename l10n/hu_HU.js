@@ -37,7 +37,6 @@ OC.L10N.register(
     "Path to clamscan executable." : "A clamscan program elérési útvonala",
     "Not required in Daemon Mode." : "Nem szükséges, ha a működési mód: démon",
     "Extra command line options (comma-separated)" : "Extra parancssor (vesszővel elválasztva)",
-    "Action for infected files found while scanning" : "A vizsgálat során talált fertőzett fájlok ezt tegye:",
     "Only log" : "Naplózza",
     "Delete file" : "Törölje a fájlt",
     "Save" : "Mentés",

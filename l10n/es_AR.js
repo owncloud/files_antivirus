@@ -32,7 +32,6 @@ OC.L10N.register(
     "Path to clamscan executable." : "Ruta al ejecutable clamscan.",
     "Not required in Daemon Mode." : "No es necesario en modo demonio.",
     "Extra command line options (comma-separated)" : "Opciones extras de linea de comando (separado por comas)",
-    "Action for infected files found while scanning" : "Acción para los archivos infectados que fueron encontrados durante la búsqueda",
     "Only log" : "Solo registrar",
     "Delete file" : "Borrar archivo",
     "Save" : "Guardar",

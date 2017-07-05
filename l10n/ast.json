@@ -35,7 +35,6 @@
     "Path to clamscan executable." : "Camín al executable clamscan.",
     "Not required in Daemon Mode." : "Nun se requier nel mou degorriu.",
     "Extra command line options (comma-separated)" : "Opciones estra de la llínea de comandos (dixebraos por comes)",
-    "Action for infected files found while scanning" : "Aición pa los ficheros infectaos que s'atopen mientres l'escanéu",
     "Only log" : "Namái rexistrar",
     "Delete file" : "Desanciar ficheru",
     "Save" : "Guardar",

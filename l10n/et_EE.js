@@ -37,7 +37,6 @@ OC.L10N.register(
     "Path to clamscan executable." : "clamscani rakenduse asukoht.",
     "Not required in Daemon Mode." : "Pole deemonirežiimis nõutav.",
     "Extra command line options (comma-separated)" : "Käsurea lisavalikud (eraldatuna komadega)",
-    "Action for infected files found while scanning" : "Skaneerimisel leitud nakatunud failidega sooritatav toiming",
     "Only log" : "Ainult logi",
     "Delete file" : "Kustuta fail",
     "Save" : "Salvesta",

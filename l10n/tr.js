@@ -37,7 +37,6 @@ OC.L10N.register(
     "Path to clamscan executable." : "Clamscan uygulaması yolu",
     "Not required in Daemon Mode." : "Yardımcı Kipinde gerekli değil.",
     "Extra command line options (comma-separated)" : "Ek komut satırı seçenekleri (virgülle ayrılmış)",
-    "Action for infected files found while scanning" : "Tarama yapılırken bulunan virüslü dosyalar için eylem",
     "Only log" : "Sadece günlüğe yaz",
     "Delete file" : "Dosyayı sil",
     "Save" : "Kaydet",
