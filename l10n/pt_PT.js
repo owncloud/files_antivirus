@@ -39,6 +39,7 @@ OC.L10N.register(
     "Not required in Daemon Mode." : "Não é necessário no Modo Deamon",
     "Extra command line options (comma-separated)" : "Opções da linha de comando extra (separados por virgulas)",
     "File size limit, -1 means no limit" : "Limite do tamanho de ficheiro, -1 significa sem limite",
+    "File size limit in bytes, -1 means no limit" : "Limite do tamanho do ficheiro em bytes, -1 significa sem limite",
     "When infected files were found during a background scan" : "Quando os ficheiros infetados foram encontrados durante uma pesquisa em segundo plano",
     "Only log" : "Registar apenas",
     "Delete file" : "Eliminar Ficheiro",
