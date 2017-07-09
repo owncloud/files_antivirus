@@ -37,6 +37,7 @@
     "Not required in Daemon Mode." : "Ekki nauðsynlegt í púkaham.",
     "Extra command line options (comma-separated)" : "Auka skipanalínurofar (aðskilið með kommu)",
     "File size limit, -1 means no limit" : "Stærðartakmörk skráa, -1 þýðir engin takmörk",
+    "File size limit in bytes, -1 means no limit" : "Stærðartakmörk skráa í bætum, -1 þýðir engin takmörk",
     "When infected files were found during a background scan" : "Þegar smitaðar skrár finnast við bakgrunnsskönnun",
     "Only log" : "Aðeins skrá í annál",
     "Delete file" : "Eyða skrá",
