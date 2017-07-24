@@ -18,7 +18,7 @@
     <type>integer</type>
     <primary>true</primary>
     <unsigned>true</unsigned>
-    <length>4</length>
+    <length>10</length>
    </field>
 
    <field>
