@@ -36,6 +36,8 @@
     "Path to clamscan executable." : "Sti til clamscans eksekver-tabel.",
     "Not required in Daemon Mode." : "Ikke påkrævet i tjeneste tilstand.",
     "Extra command line options (comma-separated)" : "Ekstra tilvalg til kommandolinjen (kommaseparerede)",
+    "File size limit, -1 means no limit" : "Filstørrelsesbegrænsing, -1 betyder ingen grænse",
+    "File size limit in bytes, -1 means no limit" : "Begrænsning på filstørrelse i bytes, -1 betyder ingen grænse",
     "When infected files were found during a background scan" : "Da inficerede filer blev fundet under en baggrundsscanning",
     "Only log" : "Registrering i log",
     "Delete file" : "Slet fil",
