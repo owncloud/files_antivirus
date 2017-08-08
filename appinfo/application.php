@@ -61,9 +61,9 @@ class Application extends App {
 				$c->getServer()->getRootFolder(),
 				$c->getServer()->getUserSession()
 			);
-        });
+		});
 
-        $container->registerService('RuleMapper', function($c) {
+		$container->registerService('RuleMapper', function($c) {
 			return new RuleMapper(
 				$c->query('ServerContainer')->getDb()
 			);
@@ -81,7 +81,6 @@ class Application extends App {
         $container->registerService('L10N', function($c) {
             return $c->query('ServerContainer')->getL10N($c->query('AppName'));
         });
-		
 	}
 	
 	/**
