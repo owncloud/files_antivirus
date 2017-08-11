@@ -33,7 +33,7 @@ class RuleMapper extends Mapper {
 	 * @return Rule
 	 */
 	public function find($id){
-        $sql = 'SELECT * FROM *PREFIX*files_avir_status WHERE id = ?';
+        $sql = 'SELECT * FROM `*PREFIX*files_avir_status` WHERE `id` = ?';
         return $this->findEntity($sql, array($id));
 	}
 	
