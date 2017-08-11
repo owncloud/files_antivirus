@@ -12,7 +12,7 @@ namespace OCA\Files_antivirus\Tests;
 
 use OCA\Files_Antivirus\BackgroundScanner;
 use OCA\Files_Antivirus\ScannerFactory;
-use Doctrine\DBAL\Driver\PDOStatement;
+use Doctrine\DBAL\Driver\Statement;
 
 class BackgroundScannerTest extends TestBase {
 
@@ -37,7 +37,7 @@ class BackgroundScannerTest extends TestBase {
 		$method = $class->getMethod('getFilesForScan');
 		$method->setAccessible(true);
 		$result = $method->invokeArgs($scannerMock, []);
-		$this->assertEquals(PDOStatement::class, get_class($result));
+		$this->assertInstanceOf(Statement::class, $result);
 	}
 
 }

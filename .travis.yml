@@ -1,5 +1,5 @@
 language: php
-sudo: false
+sudo: required
 php:
   - 5.6
   - 7
@@ -17,14 +17,16 @@ branches:
     - /^stable\d+(\.\d+)?$/
 
 before_install:
-  - wget https://raw.githubusercontent.com/owncloud/administration/master/travis-ci/before_install.sh
-  - bash ./before_install.sh $APP_NAME $CORE_BRANCH $DB
+  - which php
+  - more `which pecl`
+  - which phpize
+  - bash tests/.travis/before_install.sh $APP_NAME $CORE_BRANCH $DB
   - cd ../core
   - php occ app:enable $APP_NAME
 
 script:
   # Test lint
-  - cd ../core/apps/$APP_NAME
+  - cd apps/$APP_NAME
   - sh -c "if [ '$DB' = 'sqlite' ]; then ant test; fi"
 
   # Run phpunit tests
@@ -46,5 +48,4 @@ matrix:
       env: DB=oracle
   allow_failures:
     - php: hhvm
-    - env: DB=oracle # until it is fixed
   fast_finish: true
