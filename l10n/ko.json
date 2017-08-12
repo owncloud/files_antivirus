@@ -37,6 +37,7 @@
     "Not required in Daemon Mode." : "대몬 모드에서는 필요하지 않습니다.",
     "Extra command line options (comma-separated)" : "추가 명령행 옵션(쉼표로 구분)",
     "File size limit, -1 means no limit" : "파일 크기 제한, -1은 제한 없음",
+    "File size limit in bytes, -1 means no limit" : "바이트 단위 파일 크기 제한, -1은 무제한",
     "When infected files were found during a background scan" : "백그라운드 검사에서 감염된 파일을 발견했을 때 행동",
     "Only log" : "기록만",
     "Delete file" : "파일 삭제",
