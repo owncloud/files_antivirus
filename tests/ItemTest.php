@@ -12,9 +12,6 @@ use OC\Files\Filesystem;
 use OC\Files\View;
 use OCA\Files_Antivirus\Item;
 
-// mmm. IDK why autoloader fails on this class
-include_once dirname(dirname(dirname(__DIR__))) . '/tests/lib/Util/User/Dummy.php';
-
 class ItemTest extends TestBase {
 
 	const UID = 'testo';

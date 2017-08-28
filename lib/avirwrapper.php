@@ -67,6 +67,7 @@ class AvirWrapper extends Wrapper{
 		if (is_resource($stream)
 			&& $this->isWritingMode($mode)
 			&& $this->isScannableSize(basename($path))
+			&& strpos($path, 'uploads/') !== 0
 		) {
 			try {
 				$scanner = $this->scannerFactory->getScanner();
