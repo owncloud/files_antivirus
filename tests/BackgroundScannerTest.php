@@ -23,7 +23,7 @@ class BackgroundScannerTest extends TestBase {
 			$this->container->query('Logger')
 		);
 		
-		$scannerMock = $this->getMockBuilder(BackgroundScanner::class)
+		$scannerMock = $this->getMockBuilder('OCA\Files_Antivirus\BackgroundScanner')
 			->setConstructorArgs([
 				$scannerFactory,
 				$this->l10n,
@@ -37,7 +37,7 @@ class BackgroundScannerTest extends TestBase {
 		$method = $class->getMethod('getFilesForScan');
 		$method->setAccessible(true);
 		$result = $method->invokeArgs($scannerMock, []);
-		$this->assertEquals(PDOStatement::class, get_class($result));
+		$this->assertEquals('Doctrine\DBAL\Driver\PDOStatement', get_class($result));
 	}
 
 }
