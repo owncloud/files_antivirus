@@ -4,7 +4,7 @@ php:
   - 5.4
   - 5.5
   - 5.6
-  - 7
+  - 7.0
 
 env:
   global:
@@ -32,7 +32,7 @@ script:
   # Run phpunit tests
   - cd tests
   - php avirserver.php &
-  - phpunit --configuration phpunit.xml
+  - if [[ ${TRAVIS_PHP_VERSION:0:3} == "7.0" ]]; then wget https://phar.phpunit.de/phpunit-5.7.phar; chmod u+x phpunit-5.7.phar; ./phpunit-5.7.phar --configuration phpunit.xml; else phpunit --configuration phpunit.xml; fi
 
   # Create coverage report
   - wget https://scrutinizer-ci.com/ocular.phar
