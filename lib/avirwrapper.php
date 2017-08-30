@@ -59,7 +59,10 @@ class AvirWrapper extends Wrapper{
 	 */
 	public function fopen($path, $mode){
 		$stream = $this->storage->fopen($path, $mode);
-		if (is_resource($stream) && $this->isWritingMode($mode)) {
+		if (is_resource($stream)
+			&& $this->isWritingMode($mode)
+			&& strpos($path, 'uploads/') !== 0
+		) {
 			try {
 				$scanner = $this->scannerFactory->getScanner();
 				$scanner->initScanner();
