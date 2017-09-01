@@ -4,13 +4,23 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
+### Changed
+
+## [0.11.1.0] - Unreleased
+
+### Changed
+
+- App description and makefile updated for new marketplace [161](https://github.com/owncloud/files_antivirus/pull/161)
+
+### Fixed
+- Oracle: Error when saving a rule  [167](https://github.com/owncloud/files_antivirus/pull/167)
 
 ## [0.10.1.0] - Unreleased
 
 ### Changed 
 
-- DB schema ported from xml to migrations
-- Do not scan individual chunks for chunking upload
+- DB schema ported from xml to migrations [169](https://github.com/owncloud/files_antivirus/pull/169)
+- Do not scan individual chunks for chunked upload [175](upload https://github.com/owncloud/files_antivirus/pull/175)
 - ownCloud 10.0.3+ required
 
 
@@ -18,19 +28,19 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 ### Changed 
 
-- fileid is  to bigint
+- fileid is changed to bigint [165](https://github.com/owncloud/files_antivirus/pull/165)
 
 ## [0.10.0.1] - 2017-07-04
 
 ### Fixed
 
-- BGscanner query
+- BGscanner query fix [159](https://github.com/owncloud/files_antivirus/pull/159)
 
 ## [0.10.0] - 2016-10-10
 
 ### Changed 
 
-- Optimized query in a DB scanner
+- Optimized query in a DB scanner [139](https://github.com/owncloud/files_antivirus/pull/139)
 - ownCloud 10.0 required
 
 ### Fixed
@@ -47,26 +57,22 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 ### Changed
 
-- TimedJob is used instead of legacy cron API
+- TimedJob is used instead of legacy cron API [100](https://github.com/owncloud/files_antivirus/pull/100)
 
 ### Fixed
 
-- Rule is duplicated on save
+- Rule is duplicated on edit [111](https://github.com/owncloud/files_antivirus/pull/111)
 
 ## [0.8.1.0] - 2016-12-22
 
 ### Added
 
-- Add huge files support by scanning them as chunks of size avStreamMaxLength
+- Add huge files support by scanning them as chunks of size avStreamMaxLength [133](https://github.com/owncloud/files_antivirus/pull/133)
 
 ### Changed
 
 - Background scanner scans 10 files per iteration now
 - Saving of rules in advanced section
-
-### Fixed
-
-- Make TimedJob::run compatible with it's parent
 
 ## [0.8.0.1] - 2016-01-31
 
