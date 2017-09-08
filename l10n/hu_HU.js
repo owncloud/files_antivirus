@@ -33,6 +33,7 @@ OC.L10N.register(
     "Port number of Antivirus Host." : "A vírusellenőrző kiszolgáló port száma",
     "Stream Length" : "Folyamhossz",
     "ClamAV StreamMaxLength value in bytes." : "ClamAV StreamMaxLength érték byte-okban kifejezve",
+    "bytes" : "bájt",
     "Path to clamscan" : "A clamscan elérési útvonala",
     "Path to clamscan executable." : "A clamscan program elérési útvonala",
     "Not required in Daemon Mode." : "Nem szükséges, ha a működési mód: démon",
