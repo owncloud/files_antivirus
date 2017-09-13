@@ -18,7 +18,7 @@ script('files_antivirus', 'settings');
 			</p>
 			<p class="av_host">
 				<label for="av_host"><?php p($l->t('Host'));?></label>
-				<input type="text" id="av_host" name="avHost" value="<?php p($_['avHost']); ?>" title="<?php p($l->t('Address of Antivirus Host.')). ' ' .$l->t('Not required in Executable Mode.');?>">
+				<input pattern="[a-zA-z0-9\.-]+" type="text" id="av_host" name="avHost" value="<?php p($_['avHost']); ?>" title="<?php p($l->t('Hostname or IP address of Antivirus Host.'));?>">
 			</p>
 			<p class="av_port">
 				<label for="av_port"><?php p($l->t('Port'));?></label>
