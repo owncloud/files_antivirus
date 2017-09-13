@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
+## Unreleased
+
+### Added
+
+ - Frontend Validation for config fields [187](https://github.com/owncloud/files_antivirus/pull/187)
+
 ## [0.11.1.0] - Unreleased
 
 ### Changed
