@@ -131,14 +131,14 @@ var antivirusSettings = antivirusSettings || {
 
 function av_mode_show_options(str){
 	if ( str == 'daemon'){
-		$('p.av_socket, p.av_path').hide('slow');
-		$('p.av_host, p.av_port').show('slow');
+		$('p.av_socket, p.av_path').hide('slow').attr('disabled', true);
+		$('p.av_host, p.av_port').attr('disabled', false).show('slow');
 	} else if ( str == 'socket' ) {
-		$('p.av_socket').show('slow');
-		$('p.av_path, p.av_host, p.av_port').hide('slow');
+		$('p.av_socket').attr('disabled', false).show('slow');
+		$('p.av_path, p.av_host, p.av_port').hide('slow').attr('disabled', true);
 	} else if (str == 'executable'){
-		$('p.av_socket, p.av_host, p.av_port').hide('slow');
-		$('p.av_path').show('slow');
+		$('p.av_socket, p.av_host, p.av_port').hide('slow').attr('disabled', true);
+		$('p.av_path').attr('disabled', false).show('slow');
 	}
 }
 $(document).ready(function() {
