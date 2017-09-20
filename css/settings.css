@@ -6,9 +6,13 @@
 
 .section-antivirus label {
 	display: inline-block;
-	min-width: 280px;
+	width: 280px;
 	margin-right: 6px;
 	text-align: right;
+}
+
+#av_cmd_options{
+	vertical-align: top;
 }
 
 .section-antivirus .a-left{
