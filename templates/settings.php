@@ -22,13 +22,13 @@ script('files_antivirus', 'settings');
 			</p>
 			<p class="av_port">
 				<label for="av_port"><?php p($l->t('Port'));?></label>
-				<input type="text" id="av_port" name="avPort" value="<?php p($_['avPort']); ?>" title="<?php p($l->t('Port number of Antivirus Host.')). ' ' .$l->t('Not required in Executable Mode.');?>">
+				<input pattern="[1-9][0-9]{0,4}" type="text" id="av_port" name="avPort" value="<?php p($_['avPort']); ?>" title="<?php p($l->t('Port number of Antivirus Host, 1-65535'));?>">
 			</p>
 			<p class="av_stream_max_length">
 				<label for="av_stream_max_length">
 					<?php p($l->t('Stream Length'));?>
 				</label>
-				<input type="text" id="av_stream_max_length" name="avStreamMaxLength" value="<?php p($_['avStreamMaxLength']); ?>"
+				<input pattern="[1-9][0-9]*" type="text" id="av_stream_max_length" name="avStreamMaxLength" value="<?php p($_['avStreamMaxLength']); ?>"
 					   title="<?php p($l->t('ClamAV StreamMaxLength value in bytes.')). ' ' .$l->t('Not required in Executable Mode.');?>"
 				/>
 				<label for="av_stream_max_length" class="a-left"><?php p($l->t('bytes'))?></label>
@@ -43,7 +43,7 @@ script('files_antivirus', 'settings');
 			</p>
 			<p class="av_max_file_size">
 				<label for="av_max_file_size"><?php p($l->t('File size limit, -1 means no limit'));?></label>
-				<input type="text" id="av_max_file_size" name="avMaxFileSize" value="<?php p($_['avMaxFileSize']); ?>"
+				<input pattern="([1-9][0-9]*)|(-1)" type="text" id="av_max_file_size" name="avMaxFileSize" value="<?php p($_['avMaxFileSize']); ?>"
 					   title="<?php p($l->t('Background scan file size limit in bytes, -1 means no limit'));?>"
 				/>
 				<label for="av_max_file_size" class="a-left"><?php p($l->t('bytes'))?></label>
