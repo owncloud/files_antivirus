@@ -54,7 +54,9 @@ appstore:
 	js \
 	l10n \
 	lib \
+	templates \
 	COPYING \
+	CHANGELOG.md \
 	$(appstore_package_name)
 
 ifdef CAN_SIGN
