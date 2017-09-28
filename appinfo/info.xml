@@ -16,7 +16,7 @@ More information is available in the Anti-Virus documentation.
 	<bugs>https://github.com/owncloud/files_antivirus/issues</bugs>
 	<repository type="git">http://github.com/owncloud/files_antivirus.git</repository>
 	<summary>Protect users from viruses and other malicious software</summary>
-	<screenshot>https://user-images.githubusercontent.com/991300/27660154-cbc247fe-5c5e-11e7-8245-b650c25521e6.png</screenshot>
+	<screenshot>https://raw.githubusercontent.com/owncloud/screenshots/master/files_antivirus/owncloud-app-anti-virus.jpg</screenshot>
 	<category>security</category>
 	<licence>AGPL</licence>
 	<author>Manuel Delgado, Bart Visscher, thinksilicon.de, Victor Dubiniuk</author>
