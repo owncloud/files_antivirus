@@ -1,21 +1,29 @@
 <?xml version="1.0"?>
 <info>
 	<id>files_antivirus</id>
-	<name>Antivirus App for files</name>
-
+	<name>Anti-Virus</name>
 	<description>
-	This application inspects files that are uploaded to ownCloud for viruses before they are written to the ownCloud storage. If a file is identified as a virus, it is either logged or not uploaded to the server. The application relies on the underlying ClamAV virus scanning engine, which the admin points ownCloud to when configuring the application. 
-For this app to be effective, the ClamAV virus definitions should be kept up to date. Also note that enabling this app will impact system performance as additional processing is required for every upload. More information is available in the Antivirus documentation.
+When talking about file sharing, one aspect is key: Security. But security not only means privacy and control over data. It also includes the protection against malicious software like trojans or viruses.
+The ownCloud Anti-Virus application forwards files that are being uploaded to the ownCloud server to an external malware scanning engine before they are written to the storage. When a file is identified to be malicious, it can either be logged or be prevented from being uploaded to the server to ensure that files in ownCloud are free of malware.
+Additionally more sophisticated rules may be specified in 'Advanced' mode. ownCloud administrators can find the configuration options in the 'Security' settings section.
+
+ClamAV is the officially supported virus scanner available for use with ownCloud. It detects all forms of malware including trojans, viruses, and worms and scans compressed files, executables, image files, PDF, as well as many other file types. 
+The ownCloud Anti-Virus application relies on the underlying ClamAV virus scanning engine, which the admin points ownCloud to when configuring the application. The ClamAV virus definitions should always be kept up to date in order to provide effective protection. 
+
+Please note that enabling this application will impact system performance as additional processing is required for every file upload. 
+More information is available in the Anti-Virus documentation.
 	</description>
 	<bugs>https://github.com/owncloud/files_antivirus/issues</bugs>
 	<repository type="git">http://github.com/owncloud/files_antivirus.git</repository>
-	<summary>Antivirus App for files</summary>
+	<summary>Protect users from viruses and other malicious software</summary>
 	<screenshot>https://user-images.githubusercontent.com/991300/27660154-cbc247fe-5c5e-11e7-8245-b650c25521e6.png</screenshot>
 	<category>security</category>
-	
 	<licence>AGPL</licence>
 	<author>Manuel Delgado, Bart Visscher, thinksilicon.de, Victor Dubiniuk</author>
 	<version>0.11.1.0</version>
+	<documentation>
+		<admin>https://doc.owncloud.com/server/latest/admin_manual/configuration/server/antivirus_configuration.html</admin>
+	</documentation>
 	<types>
 		<filesystem/>
 	</types>
