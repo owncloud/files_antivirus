@@ -28,6 +28,7 @@ OC.L10N.register(
     "Host" : "主机",
     "Port" : "端口",
     "Stream Length" : "流长度",
+    "bytes" : "字节",
     "Path to clamscan" : "clamscan路径",
     "Extra command line options (comma-separated)" : "其他命令行选项(逗号分隔)",
     "Only log" : "仅记录",
