@@ -6,7 +6,7 @@
  * See the COPYING-README file.
  */
 
-namespace OCA\Files_antivirus\Tests;
+namespace OCA\Files_Antivirus\Tests\unit;
 
 use \OCA\Files_Antivirus\Db\RuleMapper;
 use \OCA\Files_Antivirus\Item;
@@ -57,7 +57,7 @@ class ScannerTest extends TestBase {
 	}
 	
 	public function testCleanFile() {
-		$handle = fopen(__DIR__ . '/data/foo.txt', 'r');
+		$handle = fopen(__DIR__ . '/../data/foo.txt', 'r');
 		$this->view->method('fopen')->willReturn($handle);
 		$this->assertTrue($this->cleanItem->isValid());
 		
@@ -82,7 +82,7 @@ class ScannerTest extends TestBase {
 	}
 	
 	public function testInfected() {
-		$handle = fopen(__DIR__ . '/data/kitten.inf', 'r');
+		$handle = fopen(__DIR__ . '/../data/kitten.inf', 'r');
 		$this->view->method('fopen')->willReturn($handle);
 		$this->assertTrue($this->infectedItem->isValid());
 		$scanner = $this->scannerFactory->getScanner();

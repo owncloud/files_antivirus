@@ -7,7 +7,7 @@
  * See the COPYING-README file.
  */
 
-namespace OCA\Files_antivirus\Tests;
+namespace OCA\Files_Antivirus\Tests\unit;
 
 use OCA\Files_Antivirus\AppInfo\Application;
 
@@ -47,7 +47,7 @@ abstract class TestBase extends \PHPUnit_Framework_TestCase {
 	public function getAppValue($methodName){
 		switch ($methodName){
 			case 'getAvPath':
-				return  __DIR__ . '/avir.sh';
+				return  __DIR__ . '/../util/avir.sh';
 			case 'getAvMode':
 				return 'executable';
 		}

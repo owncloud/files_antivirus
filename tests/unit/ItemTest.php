@@ -6,7 +6,7 @@
  * See the COPYING-README file.
  */
 
-namespace OCA\Files_antivirus\Tests;
+namespace OCA\Files_Antivirus\Tests\unit;
 
 use OC\Files\Filesystem;
 use OC\Files\View;

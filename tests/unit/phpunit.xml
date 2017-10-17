@@ -11,10 +11,10 @@
 	<!-- filters for code coverage -->
 	<filter>
 		<whitelist>
-			<directory suffix=".php">../../files_antivirus</directory>
+			<directory suffix=".php">../../../files_antivirus</directory>
 			<exclude>
-				<directory suffix=".php">../../files_antivirus/l10n</directory>
-				<directory suffix=".php">../../files_antivirus/tests</directory>
+				<directory suffix=".php">../../../files_antivirus/l10n</directory>
+				<directory suffix=".php">../../../files_antivirus/tests</directory>
 			</exclude>
 		</whitelist>
 	</filter>

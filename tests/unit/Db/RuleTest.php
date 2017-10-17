@@ -6,11 +6,11 @@
  * See the COPYING-README file.
  */
 
-namespace OCA\Files_antivirus\Tests\Db;
+namespace OCA\Files_Antivirus\Tests\unit\Db;
 
 use OCA\Files_Antivirus\Db\Rule;
 use OCA\Files_Antivirus\Status;
-use OCA\Files_antivirus\Tests\TestBase;
+use OCA\Files_Antivirus\Tests\unit\TestBase;
 
 class RuleTest extends TestBase {
 	public function testJsonSerialize(){

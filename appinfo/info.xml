@@ -29,6 +29,7 @@ More information is available in the Anti-Virus documentation.
 		<filesystem/>
 	</types>
 	<use-migrations>true</use-migrations>
+	<namespace>Files_Antivirus</namespace>
 	<dependencies>
 		<owncloud min-version="10.0" max-version="10.0" />
 	</dependencies>

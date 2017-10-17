@@ -8,11 +8,11 @@
  */
 
 
-namespace OCA\Files_antivirus\Tests\Mock;
+namespace OCA\Files_Antivirus\Tests\unit\Mock;
 
 use OCA\Files_Antivirus\Scanner\External;
 
-class ScannerFactory extends \OCA\Files_antivirus\ScannerFactory{
+class ScannerFactory extends \OCA\Files_Antivirus\ScannerFactory{
 	public function getScanner() {
 		return new External($this->appConfig);
 	}

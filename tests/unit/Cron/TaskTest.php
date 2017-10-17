@@ -6,13 +6,13 @@
  * See the COPYING-README file.
  */
 
-namespace OCA\Files_antivirus\Tests\Cron;
+namespace OCA\Files_Antivirus\Tests\unit\Cron;
 
 use \OCA\Files_Antivirus\Db\RuleMapper;
 use \OCA\Files_Antivirus\Item;
 use \OCA\Files_Antivirus\ScannerFactory;
 use \OCA\Files_Antivirus\BackgroundScanner;
-use OCA\Files_antivirus\Tests\TestBase;
+use OCA\Files_Antivirus\Tests\unit\TestBase;
 
 class TaskTest extends TestBase {
 	/** @var  ScannerFactory */
