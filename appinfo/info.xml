@@ -20,7 +20,7 @@ More information is available in the Anti-Virus documentation.
 	<screenshot>https://raw.githubusercontent.com/owncloud/screenshots/master/files_antivirus/owncloud-app-anti-virus2.png</screenshot>
 	<category>security</category>
 	<licence>AGPL</licence>
-	<author>Manuel Delgado, Bart Visscher, thinksilicon.de, Victor Dubiniuk</author>
+	<author>Manuel Delgado, Bart Visscher, thinksilicon.de, Viktar Dubiniuk</author>
 	<version>0.11.2</version>
 	<documentation>
 		<admin>https://doc.owncloud.com/server/latest/admin_manual/configuration/server/antivirus_configuration.html</admin>

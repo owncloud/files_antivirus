@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright (c) 2017 Victor Dubiniuk <dubiniuk@owncloud.com>
+ * Copyright (c) 2017 Viktar Dubiniuk <dubiniuk@owncloud.com>
  * This file is licensed under the Affero General Public License version 3 or
  * later.
  * See the COPYING-README file.
