@@ -30,9 +30,9 @@ script:
   - sh -c "if [ '$DB' = 'sqlite' ]; then ant test; fi"
 
   # Run phpunit tests
-  - cd tests
-  - php avirserver.php &
-  - ../../../lib/composer/bin/phpunit --configuration phpunit.xml
+  - php tests/util/avirserver.php &
+  - cd tests/unit
+  - ../../../../lib/composer/bin/phpunit --configuration phpunit.xml
 
   # Create coverage report
   - wget https://scrutinizer-ci.com/ocular.phar
