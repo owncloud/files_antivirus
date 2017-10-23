@@ -11,7 +11,6 @@ namespace OCA\Files_Antivirus\Tests\unit;
 use \OCA\Files_Antivirus\Db\RuleMapper;
 use \OCA\Files_Antivirus\Item;
 use \OCA\Files_Antivirus\ScannerFactory;
-use \OCA\Files_Antivirus\BackgroundScanner;
 
 class ScannerTest extends TestBase {
 	

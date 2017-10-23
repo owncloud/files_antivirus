@@ -9,7 +9,10 @@
 
 namespace OCA\Files_Antivirus\Scanner;
 
-class Local extends \OCA\Files_Antivirus\Scanner{
+use OCA\Files_Antivirus\AppConfig;
+use OCP\ILogger;
+
+class Local extends AbstractScanner{
 	
 	/**
 	 * @var string
@@ -28,14 +31,19 @@ class Local extends \OCA\Files_Antivirus\Scanner{
 	 */
 	private $process;
 	
-	public function __construct($config){
-		$this->appConfig = $config;
+	public function __construct(AppConfig $config, ILogger $logger){
+		parent::__construct($config, $logger);
+
 		// get the path to the executable
 		$this->avPath = escapeshellcmd($this->appConfig->getAvPath());
 
-		// check that the executable is available
 		if (!file_exists($this->avPath)) {
-			throw new \RuntimeException('The antivirus executable could not be found at ' . $this->avPath);
+			throw new InitException(
+				sprintf(
+					'The antivirus executable could not be found at path "%s"',
+					$this->avPath
+				)
+			);
 		}
 	}
 	
@@ -51,7 +59,9 @@ class Local extends \OCA\Files_Antivirus\Scanner{
 		
 		$this->process = proc_open($cmd, $descriptorSpec, $this->pipes);
 		if (!is_resource($this->process)) {
-			throw new \RuntimeException('Error starting process');
+			throw new InitException(
+				sprintf('Error starting process "%s"', $cmd)
+			);
 		}
 		$this->writeHandle = $this->pipes[0];
 	}
@@ -62,7 +72,7 @@ class Local extends \OCA\Files_Antivirus\Scanner{
 		@fclose($this->pipes[1]);
 		
 		$result = proc_close($this->process);
-		\OC::$server->getLogger()->debug(
+		$this->logger->debug(
 			'Exit code :: ' . $result . ' Response :: ' . $output,
 			['app' => 'files_antivirus']
 		);

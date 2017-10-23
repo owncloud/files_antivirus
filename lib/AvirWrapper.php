@@ -130,7 +130,7 @@ class AvirWrapper extends Wrapper{
 				);
 			} catch (\Exception $e){
 				$message = 	implode(' ', [ __CLASS__, __METHOD__, $e->getMessage()]);
-				$this->logger->warning($message);
+				$this->logger->warning($message, ['app' => 'files_antivirus']);
 			}
 		}
 		return $stream;
