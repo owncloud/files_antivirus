@@ -52,15 +52,8 @@ class ScannerFactory{
 					);
 			}
 		} catch (InitException $e) {
-			// TODO: add a new config option to prevent upload on misconfiguration
-			//  and check it here
-			$this->logger->warning(
-				sprintf(
-					'Application is misconfigured. %s',
-					$e->getMessage()
-				),
-				['app' => 'files_antivirus']
-			);
+			// rethrow misconfiguration exception
+			throw $e;
 		} catch (\Exception $e) {
 			$message = 	implode(' ', [ __CLASS__, __METHOD__, $e->getMessage()]);
 			$this->logger->warning($message, ['app' => 'files_antivirus']);
