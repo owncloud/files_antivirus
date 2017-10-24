@@ -9,16 +9,23 @@
 
 namespace OCA\Files_Antivirus\Scanner;
 
-class Daemon extends AbstractScanner {
-	
-	public function initScanner(){
-		parent::initScanner();
+use OCA\Files_Antivirus\AppConfig;
+use OCP\ILogger;
 
-		$avHost = $this->appConfig->getAvHost();
-		$avPort = $this->appConfig->getAvPort();
+class Daemon extends AbstractScanner {
+
+	private $avHost;
+
+	private $avPort;
+
+	public function __construct(AppConfig $config, ILogger $logger) {
+		parent::__construct($config, $logger);
+
+		$this->avHost = $this->appConfig->getAvHost();
+		$this->avPort = $this->appConfig->getAvPort();
 		$checks = [
-			'hostname' => $avHost,
-			'port' => $avPort
+			'hostname' => $this->avHost,
+			'port' => $this->avPort
 		];
 		$errors = [];
 		foreach ($checks as $key => $check) {
@@ -30,21 +37,23 @@ class Daemon extends AbstractScanner {
 			}
 		}
 
-		if (count($errors)>0) {
+		if (count($errors) > 0) {
 			throw new InitException(
 				'The app is not configured properly. ' . implode(' ', $errors)
 			);
 		}
+	}
 
-		$this->writeHandle = @fsockopen($avHost, $avPort);
+	public function initScanner(){
+		parent::initScanner();
+		$this->writeHandle = @fsockopen($this->avHost, $this->avPort);
 		if (!$this->getWriteHandle()) {
 			throw new InitException(
 				sprintf(
-					'Could not connect to host "%s" on port %d', $avHost, $avPort
+					'Could not connect to host "%s" on port %d', $this->avHost, $this->avPort
 				)
 			);
 		}
-
 		// request scan from the daemon
 		@fwrite($this->getWriteHandle(), "nINSTREAM\n");
 	}

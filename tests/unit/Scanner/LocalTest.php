@@ -6,13 +6,16 @@
  * See the COPYING-README file.
  */
 
-namespace OCA\Files_Antivirus\Tests\unit;
+namespace OCA\Files_Antivirus\Tests\unit\Scanner;
 
-use \OCA\Files_Antivirus\Db\RuleMapper;
-use \OCA\Files_Antivirus\Item;
-use \OCA\Files_Antivirus\ScannerFactory;
+use OCA\Files_Antivirus\AppConfig;
+use OCA\Files_Antivirus\Db\RuleMapper;
+use OCA\Files_Antivirus\Item;
+use OCA\Files_Antivirus\ScannerFactory;
+use OCA\Files_Antivirus\Status;
+use OCA\Files_Antivirus\Tests\unit\TestBase;
 
-class ScannerTest extends TestBase {
+class LocalTest extends TestBase {
 	
 	const TEST_CLEAN_FILENAME = 'foo.txt';
 	const TEST_INFECTED_FILENAME = 'kitten.inf';
@@ -41,8 +44,7 @@ class ScannerTest extends TestBase {
 		$this->ruleMapper = new RuleMapper($this->db);
 		$this->ruleMapper->deleteAll();
 		$this->ruleMapper->populate();
-		
-		//Bgscanner requires at least one user on the current instance
+
 		$userManager = $this->application->getContainer()->query('ServerContainer')->getUserManager();
 		$results = $userManager->search('', 1, 0);
 
@@ -54,9 +56,38 @@ class ScannerTest extends TestBase {
 				$this->container->query('Logger')
 		);
 	}
+
+	/**
+	 * @expectedException OCA\Files_Antivirus\Scanner\InitException
+	 */
+	public function testWrongAntivirusPath() {
+		$config = $this->getMockBuilder(AppConfig::class)
+			->disableOriginalConstructor()
+			->getMock()
+		;
+		$config->method('__call')
+			->will($this->returnCallback(
+				function ($methodName){
+					switch ($methodName){
+						case 'getAvPath':
+							return  __DIR__ . '/../util/wrong_av_path.sh';
+						case 'getAvMode':
+							return 'executable';
+					}
+				}
+			))
+		;
+
+		$scannerFactory = new ScannerFactory(
+			$config,
+			$this->container->query('Logger')
+		);
+
+		$scannerFactory->getScanner();
+	}
 	
 	public function testCleanFile() {
-		$handle = fopen(__DIR__ . '/../data/foo.txt', 'r');
+		$handle = fopen($this->getTestDataDirItem('foo.txt'), 'r');
 		$this->view->method('fopen')->willReturn($handle);
 		$this->assertTrue($this->cleanItem->isValid());
 		
@@ -65,7 +96,7 @@ class ScannerTest extends TestBase {
 		$scanner->scan($this->cleanItem);
 		$cleanStatus = $scanner->getStatus();
 		$this->assertInstanceOf('\OCA\Files_Antivirus\Status', $cleanStatus);
-		$this->assertEquals(\OCA\Files_Antivirus\Status::SCANRESULT_CLEAN, $cleanStatus->getNumericStatus());
+		$this->assertEquals(Status::SCANRESULT_CLEAN, $cleanStatus->getNumericStatus());
 	}
 	
 	public function testNotExisting() {
@@ -77,17 +108,17 @@ class ScannerTest extends TestBase {
 		$scanner->scan($nonExistingItem);
 		$unknownStatus = $scanner->scan($nonExistingItem);
 		$this->assertInstanceOf('\OCA\Files_Antivirus\Status', $unknownStatus);
-		$this->assertEquals(\OCA\Files_Antivirus\Status::SCANRESULT_UNCHECKED, $unknownStatus->getNumericStatus());
+		$this->assertEquals(Status::SCANRESULT_UNCHECKED, $unknownStatus->getNumericStatus());
 	}
 	
 	public function testInfected() {
-		$handle = fopen(__DIR__ . '/../data/kitten.inf', 'r');
+		$handle = fopen($this->getTestDataDirItem('kitten.inf'), 'r');
 		$this->view->method('fopen')->willReturn($handle);
 		$this->assertTrue($this->infectedItem->isValid());
 		$scanner = $this->scannerFactory->getScanner();
 		$scanner->scan($this->infectedItem);
 		$infectedStatus = $scanner->getStatus();
 		$this->assertInstanceOf('\OCA\Files_Antivirus\Status', $infectedStatus);
-		$this->assertEquals(\OCA\Files_Antivirus\Status::SCANRESULT_INFECTED, $infectedStatus->getNumericStatus());
+		$this->assertEquals(Status::SCANRESULT_INFECTED, $infectedStatus->getNumericStatus());
 	}
 }

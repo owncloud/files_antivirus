@@ -118,7 +118,8 @@ abstract class AbstractScanner {
 	}
 	
 	/**
-	 * Open write handle. etc
+	 * Get write handle here.
+	 * Do NOT open connection in constructor because this method is used for reconnection
 	 */
 	public function initScanner(){
 		$this->byteCount = 0;
