@@ -44,4 +44,4 @@ nbproject
 # Mac OS
 .DS_Store
 
-tests/clover.xml
+tests/unit/clover.xml
