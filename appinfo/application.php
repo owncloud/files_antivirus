@@ -15,6 +15,7 @@ use OCA\Files_Antivirus\Controller\RuleController;
 use OCA\Files_Antivirus\Controller\SettingsController;
 use OCA\Files_Antivirus\Db\RuleMapper;
 use OCA\Files_Antivirus\BackgroundScanner;
+use OCA\Files_Antivirus\RequestHelper;
 use OCA\Files_Antivirus\ScannerFactory;
 
 use \OCA\Files_Antivirus\AvirWrapper;
@@ -67,7 +68,13 @@ class Application extends App {
 			return new RuleMapper(
 				$c->query('ServerContainer')->getDb()
 			);
-        });
+		});
+
+		$container->registerService('RequestHelper', function($c) {
+			return new RequestHelper(
+				$c->query('ServerContainer')->getRequest()
+			);
+		});
 		
 		/**
 		 * Core
@@ -98,12 +105,14 @@ class Application extends App {
 					$scannerFactory = $this->getContainer()->query('ScannerFactory');
 					$l10n = $this->getContainer()->query('L10N');
 					$logger = $this->getContainer()->query('Logger');
+					$requestHelper = $this->getContainer()->query('RequestHelper');
 					return new AvirWrapper([
 						'storage' => $storage,
 						'appConfig' => $appConfig,
 						'scannerFactory' => $scannerFactory,
 						'l10n' => $l10n,
-						'logger' => $logger
+						'logger' => $logger,
+						'requestHelper' => $requestHelper
 					]);
 				} else {
 					return $storage;

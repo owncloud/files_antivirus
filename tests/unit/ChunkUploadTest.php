@@ -82,7 +82,8 @@ class ChunkUploadTest extends TestBase{
 				'appConfig' => $this->config,
 				'scannerFactory' => $this->scannerFactory,
 				'l10n' => $this->l10n,
-				'logger' => $this->container->query('Logger')
+				'logger' => $this->container->query('Logger'),
+				'requestHelper' => $this->container->query('RequestHelper'),
 			]);
 		} else {
 			return $storage;

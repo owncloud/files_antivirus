@@ -45,6 +45,9 @@ class AvirWrapper extends Wrapper{
 	 */
 	protected $logger;
 
+	/** @var  RequestHelper */
+	protected $requestHelper;
+
 	/**
 	 * @param array $parameters
 	 */
@@ -54,6 +57,7 @@ class AvirWrapper extends Wrapper{
 		$this->scannerFactory = $parameters['scannerFactory'];
 		$this->l10n = $parameters['l10n'];
 		$this->logger = $parameters['logger'];
+		$this->requestHelper = $parameters['requestHelper'];
 	}
 	
 	/**
@@ -64,10 +68,11 @@ class AvirWrapper extends Wrapper{
 	 */
 	public function fopen($path, $mode){
 		$stream = $this->storage->fopen($path, $mode);
-		if (is_resource($stream)
+
+		if (
+			is_resource($stream)
 			&& $this->isWritingMode($mode)
-			&& $this->isScannableSize(basename($path))
-			&& strpos($path, 'uploads/') !== 0
+			&& $this->isScannableSize($path)
 		) {
 			try {
 				$scanner = $this->scannerFactory->getScanner();
@@ -147,19 +152,35 @@ class AvirWrapper extends Wrapper{
 	}
 
 	/**
-	 * checks the size for webdav PUT requests. defaults to true
-	 * @param $filename
+	 * Checks upload size against the av_max_file_size config option
+	 *
+	 * @param string $path
 	 * @return bool
 	 */
-	private function isScannableSize($filename) {
+	private function isScannableSize($path) {
 		$scanSizeLimit = intval($this->appConfig->getAvMaxFileSize());
-		$size = false;
-		
-		// PUT via webdav
-		if (isset($_SERVER['REQUEST_METHOD']) && isset($_SERVER['CONTENT_LENGTH']) && $_SERVER['REQUEST_METHOD'] === 'PUT'){
-			$size = intval($_SERVER['CONTENT_LENGTH']);
+		$size = $this->requestHelper->getUploadSize($path);
+
+		// No upload in progress. Skip this file.
+		if (is_null($size)){
+			$this->logger->debug(
+				'No upload in progress or chunk is being uploaded. Scanning is skipped.',
+				['app' => 'files_antivirus']
+			);
+			return false;
 		}
 
-		return $scanSizeLimit === -1 || $size === false || $scanSizeLimit >= $size;
+		$matchesLimit = $scanSizeLimit === -1 || $scanSizeLimit >= $size;
+		$action = $matchesLimit ? 'Scanning is scheduled.' : 'Scanning is skipped.';
+		$this->logger->debug(
+			'File size is {filesize}. av_max_file_size is {av_max_file_size}. {action}',
+			[
+				'app' => 'files_antivirus',
+				'av_max_file_size' => $scanSizeLimit,
+				'filesize' => $size,
+				'action' => $action
+			]
+		);
+		return $matchesLimit;
 	}
 }
