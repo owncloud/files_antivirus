@@ -19,7 +19,8 @@ class Config extends AppConfig {
 			'av_host' => '127.0.0.1',
 			'av_port' => 5555,
 			'av_stream_max_length' => DummyClam::TEST_STREAM_SIZE,
-			'av_mode' => 'daemon'
+			'av_mode' => 'daemon',
+			'av_max_file_size' => '-1'
 		];
 		if (array_key_exists($key, $map)){
 			return $map[$key];

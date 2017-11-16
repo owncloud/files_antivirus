@@ -50,6 +50,8 @@ abstract class TestBase extends \PHPUnit_Framework_TestCase {
 				return  __DIR__ . '/../util/avir.sh';
 			case 'getAvMode':
 				return 'executable';
+			case 'getAvMaxFileSize':
+				return -1;
 		}
 	}
 }

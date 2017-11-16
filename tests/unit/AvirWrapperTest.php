@@ -11,8 +11,9 @@
 namespace OCA\Files_Antivirus\Tests\unit;
 
 use OC\Files\Filesystem;
-use OC\Files\Storage\Storage;
+use OC\Files\Storage\Temporary;
 use OCA\Files_Antivirus\AvirWrapper;
+use OCA\Files_Antivirus\RequestHelper;
 use OCA\Files_Antivirus\Tests\util\DummyClam;
 use Test\Util\User\Dummy;
 
@@ -24,7 +25,7 @@ class AvirWrapperTest extends TestBase {
 
 	protected $scannerFactory;
 
-	protected $isWrapperRegistered = false;
+	protected $requestHelper;
 
 	public static function setUpBeforeClass() {
 		parent::setUpBeforeClass();
@@ -43,14 +44,13 @@ class AvirWrapperTest extends TestBase {
 			$this->container->query('Logger')
 		);
 
-		if (!$this->isWrapperRegistered) {
-			Filesystem::addStorageWrapper(
-				'oc_avir_test',
-				[$this, 'wrapperCallback'],
-				2
-			);
-			$this->isWrapperRegistered = true;
-		}
+		$this->requestHelper = $this->getMockBuilder(RequestHelper::class)
+			->disableOriginalConstructor()
+			->getMock();
+
+		$this->requestHelper->expects($this->any())
+			->method('getUploadSize')
+			->will($this->returnValue(1));
 
 		\OC::$server->getUserSession()->login(self::UID, self::PWD);
 		\OC::$server->getSession()->set('user_id', self::UID);
@@ -61,35 +61,34 @@ class AvirWrapperTest extends TestBase {
 	 * @expectedException \OCP\Files\InvalidContentException
 	 */
 	public function testInfected(){
-		$fd = Filesystem::fopen('killing bee', 'w+');
+		$wrapper = $this->getWrapper();
+		$fd = $wrapper->fopen('killing bee', 'w+');
 		@fwrite($fd, 'it ' . DummyClam::TEST_SIGNATURE);
+		@fclose($fd);
 	}
 
 	/**
 	 * @expectedException \OCP\Files\InvalidContentException
 	 */
 	public function testBigInfected(){
-		$fd = Filesystem::fopen('killing whale', 'w+');
+		$wrapper = $this->getWrapper();
+		$fd = $wrapper->fopen('killing whale', 'w+');
 		@fwrite($fd, str_repeat('0', DummyClam::TEST_STREAM_SIZE-2) . DummyClam::TEST_SIGNATURE );
 		@fwrite($fd, DummyClam::TEST_SIGNATURE);
+		@fclose($fd);
 	}
 
-	public function wrapperCallback($mountPoint, $storage){
-		/**
-		 * @var Storage $storage
-		 */
-		if ($storage instanceof Storage) {
-			return new AvirWrapper([
-				'storage' => $storage,
-				'appConfig' => $this->config,
-				'scannerFactory' => $this->scannerFactory,
-				'l10n' => $this->l10n,
-				'logger' => $this->container->query('Logger'),
-				'requestHelper' => $this->container->query('RequestHelper'),
-			]);
-		} else {
-			return $storage;
-		}
+	private function getWrapper() {
+		$storage = new Temporary([]);
+		$wrapper = new AvirWrapper([
+			'storage' => $storage,
+			'appConfig' => $this->config,
+			'scannerFactory' => $this->scannerFactory,
+			'l10n' => $this->l10n,
+			'logger' => $this->container->query('Logger'),
+			'requestHelper' => $this->requestHelper,
+		]);
+		return $wrapper;
 	}
 
 	public static function tearDownAfterClassClass() {
