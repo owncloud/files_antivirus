@@ -38,6 +38,9 @@ script:
   - wget https://scrutinizer-ci.com/ocular.phar
   - php ocular.phar code-coverage:upload --format=php-clover clover.xml
 
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
+
 matrix:
   include:
     - php: 7
