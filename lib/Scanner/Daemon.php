@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (c) 2014 Viktar Dubiniuk <dubiniuk@owncloud.com>
+ * Copyright (c) 2017 Viktar Dubiniuk <dubiniuk@owncloud.com>
  * This file is licensed under the Affero General Public License version 3 or
  * later.
  * See the COPYING-README file.
@@ -12,12 +12,21 @@ namespace OCA\Files_Antivirus\Scanner;
 use OCA\Files_Antivirus\AppConfig;
 use OCP\ILogger;
 
-class Daemon extends AbstractScanner {
+class Daemon extends External {
 
+	/** @var string  */
 	private $avHost;
 
+	/** @var int  */
 	private $avPort;
 
+	/**
+	 * Daemon constructor.
+	 *
+	 * @param AppConfig $config
+	 * @param ILogger $logger
+	 * @throws InitException
+	 */
 	public function __construct(AppConfig $config, ILogger $logger) {
 		parent::__construct($config, $logger);
 
@@ -44,6 +53,9 @@ class Daemon extends AbstractScanner {
 		}
 	}
 
+	/**
+	 * @throws InitException
+	 */
 	public function initScanner(){
 		parent::initScanner();
 		$this->writeHandle = @fsockopen($this->avHost, $this->avPort);
@@ -56,22 +68,5 @@ class Daemon extends AbstractScanner {
 		}
 		// request scan from the daemon
 		@fwrite($this->getWriteHandle(), "nINSTREAM\n");
-	}
-	
-	protected function shutdownScanner(){
-		@fwrite($this->getWriteHandle(), pack('N', 0));
-		$response = fgets($this->getWriteHandle());
-		$this->logger->debug(
-			'Response :: ' . $response,
-			['app' => 'files_antivirus']
-		);
-		@fclose($this->getWriteHandle());
-		
-		$this->status->parseResponse($response);
-	}
-	
-	protected function prepareChunk($data){
-		$chunkLength = pack('N', strlen($data));
-		return $chunkLength . $data;
 	}
 }

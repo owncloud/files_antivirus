@@ -12,10 +12,18 @@ namespace OCA\Files_Antivirus\Scanner;
 use OCA\Files_Antivirus\AppConfig;
 use OCP\ILogger;
 
-class Socket extends Daemon {
+class Socket extends External {
 
+	/** @var string  */
 	private $socket;
 
+	/**
+	 * Socket constructor.
+	 *
+	 * @param AppConfig $config
+	 * @param ILogger $logger
+	 * @throws InitException
+	 */
 	public function __construct(AppConfig $config, ILogger $logger) {
 		parent::__construct($config, $logger);
 		$this->socket = $this->appConfig->getAvSocket();
@@ -26,9 +34,12 @@ class Socket extends Daemon {
 		}
 	}
 
+	/**
+	 * @throws InitException
+	 */
 	public function initScanner(){
 		parent::initScanner();
-		$this->writeHandle = stream_socket_client(
+		$this->writeHandle = @stream_socket_client(
 			'unix://' . $this->socket, $errorCode, $errorMessage, 5
 		);
 		if (!$this->getWriteHandle()) {
