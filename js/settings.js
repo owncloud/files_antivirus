@@ -142,7 +142,7 @@ function av_mode_show_options(str){
 	}
 }
 $(document).ready(function() {
-	$('#antivirus').on('submit', function(event){
+	$('#av_submit').on('click', function(event){
 		event.preventDefault();
 		OC.msg.startAction('#antivirus_save_msg', t('files_antivirus', 'Saving...'));
 		$.post(
@@ -150,8 +150,15 @@ $(document).ready(function() {
 				$('#antivirus').serializeArray(),
 				function(data){
 					OC.msg.finishedAction('#antivirus_save_msg', data);
+					if (data.connection !== 1) {
+						OC.Notification.showTemporary(
+							t(
+								'files_antivirus',
+								'Test scan was unsuccessful. Please recheck antivirus settings.'
+							)
+						);
+					}
 				}
-		
 		);
 	});
 	
@@ -159,8 +166,7 @@ $(document).ready(function() {
 		$('.section-antivirus .spoiler').toggle();
 		antivirusSettings.init();
 	});
-	
-	
+
 	$('#antivirus-reset').on('click', function (){
 		$.post(OC.generateUrl('apps/files_antivirus/settings/rule/reset'),
 			function onSuccess(){
@@ -168,6 +174,7 @@ $(document).ready(function() {
 				antivirusSettings.init();
 			});
 	});
+
 	$('#antivirus-clear').on('click', function (){
 		$.post(OC.generateUrl('apps/files_antivirus/settings/rule/clear'),
 			function onSuccess(){
