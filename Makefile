@@ -48,7 +48,6 @@ appstore:
 	mkdir -p $(appstore_package_name)
 	cp --parents -r \
 	appinfo \
-	controller \
 	css \
 	img \
 	js \
