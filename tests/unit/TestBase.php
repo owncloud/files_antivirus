@@ -54,4 +54,8 @@ abstract class TestBase extends \PHPUnit_Framework_TestCase {
 				return -1;
 		}
 	}
+
+	protected function getTestDataDirItem($relativePath){
+		return __DIR__ . '/../data/' . $relativePath;
+	}
 }

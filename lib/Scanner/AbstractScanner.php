@@ -21,9 +21,14 @@
 *
 */
 
-namespace OCA\Files_Antivirus;
+namespace OCA\Files_Antivirus\Scanner;
 
-abstract class Scanner {
+use OCA\Files_Antivirus\AppConfig;
+use OCA\Files_Antivirus\IScannable;
+use OCA\Files_Antivirus\Status;
+use OCP\ILogger;
+
+abstract class AbstractScanner {
 	
 	/**
 	 * Scan result
@@ -44,8 +49,11 @@ abstract class Scanner {
 	/** @var  resource */
 	protected $writeHandle;
 
-	/** @var \OCA\Files_Antivirus\AppConfig */
+	/** @var AppConfig */
 	protected $appConfig;
+
+	/** @var  ILogger */
+	protected $logger;
 
 	/** @var string */
 	protected $lastChunk;
@@ -61,6 +69,10 @@ abstract class Scanner {
 	 */
 	abstract protected function shutdownScanner();
 
+	public function __construct(AppConfig $config, ILogger $logger){
+		$this->appConfig = $config;
+		$this->logger = $logger;
+	}
 
 	public function getStatus(){
 		if ($this->infectedStatus instanceof Status){
@@ -106,7 +118,8 @@ abstract class Scanner {
 	}
 	
 	/**
-	 * Open write handle. etc
+	 * Get write handle here.
+	 * Do NOT open connection in constructor because this method is used for reconnection
 	 */
 	public function initScanner(){
 		$this->byteCount = 0;
@@ -136,7 +149,7 @@ abstract class Scanner {
 		$dataLength = strlen($data);
 		$streamSizeLimit = intval($this->appConfig->getAvStreamMaxLength());
 		if ($this->byteCount + $dataLength > $streamSizeLimit){
-			\OC::$server->getLogger()->debug(
+			$this->logger->debug(
 				'reinit scanner',
 				['app' => 'files_antivirus']
 			);
@@ -149,7 +162,7 @@ abstract class Scanner {
 		if (!$isReopenSuccessful || !$this->writeRaw($data)){
 			if (!$this->isLogUsed) {
 				$this->isLogUsed = true;
-				\OC::$server->getLogger()->warning(
+				$this->logger->warning(
 					'Failed to write a chunk. Check if Stream Length matches StreamMaxLength in ClamAV daemon settings',
 					['app' => 'files_antivirus']
 				);

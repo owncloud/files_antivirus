@@ -10,10 +10,12 @@ namespace OCA\Files_Antivirus;
 
 use OC\Files\Filesystem;
 use OC\Files\Storage\Wrapper\Wrapper;
+use OCA\Files_Antivirus\Scanner\InitException;
 use \OCP\App;
 use \OCP\IL10N;
 use \OCP\ILogger;
 use \OCP\Files\InvalidContentException;
+use \OCP\Files\ForbiddenException;
 use Icewind\Streams\CallbackWrapper;
 
 
@@ -80,12 +82,12 @@ class AvirWrapper extends Wrapper{
 				return CallBackWrapper::wrap(
 					$stream,
 					null,
-					function ($data) use ($scanner){
+					function ($data) use ($scanner) {
 						$scanner->onAsyncData($data);
-					}, 
+					},
 					function () use ($scanner, $path) {
 						$status = $scanner->completeAsyncScan();
-						if (intval($status->getNumericStatus()) === \OCA\Files_Antivirus\Status::SCANRESULT_INFECTED){
+						if (intval($status->getNumericStatus()) === \OCA\Files_Antivirus\Status::SCANRESULT_INFECTED) {
 							//prevent from going to trashbin
 							if (App::isEnabled('files_trashbin')) {
 								\OCA\Files_Trashbin\Storage::preRenameHook([
@@ -93,7 +95,7 @@ class AvirWrapper extends Wrapper{
 									Filesystem::signal_param_newpath => ''
 								]);
 							}
-							
+
 							$owner = $this->getOwner($path);
 							$this->unlink($path);
 
@@ -118,7 +120,7 @@ class AvirWrapper extends Wrapper{
 								Activity::TYPE_VIRUS_DETECTED,
 								Activity::PRIORITY_HIGH
 							);
-											
+
 							throw new InvalidContentException(
 								$this->l10n->t(
 									'Virus %s is detected in the file. Upload cannot be completed.',
@@ -128,9 +130,16 @@ class AvirWrapper extends Wrapper{
 						}
 					}
 				);
+			} catch (InitException $e) {
+				$message = sprintf(
+					'Antivirus app is misconfigured or antivirus inaccessible. %s',
+					$e->getMessage()
+				);
+				$this->logger->warning($message, ['app' => 'files_antivirus']);
+				throw new ForbiddenException($message, false, $e);
 			} catch (\Exception $e){
 				$message = 	implode(' ', [ __CLASS__, __METHOD__, $e->getMessage()]);
-				$this->logger->warning($message);
+				$this->logger->warning($message, ['app' => 'files_antivirus']);
 			}
 		}
 		return $stream;

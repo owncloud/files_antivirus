@@ -8,6 +8,7 @@
 
 namespace OCA\Files_Antivirus\Controller;
 
+use OCA\Files_Antivirus\ScannerFactory;
 use \OCP\AppFramework\Controller;
 use \OCP\IRequest;
 use \OCP\IL10N;
@@ -18,18 +19,18 @@ use \OCP\AppFramework\Http\JSONResponse;
 
 class SettingsController extends Controller {
 
-	/**
-	 * @var AppConfig
-	 */
+	/** @var AppConfig */
 	private $settings;
+
+	/** @var ScannerFactory */
+	private $scannerFactory;
 	
-	/**
-	 * @var IL10N
-	 */
+	/** @var IL10N */
 	private $l10n;
 	
-	public function __construct(IRequest $request, AppConfig $appconfig, IL10N $l10n) {
-		$this->settings = $appconfig;
+	public function __construct(IRequest $request, AppConfig $appConfig, ScannerFactory $scannerFactory, IL10N $l10n) {
+		$this->settings = $appConfig;
+		$this->scannerFactory = $scannerFactory;
 		$this->l10n = $l10n;
 	}
 	
@@ -66,15 +67,18 @@ class SettingsController extends Controller {
 		$this->settings->setAvInfectedAction($avInfectedAction);
 		$this->settings->setAvStreamMaxLength($avStreamMaxLength);
 		$this->settings->setAvMaxFileSize($avMaxFileSize);
-		
+
+		$connectionStatus = intval($this->scannerFactory->testConnection($this->settings));
+
 		return new JSONResponse(
-			array('data' =>
-				array('message' =>
+			['data' =>
+				['message' =>
 					(string) $this->l10n->t('Saved')
-				),
+				],
+				'connection' => $connectionStatus,
 				'status' => 'success',
 				'settings' => $this->settings->getAllValues()
-			)
+			]
 		);
 	}
 }

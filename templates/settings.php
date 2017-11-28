@@ -52,7 +52,7 @@ script('files_antivirus', 'settings');
 				<label for="av_infected_action"><?php p($l->t('When infected files were found during a background scan'));?></label>
 				<select id="av_infected_action" name="avInfectedAction"><?php print_unescaped(html_select_options(array('only_log' => $l->t('Only log'), 'delete' => $l->t('Delete file')), $_['avInfectedAction'])) ?></select>
 			</p>
-			<input id="av_submit" type="submit" value="<?php p($l->t('Save'));?>" />
+			<button id="av_submit" type="button"><?php p($l->t('Save'));?></button>
 			<span id="antivirus_save_msg"></span>
 		</fieldset>
 	</form>

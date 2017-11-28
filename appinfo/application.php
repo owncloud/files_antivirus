@@ -38,6 +38,7 @@ class Application extends App {
 			return new SettingsController(
 				$c->query('Request'),
 				$c->query('AppConfig'),
+				$c->query('ScannerFactory'),
 				$c->query('L10N')	
 			);
 		});
