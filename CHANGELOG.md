@@ -4,6 +4,24 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
+## [0.12.0] - Unreleased
+
+### Added
+
+ - A connection test after saving the settings. Notify admin if this test is failed [195](https://github.com/owncloud/files_antivirus/pull/195)
+ - Scanning content in file_put_contents invocation [198](https://github.com/owncloud/files_antivirus/pull/198)
+
+### Changed
+
+ - Ignore calls to fopen in case there is no upload (scan file from the storage 
+ wrapper only if it is related to the upload) [196](https://github.com/owncloud/files_antivirus/pull/196)
+ - When antivirus is unreachable uploads are rejected [195](https://github.com/owncloud/files_antivirus/pull/195)
+
+### Fixed
+
+ - Improper size detection for chunking upload [196](https://github.com/owncloud/files_antivirus/pull/196)
+ - Don't scan chunks for DAV v1/v2 [196](https://github.com/owncloud/files_antivirus/pull/196)
+
 ## [0.11.2] - 2017-09-28
 
 ### Added
@@ -19,12 +37,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 ### Fixed
 - Oracle: Error when saving a rule  [167](https://github.com/owncloud/files_antivirus/pull/167)
 
-## [0.10.1.0] - Unreleased
+## [0.10.1.0] - 2017-09-15
 
 ### Changed 
 
 - DB schema ported from xml to migrations [169](https://github.com/owncloud/files_antivirus/pull/169)
-- Do not scan individual chunks for chunked upload [175](upload https://github.com/owncloud/files_antivirus/pull/175)
+- Do not scan individual chunks for chunked upload [175](https://github.com/owncloud/files_antivirus/pull/175)
 - ownCloud 10.0.3+ required
 
 
@@ -44,14 +62,18 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 ### Changed 
 
-- Optimized query in a DB scanner [139](https://github.com/owncloud/files_antivirus/pull/139)
+- Optimized query in a BG scanner [139](https://github.com/owncloud/files_antivirus/pull/139)
 - ownCloud 10.0 required
 
 ### Fixed
 
-- Always log a warning on uploading infected [132](file://github.com/owncloud/files_antivirus/issues/132)
+- Always log a warning on uploading infected [132](https://github.com/owncloud/files_antivirus/issues/132)
 
 ## [0.9.0.1] - Unreleased
+
+### Changed
+
+- Backport Optimized query in a BG scanner  [174](https://github.com/owncloud/files_antivirus/pull/174)
 
 ### Fixed
 
@@ -92,15 +114,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 - ownCloud 8.2 required
 
-### Fixed
-
 ## [0.7.0.2] - 2016-01-31
 
-### Fixed
+### Changed
 
 - Skip zero-sized files in background scanner 
-
-### Changed
 
 ## [0.7.0.1] - 2015-07-07
 
