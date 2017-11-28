@@ -12,11 +12,11 @@ use OC\Files\Filesystem;
 use OC\Files\Storage\Wrapper\Wrapper;
 use OCA\Files_Antivirus\Scanner\AbstractScanner;
 use OCA\Files_Antivirus\Scanner\InitException;
-use \OCP\App;
-use \OCP\IL10N;
-use \OCP\ILogger;
-use \OCP\Files\InvalidContentException;
-use \OCP\Files\ForbiddenException;
+use OCP\App;
+use OCP\IL10N;
+use OCP\ILogger;
+use OCP\Files\InvalidContentException;
+use OCP\Files\ForbiddenException;
 use Icewind\Streams\CallbackWrapper;
 
 
@@ -72,7 +72,10 @@ class AvirWrapper extends Wrapper{
 		try {
 			$scanner = $this->scannerFactory->getScanner();
 			$scanner->initScanner();
-			$scanner->onAsyncData($data);
+			$content = new Content($data, $this->appConfig->getAvChunkSize());
+			while (($chunk = $content->fread()) !== false ){
+				$scanner->onAsyncData($chunk);
+			}
 			$this->onScanComplete($scanner, $path, false);
 
 			return parent::file_put_contents($path, $data);

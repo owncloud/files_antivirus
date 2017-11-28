@@ -12,15 +12,12 @@ class Content implements IScannable{
 	
 	protected $content;
 	
-	protected $storage;
-	
 	protected $currentPosition = 0;
 	
 	protected $chunkSize;
 	
-	public function __construct($content, $storage, $chunkSize){
+	public function __construct($content, $chunkSize){
 		$this->content = $content;
-		$this->storage = $storage;
 		$this->chunkSize = $chunkSize;
 	}
 	
