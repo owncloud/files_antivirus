@@ -35,6 +35,8 @@ abstract class TestBase extends \PHPUnit_Framework_TestCase {
 		;
 		$this->config->method('__call')
 			->will($this->returnCallback(array($this, 'getAppValue')));
+		$this->config->method('getAvChunkSize')
+			->will($this->returnValue(8192));
 
 
 		$this->l10n = $this->getMockBuilder('\OCP\IL10N')

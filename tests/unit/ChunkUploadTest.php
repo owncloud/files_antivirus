@@ -90,8 +90,9 @@ class ChunkUploadTest extends TestBase{
 		}
 	}
 
-	public static function tearDownAfterClassClass() {
+	public static function tearDownAfterClass() {
 		parent::tearDownAfterClass();
+		Filesystem::getLoader()->removeStorageWrapper('oc_avir_test_chunk');
 		\OC::$server->getUserManager()->get(self::UID)->delete();
 		\OC_User::clearBackends();
 	}
