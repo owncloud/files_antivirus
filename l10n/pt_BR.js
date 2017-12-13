@@ -8,6 +8,7 @@ OC.L10N.register(
     "Scanner exit status" : "Estado de saída do Scanner",
     "Scanner output" : "Saída do Scanner",
     "Saving..." : "Salvando...",
+    "Test scan was unsuccessful. Please recheck antivirus settings." : "A verificação do teste não teve êxito. Verifique novamente as configurações de antivírus.",
     "<strong>Infected file</strong> has been <strong>found</strong>" : "<strong>Arquivo infectado</strong> foi <strong>encontrado</strong>",
     "File %s is infected with %s" : "O Arquivo %s está infectado com %s",
     "It is going to be deleted" : "Vai ser excluído",

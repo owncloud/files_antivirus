@@ -8,6 +8,7 @@ OC.L10N.register(
     "Scanner exit status" : "Gjendje daljeje e kontrolluesit",
     "Scanner output" : "Përgjigje e kontrolluesit",
     "Saving..." : "Po ruhet…",
+    "Test scan was unsuccessful. Please recheck antivirus settings." : "Skanimi provë qe i pasuksesshëm. Ju lutemi, rikontrolloni rregullimet për antivirusin.",
     "<strong>Infected file</strong> has been <strong>found</strong>" : "<strong>U gjet kartelë e infektuar</strong>",
     "File %s is infected with %s" : "Kartela %s është e infektuar me %s",
     "It is going to be deleted" : "Do të fshihet",

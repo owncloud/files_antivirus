@@ -6,6 +6,7 @@
     "Scanner exit status" : "ออกจากสถานะสแกน",
     "Scanner output" : "ผลลัพธ์การสแกน",
     "Saving..." : "กำลังบันทึกข้อมูล...",
+    "Test scan was unsuccessful. Please recheck antivirus settings." : "ทดสอบสแกนไม่สำเร็จ โปรดตรวจสอบการตั้งค่าโปรแกรมป้องกันไวรัสอีกครั้ง",
     "<strong>Infected file</strong> has been <strong>found</strong>" : "<strong>ไฟล์ที่ติดไวรัส</strong> ได้ถูก <strong>พบ</strong>",
     "File %s is infected with %s" : "ไฟล์ %s ติดไวรัสกับ %s",
     "It is going to be deleted" : "มันจะถูกลบออก",
