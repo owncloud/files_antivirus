@@ -10,7 +10,6 @@
 
 namespace OCA\Files_Antivirus\Tests\unit;
 
-use OC\Files\Filesystem;
 use OC\Files\Storage\Temporary;
 use OCA\Files_Antivirus\AvirWrapper;
 use OCA\Files_Antivirus\RequestHelper;
@@ -60,7 +59,7 @@ class AvirWrapperTest extends TestBase {
 	/**
 	 * @expectedException \OCP\Files\InvalidContentException
 	 */
-	public function testInfected(){
+	public function testInfectedFwrite(){
 		$wrapper = $this->getWrapper();
 		$fd = $wrapper->fopen('killing bee', 'w+');
 		@fwrite($fd, 'it ' . DummyClam::TEST_SIGNATURE);
@@ -70,12 +69,26 @@ class AvirWrapperTest extends TestBase {
 	/**
 	 * @expectedException \OCP\Files\InvalidContentException
 	 */
-	public function testBigInfected(){
+	public function testBigInfectedFwrite(){
 		$wrapper = $this->getWrapper();
 		$fd = $wrapper->fopen('killing whale', 'w+');
 		@fwrite($fd, str_repeat('0', DummyClam::TEST_STREAM_SIZE-2) . DummyClam::TEST_SIGNATURE );
 		@fwrite($fd, DummyClam::TEST_SIGNATURE);
 		@fclose($fd);
+	}
+
+	/**
+	 * @expectedException \OCP\Files\ForbiddenException
+	 */
+	public function testInfectedFilePutContents(){
+		$wrapper = $this->getWrapper();
+		$wrapper->file_put_contents('test_put_infected','it ' . DummyClam::TEST_SIGNATURE);
+	}
+
+	public function testHealthFilePutContents(){
+		$wrapper = $this->getWrapper();
+		$result = $wrapper->file_put_contents('test_put_healthly','it works!');
+		$this->assertNotFalse($result);
 	}
 
 	private function getWrapper() {

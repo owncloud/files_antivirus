@@ -85,7 +85,7 @@ class ScannerFactory{
 		$this->appConfig = $appConfig;
 		try {
 			$scanner = $this->getScanner();
-			$item = new Content(self::EICAR_PART_1 . self::EICAR_PART_2, null, 4096);
+			$item = new Content(self::EICAR_PART_1 . self::EICAR_PART_2, 4096);
 			$status = $scanner->scan($item);
 			return $status->getNumericStatus() === Status::SCANRESULT_INFECTED;
 		} catch (\Exception $e) {

@@ -38,8 +38,12 @@ class ItemTest extends TestBase {
 		\OC::$server->getUserFolder(self::UID);
 		\OC_Util::setupFS(self::UID);
 		
+		$config = $this->container->query('AppConfig');
+		$oldLimit = $config->getAvMaxFileSize();
+		$config->setAvMaxFileSize(1);
 		$this->view = new View('/' . self::UID . '/files');
 		$this->view->file_put_contents('file1', self::CONTENT);
+		$config->setAvMaxFileSize($oldLimit);
 	}
 	
 	public function testRead() {

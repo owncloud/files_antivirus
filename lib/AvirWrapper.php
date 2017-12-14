@@ -10,12 +10,13 @@ namespace OCA\Files_Antivirus;
 
 use OC\Files\Filesystem;
 use OC\Files\Storage\Wrapper\Wrapper;
+use OCA\Files_Antivirus\Scanner\AbstractScanner;
 use OCA\Files_Antivirus\Scanner\InitException;
-use \OCP\App;
-use \OCP\IL10N;
-use \OCP\ILogger;
-use \OCP\Files\InvalidContentException;
-use \OCP\Files\ForbiddenException;
+use OCP\App;
+use OCP\IL10N;
+use OCP\ILogger;
+use OCP\Files\InvalidContentException;
+use OCP\Files\ForbiddenException;
 use Icewind\Streams\CallbackWrapper;
 
 
@@ -61,6 +62,39 @@ class AvirWrapper extends Wrapper{
 		$this->logger = $parameters['logger'];
 		$this->requestHelper = $parameters['requestHelper'];
 	}
+
+	/**
+	 * @param string $path
+	 * @param string $data
+	 * @return bool
+	 */
+	public function file_put_contents($path, $data) {
+		try {
+			$scanner = $this->scannerFactory->getScanner();
+			$scanner->initScanner();
+			$content = new Content($data, $this->appConfig->getAvChunkSize());
+			while (($chunk = $content->fread()) !== false ){
+				$scanner->onAsyncData($chunk);
+			}
+			$this->onScanComplete($scanner, $path, false);
+
+			return parent::file_put_contents($path, $data);
+		} catch (InitException $e) {
+			$message = sprintf(
+				'Antivirus app is misconfigured or antivirus inaccessible. %s',
+				$e->getMessage()
+			);
+			$this->logger->warning($message, ['app' => 'files_antivirus']);
+			throw new ForbiddenException($message, true, $e);
+		} catch (InvalidContentException $e) {
+			throw new ForbiddenException($e->getMessage(), false, $e);
+		} catch (\Exception $e){
+			$message = 	implode(' ', [ __CLASS__, __METHOD__, $e->getMessage()]);
+			$this->logger->warning($message, ['app' => 'files_antivirus']);
+		}
+
+		return false;
+	}
 	
 	/**
 	 * Asynchronously scan data that are written to the file
@@ -86,48 +120,7 @@ class AvirWrapper extends Wrapper{
 						$scanner->onAsyncData($data);
 					},
 					function () use ($scanner, $path) {
-						$status = $scanner->completeAsyncScan();
-						if (intval($status->getNumericStatus()) === \OCA\Files_Antivirus\Status::SCANRESULT_INFECTED) {
-							//prevent from going to trashbin
-							if (App::isEnabled('files_trashbin')) {
-								\OCA\Files_Trashbin\Storage::preRenameHook([
-									Filesystem::signal_param_oldpath => '',
-									Filesystem::signal_param_newpath => ''
-								]);
-							}
-
-							$owner = $this->getOwner($path);
-							$this->unlink($path);
-
-							if (App::isEnabled('files_trashbin')) {
-								\OCA\Files_Trashbin\Storage::postRenameHook([]);
-							}
-							$this->logger->warning(
-								'Infected file deleted. ' . $status->getDetails()
-								. ' Account: ' . $owner . ' Path: ' . $path,
-								['app' => 'files_antivirus']
-							);
-
-							\OC::$server->getActivityManager()->publishActivity(
-								'files_antivirus',
-								Activity::SUBJECT_VIRUS_DETECTED,
-								[$path, $status->getDetails()],
-								Activity::MESSAGE_FILE_DELETED,
-								[],
-								$path,
-								'',
-								$owner,
-								Activity::TYPE_VIRUS_DETECTED,
-								Activity::PRIORITY_HIGH
-							);
-
-							throw new InvalidContentException(
-								$this->l10n->t(
-									'Virus %s is detected in the file. Upload cannot be completed.',
-									$status->getDetails()
-								)
-							);
-						}
+						$this->onScanComplete($scanner, $path, true);
 					}
 				);
 			} catch (InitException $e) {
@@ -143,6 +136,60 @@ class AvirWrapper extends Wrapper{
 			}
 		}
 		return $stream;
+	}
+
+	/**
+	 * @param AbstractScanner $scanner
+	 * @param string $path
+	 * @param bool $shouldDelete
+	 * @throws InvalidContentException
+	 */
+	private function onScanComplete($scanner, $path, $shouldDelete){
+		$status = $scanner->completeAsyncScan();
+		if (intval($status->getNumericStatus()) === \OCA\Files_Antivirus\Status::SCANRESULT_INFECTED) {
+			$owner = $this->getOwner($path);
+
+			$this->logger->warning(
+				'Infected file deleted. ' . $status->getDetails()
+				. ' Account: ' . $owner . ' Path: ' . $path,
+				['app' => 'files_antivirus']
+			);
+
+			\OC::$server->getActivityManager()->publishActivity(
+				'files_antivirus',
+				Activity::SUBJECT_VIRUS_DETECTED,
+				[$path, $status->getDetails()],
+				Activity::MESSAGE_FILE_DELETED,
+				[],
+				$path,
+				'',
+				$owner,
+				Activity::TYPE_VIRUS_DETECTED,
+				Activity::PRIORITY_HIGH
+			);
+
+			if ($shouldDelete){
+				//prevent from going to trashbin
+				if (App::isEnabled('files_trashbin')) {
+					\OCA\Files_Trashbin\Storage::preRenameHook([
+						Filesystem::signal_param_oldpath => '',
+						Filesystem::signal_param_newpath => ''
+					]);
+				}
+				$this->unlink($path);
+				if (App::isEnabled('files_trashbin')) {
+					\OCA\Files_Trashbin\Storage::postRenameHook([]);
+				}
+			}
+
+			throw new InvalidContentException(
+				$this->l10n->t(
+					'Virus %s is detected in the file. Upload cannot be completed.',
+					$status->getDetails()
+				)
+			);
+		}
+
 	}
 	
 	/**
