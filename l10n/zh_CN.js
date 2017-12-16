@@ -1,7 +1,6 @@
 OC.L10N.register(
     "files_antivirus",
     {
-    "Saved" : "已保存",
     "Clean" : "正常",
     "Infected" : "被感染",
     "Unchecked" : "未检查",
@@ -13,6 +12,7 @@ OC.L10N.register(
     "It is going to be deleted" : "将被删除",
     "Antivirus" : "杀毒",
     "Virus %s is detected in the file. Upload cannot be completed." : "文件中发现 %s 病毒。无法上传。",
+    "Saved" : "已保存",
     "Virus detected! Can't upload the file %s" : "发现病毒！无法上传 %s 文件",
     "Malware detected" : "发现恶意软件",
     "Greetings {user}," : "你好 {user},",

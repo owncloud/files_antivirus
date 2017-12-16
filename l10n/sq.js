@@ -1,7 +1,6 @@
 OC.L10N.register(
     "files_antivirus",
     {
-    "Saved" : "U ruajt",
     "Clean" : "Pastroje",
     "Infected" : "E infektuar",
     "Unchecked" : "E pakontrolluar",
@@ -14,6 +13,7 @@ OC.L10N.register(
     "It is going to be deleted" : "Do të fshihet",
     "Antivirus" : "Antivirus",
     "Virus %s is detected in the file. Upload cannot be completed." : "Te kartela u zbulua virusi %s. Ngarkimi s’mund të plotësohet.",
+    "Saved" : "U ruajt",
     "Virus detected! Can't upload the file %s" : "U zbulua virus! Kartela %s s’mund të ngarkohet",
     "Malware detected" : "U kap malware",
     "Greetings {user}," : "Përshëndetje {user},",

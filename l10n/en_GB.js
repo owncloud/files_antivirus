@@ -1,7 +1,6 @@
 OC.L10N.register(
     "files_antivirus",
     {
-    "Saved" : "Saved",
     "Clean" : "Clean",
     "Infected" : "Infected",
     "Unchecked" : "Unchecked",
@@ -13,6 +12,7 @@ OC.L10N.register(
     "It is going to be deleted" : "It is going to be deleted",
     "Antivirus" : "Antivirus",
     "Virus %s is detected in the file. Upload cannot be completed." : "Virus %s is detected in the file. Upload cannot be completed.",
+    "Saved" : "Saved",
     "Virus detected! Can't upload the file %s" : "Virus detected! Can't upload the file %s",
     "Malware detected" : "Malware detected",
     "Greetings {user}," : "Hi {user},",

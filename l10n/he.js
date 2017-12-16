@@ -1,7 +1,6 @@
 OC.L10N.register(
     "files_antivirus",
     {
-    "Saved" : "נשמר",
     "Clean" : "ניקוי",
     "Infected" : "נגוע",
     "Unchecked" : "לא בדוק",
@@ -13,6 +12,7 @@ OC.L10N.register(
     "It is going to be deleted" : "הקובץ עתיד להמחק",
     "Antivirus" : "אנטי וירוס",
     "Virus %s is detected in the file. Upload cannot be completed." : "וירוס %s התגלה בקובץ. לא ניתן להשלים את ההעלאה.",
+    "Saved" : "נשמר",
     "Virus detected! Can't upload the file %s" : "התגלה וירוס! לא ניתן להעלות את הקובץ %s",
     "Malware detected" : "התגלתה תוכנה זדונית",
     "Greetings {user}," : "ברוך הבא {user},",

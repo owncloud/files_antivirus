@@ -1,7 +1,6 @@
 OC.L10N.register(
     "files_antivirus",
     {
-    "Saved" : "Αποθηκεύτηκαν",
     "Clean" : "Καθαρό",
     "Infected" : "Μολυνσμένο",
     "Unchecked" : "Μη-ελεγμένο",
@@ -13,6 +12,7 @@ OC.L10N.register(
     "It is going to be deleted" : "Θα διεγραφεί",
     "Antivirus" : "Αντιικό",
     "Virus %s is detected in the file. Upload cannot be completed." : "Ο ιός %s ανιχνεύθηκε στο αρχείο. Η μεταφόρτωση δεν μπορεί να ολοκληρωθεί.",
+    "Saved" : "Αποθηκεύτηκαν",
     "Virus detected! Can't upload the file %s" : "Εντοπίστηκε ιός! Αδυναμία μεταφόρτωσης του αρχείου %s",
     "Malware detected" : "Ανιχνεύθηκε κακόβουλο λογισμικό",
     "Greetings {user}," : "Καλωσόρισες {user},",

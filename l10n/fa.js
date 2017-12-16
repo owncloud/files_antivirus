@@ -1,7 +1,6 @@
 OC.L10N.register(
     "files_antivirus",
     {
-    "Saved" : "ذخیره شد",
     "Clean" : "پاک",
     "Infected" : "آلوده",
     "Unchecked" : "بررسی نشده",
@@ -13,6 +12,7 @@ OC.L10N.register(
     "It is going to be deleted" : "قرار است حذف شود",
     "Antivirus" : "آنتی‌ویروس",
     "Virus %s is detected in the file. Upload cannot be completed." : "ویروس %s در فایل شناسایی شد. امکان تکمیل آپلود وجود ندارد.",
+    "Saved" : "ذخیره شد",
     "Virus detected! Can't upload the file %s" : "ویروس شناسایی شد! امکان آپلود فایل %s وجود ندارد",
     "Malware detected" : "بد افزار  حذف شده است",
     "Greetings {user}," : "{user} خوش آمدی",

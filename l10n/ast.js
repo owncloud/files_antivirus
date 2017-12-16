@@ -1,7 +1,6 @@
 OC.L10N.register(
     "files_antivirus",
     {
-    "Saved" : "Guardáu",
     "Clean" : "Llimpiu",
     "Infected" : "Infestáu",
     "Unchecked" : "Ensin comprobar",
@@ -13,6 +12,7 @@ OC.L10N.register(
     "It is going to be deleted" : "Va ser desaniciáu",
     "Antivirus" : "Antivirus",
     "Virus %s is detected in the file. Upload cannot be completed." : "Virus %s detectáu nel ficheru. La xuba nun pudo completase. ",
+    "Saved" : "Guardáu",
     "Virus detected! Can't upload the file %s" : "¡Virus deteutáu! Nun pue xubise'l ficheru %s",
     "Malware detected" : "Malware deteutáu",
     "Greetings {user}," : "Hola {user},",

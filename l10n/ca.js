@@ -1,7 +1,6 @@
 OC.L10N.register(
     "files_antivirus",
     {
-    "Saved" : "Desat",
     "Clean" : "Neteja",
     "Infected" : "Infectat",
     "Unchecked" : "No comprovat",
@@ -13,6 +12,7 @@ OC.L10N.register(
     "It is going to be deleted" : "Serà esborrat",
     "Antivirus" : "Antivirus",
     "Virus %s is detected in the file. Upload cannot be completed." : "S'ha detectat el virus %s al fitxer. No es pot completar la càrrega.",
+    "Saved" : "Desat",
     "Virus detected! Can't upload the file %s" : "S'ha detectat un virus! El fitxer %s no es pot pujar",
     "Malware detected" : "S'ha detectat programari maliciós",
     "Greetings {user}," : "Benvingut {user},",

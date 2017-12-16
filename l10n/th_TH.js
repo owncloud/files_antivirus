@@ -1,7 +1,6 @@
 OC.L10N.register(
     "files_antivirus",
     {
-    "Saved" : "บันทึกแล้ว",
     "Clean" : "ทำความสะอาด",
     "Infected" : "ติดไวรัส",
     "Unchecked" : "ไม่ถูกตรวจสอบ",
@@ -14,6 +13,7 @@ OC.L10N.register(
     "It is going to be deleted" : "มันจะถูกลบออก",
     "Antivirus" : "ป้องกันไวรัส",
     "Virus %s is detected in the file. Upload cannot be completed." : "ตรวจพบไวรัสในไฟล์ %s ตัว การอัพโหลดไม่สำเร็จ",
+    "Saved" : "บันทึกแล้ว",
     "Virus detected! Can't upload the file %s" : "ตรวจพบไวรัส! ไม่สามารถอัพโหลดไฟล์ %s",
     "Malware detected" : "ตรวจพบมัลแวร์",
     "Greetings {user}," : "สวัสดีค่ะ {user}",

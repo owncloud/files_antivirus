@@ -1,7 +1,6 @@
 OC.L10N.register(
     "files_antivirus",
     {
-    "Saved" : "Kaydedildi",
     "Clean" : "Temiz",
     "Infected" : "Virüs bulaşmış",
     "Unchecked" : "İşaretli değil",
@@ -13,6 +12,7 @@ OC.L10N.register(
     "It is going to be deleted" : "Silinecek",
     "Antivirus" : "Antivirüs",
     "Virus %s is detected in the file. Upload cannot be completed." : "Dosyada %s virüsü tespit edildi. Yükleme tamamlanamadı.",
+    "Saved" : "Kaydedildi",
     "Virus detected! Can't upload the file %s" : "Virüs bulundu! %s dosyası yüklenemez",
     "Malware detected" : "Zararlı yazılım bulundu",
     "Greetings {user}," : "Hoş geldiniz {user},",

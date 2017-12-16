@@ -1,7 +1,6 @@
 OC.L10N.register(
     "files_antivirus",
     {
-    "Saved" : "Запазване",
     "Clean" : "Чист",
     "Infected" : "Заразен",
     "Unchecked" : "Неизбран",
@@ -13,6 +12,7 @@ OC.L10N.register(
     "It is going to be deleted" : "Ще бъде изтрит",
     "Antivirus" : "Антивирус",
     "Virus %s is detected in the file. Upload cannot be completed." : "Вирус %s е открит във файла. Качването няма да бъде завършено.",
+    "Saved" : "Запазване",
     "Virus detected! Can't upload the file %s" : "Вирус открит! Неуспешно качване на файла %s.",
     "Malware detected" : "Вреден софтуер открит",
     "Greetings {user}," : "Поздрави {user},",

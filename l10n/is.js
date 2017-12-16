@@ -1,7 +1,6 @@
 OC.L10N.register(
     "files_antivirus",
     {
-    "Saved" : "Vistað",
     "Clean" : "Hreinsað",
     "Infected" : "Smitað",
     "Unchecked" : "Ekki valið",
@@ -13,6 +12,7 @@ OC.L10N.register(
     "It is going to be deleted" : "Henni verður eytt",
     "Antivirus" : "Vírusvörn",
     "Virus %s is detected in the file. Upload cannot be completed." : "Vírusinn %s finnst í skránni. Ekki er hægt að ljúka innsendingu.",
+    "Saved" : "Vistað",
     "Virus detected! Can't upload the file %s" : "Vírus fannst! Get ekki sent inn skrána %s",
     "Malware detected" : "Spilliforrit fannst",
     "Greetings {user}," : "Daginn {user},",

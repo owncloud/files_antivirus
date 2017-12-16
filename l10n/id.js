@@ -1,7 +1,6 @@
 OC.L10N.register(
     "files_antivirus",
     {
-    "Saved" : "Disimpan",
     "Clean" : "Bersihkan",
     "Infected" : "Terinfeksi",
     "Unchecked" : "Belum terperiksa",
@@ -13,6 +12,7 @@ OC.L10N.register(
     "It is going to be deleted" : "Berkas tersebut akan dihapus",
     "Antivirus" : "Antivirus",
     "Virus %s is detected in the file. Upload cannot be completed." : "Virus %s terdeteksi di dalam berkas. Unggahan tidak dapat diselesaikan.",
+    "Saved" : "Disimpan",
     "Virus detected! Can't upload the file %s" : "Virus terdeteksi! Tidak dapat mengunggah berkas %s",
     "Malware detected" : "Malware terdeteksi",
     "Greetings {user}," : "Salam {user},",

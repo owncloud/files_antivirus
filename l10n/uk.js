@@ -1,7 +1,6 @@
 OC.L10N.register(
     "files_antivirus",
     {
-    "Saved" : "Збереженно",
     "Clean" : "Чистий",
     "Infected" : "Інфікований",
     "Unchecked" : "Неперевірений",
@@ -13,6 +12,7 @@ OC.L10N.register(
     "It is going to be deleted" : "Його буде видалено",
     "Antivirus" : "Антивірус",
     "Virus %s is detected in the file. Upload cannot be completed." : "У файлі знайдено вірус %s. Завантаження не може бути завершено.",
+    "Saved" : "Збереженно",
     "Virus detected! Can't upload the file %s" : "Виявлено вірус! Неможливо завантажити файл %s",
     "Malware detected" : "Malware виявлено",
     "Greetings {user}," : "Вітаємо {user},",

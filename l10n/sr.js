@@ -1,7 +1,6 @@
 OC.L10N.register(
     "files_antivirus",
     {
-    "Saved" : "Сачувано",
     "Clean" : "Чист",
     "Infected" : "Заражен",
     "Unchecked" : "Непроверен",
@@ -13,6 +12,7 @@ OC.L10N.register(
     "It is going to be deleted" : "Биће обрисан",
     "Antivirus" : "Антивирус",
     "Virus %s is detected in the file. Upload cannot be completed." : "Вирус %s је откривен у фајлу. Отпремање не може бити завршено.",
+    "Saved" : "Сачувано",
     "Virus detected! Can't upload the file %s" : "Откривен је вирус! Не могу да пошаљем %s",
     "Malware detected" : "Откривен малвер",
     "Greetings {user}," : "Поздрав, {user},",

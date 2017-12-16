@@ -1,7 +1,6 @@
 OC.L10N.register(
     "files_antivirus",
     {
-    "Saved" : "저장됨",
     "Clean" : "감염되지 않음",
     "Infected" : "감염됨",
     "Unchecked" : "확인되지 않음",
@@ -13,6 +12,7 @@ OC.L10N.register(
     "It is going to be deleted" : "해당 항목이 삭제됩니다",
     "Antivirus" : "안티바이러스",
     "Virus %s is detected in the file. Upload cannot be completed." : "파일에서 %s 바이러스가 탐지되었습니다. 업로드할 수 없습니다.",
+    "Saved" : "저장됨",
     "Virus detected! Can't upload the file %s" : "바이러스가 감지되었습니다! 파일 %s을(를) 업로드할 수 없습니다",
     "Malware detected" : "멀웨어 감지됨",
     "Greetings {user}," : "{user}님, 환영합니다",

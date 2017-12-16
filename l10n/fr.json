@@ -1,5 +1,4 @@
 { "translations": {
-    "Saved" : "Sauvegardé",
     "Clean" : "Nettoyer",
     "Infected" : "Infecté",
     "Unchecked" : "Non vérifié",
@@ -12,6 +11,7 @@
     "It is going to be deleted" : "Il va être supprimé",
     "Antivirus" : "Antivirus",
     "Virus %s is detected in the file. Upload cannot be completed." : "Le virus %s a été détecté dans ce fichier. Le téléversement ne peut pas être teminé.",
+    "Saved" : "Sauvegardé",
     "Virus detected! Can't upload the file %s" : "Virus détecté ! Impossible de télécharger le fichier %s",
     "Malware detected" : "Logiciel malveillant détecté",
     "Greetings {user}," : "Bonjour {user},",
