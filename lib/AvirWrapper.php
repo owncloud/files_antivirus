@@ -21,10 +21,12 @@ use Icewind\Streams\CallbackWrapper;
 
 
 class AvirWrapper extends Wrapper{
-	
+
+	const AV_EXCEPTION_MESSAGE = 'Either the ownCloud antivirus app is misconfigured or the external antivirus service is not accessible. %s';
+
 	/**
-	 * Modes that are used for writing 
-	 * @var array 
+	 * Modes that are used for writing
+	 * @var array
 	 */
 	private $writingModes = array('r+', 'w', 'w+', 'a', 'a+', 'x', 'x+', 'c', 'c+');
 
@@ -80,10 +82,7 @@ class AvirWrapper extends Wrapper{
 
 			return parent::file_put_contents($path, $data);
 		} catch (InitException $e) {
-			$message = sprintf(
-				'Antivirus app is misconfigured or antivirus inaccessible. %s',
-				$e->getMessage()
-			);
+			$message = sprintf(self::AV_EXCEPTION_MESSAGE, $e->getMessage());
 			$this->logger->warning($message, ['app' => 'files_antivirus']);
 			throw new ForbiddenException($message, true, $e);
 		} catch (InvalidContentException $e) {
@@ -124,10 +123,7 @@ class AvirWrapper extends Wrapper{
 					}
 				);
 			} catch (InitException $e) {
-				$message = sprintf(
-					'Antivirus app is misconfigured or antivirus inaccessible. %s',
-					$e->getMessage()
-				);
+				$message = sprintf(self::AV_EXCEPTION_MESSAGE, $e->getMessage());
 				$this->logger->warning($message, ['app' => 'files_antivirus']);
 				throw new ForbiddenException($message, false, $e);
 			} catch (\Exception $e){
