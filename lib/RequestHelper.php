@@ -35,10 +35,11 @@ class RequestHelper {
 		// Are we uploading anything?
 		if (in_array($requestMethod, ['MOVE', 'PUT']) && $isRemoteScript) {
 			// v1 && v2 Chunks are not scanned
-			if (
-				\OC_FileChunking::isWebdavChunk()
-				|| ($requestMethod === 'PUT' &&  strpos($path, 'uploads/') === 0)
-			) {
+			if ($requestMethod === 'PUT' &&  strpos($path, 'uploads/') === 0) {
+				return null;
+			}
+
+			if (\OC_FileChunking::isWebdavChunk() && strpos($path, 'cache/') === 0) {
 				return null;
 			}
 
