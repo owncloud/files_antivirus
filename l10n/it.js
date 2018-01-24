@@ -25,6 +25,7 @@ OC.L10N.register(
     "Daemon" : "Demone",
     "Daemon (Socket)" : "Demone (Socket)",
     "Socket" : "Socket",
+    "Clamav Socket" : "Socket Clamav",
     "Host" : "Host",
     "Port" : "Porta",
     "Stream Length" : "Lunghezza Stream",
