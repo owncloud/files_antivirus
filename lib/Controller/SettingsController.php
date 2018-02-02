@@ -59,11 +59,16 @@ class SettingsController extends Controller {
 	 */
 	public function save($avMode, $avSocket, $avHost, $avPort, $avCmdOptions, $avPath, $avInfectedAction, $avStreamMaxLength, $avMaxFileSize) {
 		$this->settings->setAvMode($avMode);
-		$this->settings->setAvSocket($avSocket);
-		$this->settings->setAvHost($avHost);
-		$this->settings->setAvPort($avPort);
-		$this->settings->setAvCmdOptions($avCmdOptions);
-		$this->settings->setAvPath($avPath);
+		if ($avMode === 'executable') {
+			$this->settings->setAvCmdOptions($avCmdOptions);
+			$this->settings->setAvPath($avPath);
+		} else if ($avMode === 'daemon') {
+			$this->settings->setAvPort($avPort);
+			$this->settings->setAvHost($avHost);
+		} else if ($avMode === 'socket') {
+			$this->settings->setAvSocket($avSocket);
+		}
+
 		$this->settings->setAvInfectedAction($avInfectedAction);
 		$this->settings->setAvStreamMaxLength($avStreamMaxLength);
 		$this->settings->setAvMaxFileSize($avMaxFileSize);
