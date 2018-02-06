@@ -5,6 +5,7 @@
     "Scanner exit status" : "Status fra skanning",
     "Scanner output" : "Utdata fra skanning",
     "Saving..." : "Lagrer...",
+    "Test scan was unsuccessful. Please recheck antivirus settings." : "Testsøk var mislykket. Vennligst kontroller antivirusinnstillingene.",
     "<strong>Infected file</strong> has been <strong>found</strong>" : "<strong>Infisert fil</strong> er blitt <strong>oppdaget</strong>",
     "File %s is infected with %s" : "Fil %s er infisert med %s",
     "It is going to be deleted" : "Den vil bli slettet",
