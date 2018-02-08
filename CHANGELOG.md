@@ -4,10 +4,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
-## [0.12.0] - Unreleased
+## [0.12.0] - 2018-02-08
 
 ### Added
 
+ - Ability to disable background scan [213](https://github.com/owncloud/files_antivirus/pull/213)
  - A connection test after saving the settings. Notify admin if this test is failed [195](https://github.com/owncloud/files_antivirus/pull/195)
  - Scanning content in file_put_contents invocation [198](https://github.com/owncloud/files_antivirus/pull/198)
 
@@ -19,6 +20,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 ### Fixed
 
+ - Proper validation/detection of inputs fields [212](https://github.com/owncloud/files_antivirus/pull/212)
+ - Scanning when using public shared links [211](https://github.com/owncloud/files_antivirus/pull/211)
  - Improper size detection for chunking upload [196](https://github.com/owncloud/files_antivirus/pull/196)
  - Don't scan chunks for DAV v1/v2 [196](https://github.com/owncloud/files_antivirus/pull/196)
 
@@ -246,3 +249,5 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 ### Added
 
 - Initial implementation
+
+[0.12.0]: https://github.com/owncloud/files_antivirus/compare/v0.11.2...release/0.12.0
