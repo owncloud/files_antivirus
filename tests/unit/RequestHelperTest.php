@@ -35,6 +35,24 @@ class RequestHelperTest extends TestBase {
 
 		$uploadSize = $requestHelper->getUploadSize('/dummy');
 		$this->assertEquals($size, $uploadSize);
+	}
 
+	public function testChunkSkipped(){
+		$request = $this->getMockBuilder(IRequest::class)
+			->disableOriginalConstructor()
+			->getMock();
+
+		$request->expects($this->any())
+			->method('getMethod')
+			->willReturn('PUT');
+
+		$request->expects($this->any())
+			->method('getScriptName')
+			->willReturn('/somepath/remote.php');
+
+		$requestHelper = new RequestHelper($request);
+
+		$uploadSize = $requestHelper->getUploadSize('uploads/iamachunk');
+		$this->assertNull($uploadSize);
 	}
 }
