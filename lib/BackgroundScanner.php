@@ -67,6 +67,11 @@ class BackgroundScanner {
 	 * @return null
 	 */
 	public function run(){
+
+		if ( $this->appConfig->getAvScanBackground() !== 'true') {
+			return;
+		}
+
 		// locate files that are not checked yet
 		try {
 			$result = $this->getFilesForScan();

@@ -20,6 +20,7 @@ use \OCP\IConfig;
 	 * @method string getAvCmdOptions()
 	 * @method string getAvPath()
 	 * @method string getAvInfectedAction()
+	 * @method string getAvScanBackground()
 	 *
 	 * @method null setAvMode(string $avMode)
 	 * @method null setAvSocket(string $avsocket)
@@ -30,6 +31,7 @@ use \OCP\IConfig;
 	 * @method null setAvCmdOptions(string $avCmdOptions)
 	 * @method null setAvPath(string $avPath)
 	 * @method null setAvInfectedAction(string $avInfectedAction)
+	 * @method null setAvScanBackground(string $scanBackground)
 	 */
 
 class AppConfig {
@@ -48,6 +50,7 @@ class AppConfig {
 		'av_max_file_size' => -1,
 		'av_stream_max_length' => '26214400',
 		'av_infected_action' => 'only_log',
+		'av_scan_background' => 'true',
 	];
 
 	/**

@@ -83,6 +83,7 @@ class ScannerFactory{
 	 */
 	public function testConnection(AppConfig $appConfig) {
 		$this->appConfig = $appConfig;
+		$this->getScannerClass();
 		try {
 			$scanner = $this->getScanner();
 			$item = new Content(self::EICAR_PART_1 . self::EICAR_PART_2, 4096);

@@ -131,24 +131,40 @@ var antivirusSettings = antivirusSettings || {
 
 function av_mode_show_options(str){
 	if ( str == 'daemon'){
-		$('p.av_socket, p.av_path').hide('slow').attr('disabled', true);
-		$('p.av_host, p.av_port').attr('disabled', false).show('slow');
+		$('p.av_socket, p.av_path').hide('slow');
+		$('#av_socket, #av_path').attr('disabled', true);
+		$('#av_host, #av_port').attr('disabled', false);
+		$('p.av_host, p.av_port').show('slow');
 	} else if ( str == 'socket' ) {
-		$('p.av_socket').attr('disabled', false).show('slow');
-		$('p.av_path, p.av_host, p.av_port').hide('slow').attr('disabled', true);
+		$('#av_socket').attr('disabled', false);
+		$('p.av_socket').show('slow');
+		$('p.av_path, p.av_host, p.av_port').hide('slow');
+		$('#av_path, #av_host, #av_port').attr('disabled', true);
 	} else if (str == 'executable'){
-		$('p.av_socket, p.av_host, p.av_port').hide('slow').attr('disabled', true);
-		$('p.av_path').attr('disabled', false).show('slow');
+		$('p.av_socket, p.av_host, p.av_port').hide('slow');
+		$('#av_socket, #av_host, #av_port').attr('disabled', true);
+		$('#av_path').attr('disabled', false);
+		$('p.av_path').show('slow');
 	}
 }
 $(document).ready(function() {
 	$('#av_submit').on('click', function(event){
+		var isValid = true;
+		$('#av_host, #av_port, #av_stream_max_length, #av_max_file_size').each(
+			function(i, e) {
+				if (typeof(e.checkValidity) === "function" && !e.checkValidity()){
+					isValid = false;
+					e.reportValidity();
+				}
+			}
+		);
 		event.preventDefault();
-		OC.msg.startAction('#antivirus_save_msg', t('files_antivirus', 'Saving...'));
-		$.post(
+		if (isValid) {
+			OC.msg.startAction('#antivirus_save_msg', t('files_antivirus', 'Saving...'));
+			$.post(
 				OC.generateUrl('apps/files_antivirus/settings/save'),
 				$('#antivirus').serializeArray(),
-				function(data){
+				function (data) {
 					OC.msg.finishedAction('#antivirus_save_msg', data);
 					if (data.connection !== 1) {
 						OC.Notification.showTemporary(
@@ -159,7 +175,8 @@ $(document).ready(function() {
 						);
 					}
 				}
-		);
+			);
+		}
 	});
 	
 	$('#antivirus-advanced').on('click', function () {
