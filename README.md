@@ -13,11 +13,6 @@ remove the file if it's infected.
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/owncloud/files_antivirus/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/owncloud/files_antivirus/?branch=master)
 [![Code Coverage](https://scrutinizer-ci.com/g/owncloud/files_antivirus/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/owncloud/files_antivirus/?branch=master)
 
-## QA metrics on stable9.1 branch:
-
-[![Build Status](https://travis-ci.org/owncloud/files_antivirus.svg?branch=stable9.1)](https://travis-ci.org/owncloud/files_antivirus/branches)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/owncloud/files_antivirus/badges/quality-score.png?b=stable9.1)](https://scrutinizer-ci.com/g/owncloud/files_antivirus/?branch=stable9.1)
-[![Code Coverage](https://scrutinizer-ci.com/g/owncloud/files_antivirus/badges/coverage.png?b=stable9.1)](https://scrutinizer-ci.com/g/owncloud/files_antivirus/?branch=stable9.1)
 
 ## Status
 
@@ -29,14 +24,12 @@ The App is not complete yet, the following works/is done:
 * If an uploaded file is infected, it's deleted and a notification is shown to the user on screen and an email is sent with details.
 * Tested in Linux only
 * Background Job to scan all files
-
-## In progress
-
 * Test uploading from clients
+* File size limit
 
 ## ToDo
 
-* File size limit
+
 * Configurations Tuneups
 * Other OS Testing
 * Look for ideas :P
@@ -49,10 +42,11 @@ The App is not complete yet, the following works/is done:
 ## Install
 
 * Install and enable the App
-* Go to Admin Panel and configure the App
+* Go to Admin Panel and [configure](https://doc.owncloud.org/server/10.0/admin_manual/configuration/server/antivirus_configuration.html) the App
 
 
 Authors:
 
 [Manuel Delgado López](https://github.com/valarauco/) :: manuel.delgado at ucr.ac.cr  
-[Bart Visscher](https://github.com/bartv2/)
+[Bart Visscher](https://github.com/bartv2/)  
+[Viktar Dubiniuk](https://github.com/vicdeo/)
