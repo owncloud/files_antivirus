@@ -31,7 +31,7 @@ More information is available in the Anti-Virus documentation.
 	<use-migrations>true</use-migrations>
 	<namespace>Files_Antivirus</namespace>
 	<dependencies>
-		<owncloud min-version="10.0" max-version="10.0" />
+		<owncloud min-version="10.0.3" max-version="10.0" />
 	</dependencies>
 	<ocsid>157439</ocsid>
 	<settings>
