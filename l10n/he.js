@@ -7,6 +7,7 @@ OC.L10N.register(
     "Scanner exit status" : "סטטוס יציאת סורק",
     "Scanner output" : "פלט סורק",
     "Saving..." : "שמירה…",
+    "Test scan was unsuccessful. Please recheck antivirus settings." : "הסריקה לצורך בדיקה נכשלה. נא לבדוק את הגדרות האנטיוירוס פעם נוספת.",
     "<strong>Infected file</strong> has been <strong>found</strong>" : "<strong>קובץ נגוע</strong> <strong>אותר</strong>",
     "File %s is infected with %s" : "קובץ %s נגוע ב- %s",
     "It is going to be deleted" : "הקובץ עתיד להמחק",
