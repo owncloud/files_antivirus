@@ -57,7 +57,7 @@ class AvirWrapperTest extends TestBase {
 	}
 
 	/**
-	 * @expectedException \OCP\Files\InvalidContentException
+	 * @expectedException \OCP\Files\FileContentNotAllowedException
 	 */
 	public function testInfectedFwrite(){
 		$wrapper = $this->getWrapper();
@@ -67,7 +67,7 @@ class AvirWrapperTest extends TestBase {
 	}
 
 	/**
-	 * @expectedException \OCP\Files\InvalidContentException
+	 * @expectedException \OCP\Files\FileContentNotAllowedException
 	 */
 	public function testBigInfectedFwrite(){
 		$wrapper = $this->getWrapper();

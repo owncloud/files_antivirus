@@ -13,6 +13,7 @@ use OC\Files\Storage\Wrapper\Wrapper;
 use OCA\Files_Antivirus\Scanner\AbstractScanner;
 use OCA\Files_Antivirus\Scanner\InitException;
 use OCP\App;
+use OCP\Files\FileContentNotAllowedException;
 use OCP\IL10N;
 use OCP\ILogger;
 use OCP\Files\InvalidContentException;
@@ -138,7 +139,7 @@ class AvirWrapper extends Wrapper{
 	 * @param AbstractScanner $scanner
 	 * @param string $path
 	 * @param bool $shouldDelete
-	 * @throws InvalidContentException
+	 * @throws FileContentNotAllowedException
 	 */
 	private function onScanComplete($scanner, $path, $shouldDelete){
 		$status = $scanner->completeAsyncScan();
@@ -178,11 +179,11 @@ class AvirWrapper extends Wrapper{
 				}
 			}
 
-			throw new InvalidContentException(
+			throw new FileContentNotAllowedException(
 				$this->l10n->t(
 					'Virus %s is detected in the file. Upload cannot be completed.',
 					$status->getDetails()
-				)
+				), true
 			);
 		}
 
