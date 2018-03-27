@@ -8,7 +8,7 @@ php:
 
 env:
   global:
-    - CORE_BRANCH=master
+    - CORE_BRANCH=stable10
     - APP_NAME=files_antivirus
   matrix:
     - DB=sqlite
@@ -53,6 +53,10 @@ matrix:
       env: DB=pgsql
     - php: 7
       env: DB=oracle
+    - php: 7.1
+      env: DB=mysql CORE_BRANCH=master
+    - php: 7.2
+      env: DB=mysql CORE_BRANCH=master
   allow_failures:
     - php: hhvm
   fast_finish: true
