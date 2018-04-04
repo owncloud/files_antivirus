@@ -13,9 +13,9 @@ use OC\Files\Storage\Wrapper\Wrapper;
 use OCA\Files_Antivirus\Scanner\AbstractScanner;
 use OCA\Files_Antivirus\Scanner\InitException;
 use OCP\App;
+use OCP\Files\FileContentNotAllowedException;
 use OCP\IL10N;
 use OCP\ILogger;
-use OCP\Files\InvalidContentException;
 use OCP\Files\ForbiddenException;
 use Icewind\Streams\CallbackWrapper;
 
@@ -85,7 +85,7 @@ class AvirWrapper extends Wrapper{
 			$message = sprintf(self::AV_EXCEPTION_MESSAGE, $e->getMessage());
 			$this->logger->warning($message, ['app' => 'files_antivirus']);
 			throw new ForbiddenException($message, true, $e);
-		} catch (InvalidContentException $e) {
+		} catch (FileContentNotAllowedException $e) {
 			throw new ForbiddenException($e->getMessage(), false, $e);
 		} catch (\Exception $e){
 			$message = 	implode(' ', [ __CLASS__, __METHOD__, $e->getMessage()]);
@@ -138,7 +138,7 @@ class AvirWrapper extends Wrapper{
 	 * @param AbstractScanner $scanner
 	 * @param string $path
 	 * @param bool $shouldDelete
-	 * @throws InvalidContentException
+	 * @throws FileContentNotAllowedException
 	 */
 	private function onScanComplete($scanner, $path, $shouldDelete){
 		$status = $scanner->completeAsyncScan();
@@ -178,11 +178,11 @@ class AvirWrapper extends Wrapper{
 				}
 			}
 
-			throw new InvalidContentException(
+			throw new FileContentNotAllowedException(
 				$this->l10n->t(
 					'Virus %s is detected in the file. Upload cannot be completed.',
 					$status->getDetails()
-				)
+				), false
 			);
 		}
 
