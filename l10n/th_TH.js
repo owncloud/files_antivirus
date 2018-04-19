@@ -40,7 +40,7 @@ OC.L10N.register(
     "File size limit, -1 means no limit" : "จำกัดขนาดของไฟล์, -1 หมายถึงไม่มีขีดจำกัด",
     "File size limit in bytes, -1 means no limit" : "จำกัดขนาดของไฟล์ในรูปแบบไบต์, -1 หมายถึงไม่มีขีดจำกัด",
     "When infected files were found during a background scan" : "เมื่อพบไฟล์ที่ติดเชื้อในระหว่างการสแกนพื้นหลัง",
-    "Only log" : "เฉพาะไฟล์บันทึก",
+    "Only log" : "เฉพาะไฟล์ log",
     "Delete file" : "ลบไฟล์",
     "Save" : "บันทึก",
     "Advanced" : "ขั้นสูง",
