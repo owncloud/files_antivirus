@@ -228,7 +228,7 @@ class Item implements IScannable{
 	 */
 	public function logDebug($message) {
 		$extra = ' File: ' . $this->id 
-				. 'Account: ' . $this->view->getOwner($this->path) 
+				. ' Account: ' . $this->view->getOwner($this->path) 
 				. ' Path: ' . $this->path;
 		\OCP\Util::writeLog('files_antivirus', $message . $extra, \OCP\Util::DEBUG);
 	}
