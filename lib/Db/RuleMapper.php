@@ -8,10 +8,9 @@
 
 namespace OCA\Files_Antivirus\Db;
 
+use OCA\Files_Antivirus\Status;
 use OCP\IDb;
 use OCP\AppFramework\Db\Mapper;
-
-use OCA\Files_Antivirus\Db\Rule;
 
 /**
  * Class RuleMapper
@@ -97,7 +96,7 @@ class RuleMapper extends Mapper {
 				'result' => 0,
 				'match' => '',
 				'description' => "",
-				'status' => \OCA\Files_Antivirus\Status::SCANRESULT_CLEAN
+				'status' => Status::SCANRESULT_CLEAN
 			],
 
 			[
@@ -106,7 +105,7 @@ class RuleMapper extends Mapper {
 				'result' => 1,
 				'match' => '',
 				'description' => "",
-				'status' => \OCA\Files_Antivirus\Status::SCANRESULT_INFECTED
+				'status' => Status::SCANRESULT_INFECTED
 			],
 		
 			[
@@ -115,7 +114,7 @@ class RuleMapper extends Mapper {
 				'result' => 40,
 				'match' => '',
 				'description' => "Unknown option passed.",
-				'status' => \OCA\Files_Antivirus\Status::SCANRESULT_UNCHECKED
+				'status' => Status::SCANRESULT_UNCHECKED
 			],
 			
 			[
@@ -124,7 +123,7 @@ class RuleMapper extends Mapper {
 				'result' => 50,
 				'match' => '',
 				'description' => "Database initialization error.",
-				'status' => \OCA\Files_Antivirus\Status::SCANRESULT_UNCHECKED
+				'status' => Status::SCANRESULT_UNCHECKED
 			],
 			
 			[
@@ -133,7 +132,7 @@ class RuleMapper extends Mapper {
 				'result' => 52,
 				'match' => '',
 				'description' => "Not supported file type.",
-				'status' => \OCA\Files_Antivirus\Status::SCANRESULT_UNCHECKED
+				'status' => Status::SCANRESULT_UNCHECKED
 			],
 			
 			[
@@ -142,7 +141,7 @@ class RuleMapper extends Mapper {
 				'result' => 53,
 				'match' => '',
 				'description' => "Can't open directory.",
-				'status' => \OCA\Files_Antivirus\Status::SCANRESULT_UNCHECKED
+				'status' => Status::SCANRESULT_UNCHECKED
 			],
 			
 			[
@@ -151,7 +150,7 @@ class RuleMapper extends Mapper {
 				'result' => 54,
 				'match' => '',
 				'description' => "Can't open file. (ofm)",
-				'status' => \OCA\Files_Antivirus\Status::SCANRESULT_UNCHECKED
+				'status' => Status::SCANRESULT_UNCHECKED
 			],
 			
 			[
@@ -160,7 +159,7 @@ class RuleMapper extends Mapper {
 				'result' => 55,
 				'match' => '',
 				'description' => "Error reading file. (ofm)",
-				'status' => \OCA\Files_Antivirus\Status::SCANRESULT_UNCHECKED
+				'status' => Status::SCANRESULT_UNCHECKED
 			],
 			
 			[
@@ -169,7 +168,7 @@ class RuleMapper extends Mapper {
 				'result' => 56,
 				'match' => '',
 				'description' => "Can't stat input file / directory.",
-				'status' => \OCA\Files_Antivirus\Status::SCANRESULT_UNCHECKED
+				'status' => Status::SCANRESULT_UNCHECKED
 			],
 			
 			[
@@ -178,7 +177,7 @@ class RuleMapper extends Mapper {
 				'result' => 57,
 				'match' => '',
 				'description' => "Can't get absolute path name of current working directory.",
-				'status' => \OCA\Files_Antivirus\Status::SCANRESULT_UNCHECKED
+				'status' => Status::SCANRESULT_UNCHECKED
 			],
 			
 			[
@@ -187,7 +186,7 @@ class RuleMapper extends Mapper {
 				'result' => 58,
 				'match' => '',
 				'description' => "I/O error, please check your file system.",
-				'status' => \OCA\Files_Antivirus\Status::SCANRESULT_UNCHECKED
+				'status' => Status::SCANRESULT_UNCHECKED
 			],
 			
 			[
@@ -196,7 +195,7 @@ class RuleMapper extends Mapper {
 				'result' => 62,
 				'match' => '',
 				'description' => "Can't initialize logger.",
-				'status' => \OCA\Files_Antivirus\Status::SCANRESULT_UNCHECKED
+				'status' => Status::SCANRESULT_UNCHECKED
 			],
 			
 			[
@@ -205,7 +204,7 @@ class RuleMapper extends Mapper {
 				'result' => 63,
 				'match' => '',
 				'description' => "Can't create temporary files/directories (check permissions).",
-				'status' => \OCA\Files_Antivirus\Status::SCANRESULT_UNCHECKED
+				'status' => Status::SCANRESULT_UNCHECKED
 			],
 			
 			[
@@ -214,7 +213,7 @@ class RuleMapper extends Mapper {
 				'result' => 64,
 				'match' => '',
 				'description' => "Can't write to temporary directory (please specify another one).",
-				'status' => \OCA\Files_Antivirus\Status::SCANRESULT_UNCHECKED
+				'status' => Status::SCANRESULT_UNCHECKED
 			],
 			
 			[
@@ -223,7 +222,7 @@ class RuleMapper extends Mapper {
 				'result' => 70,
 				'match' => '',
 				'description' => "Can't allocate memory (calloc).",
-				'status' => \OCA\Files_Antivirus\Status::SCANRESULT_UNCHECKED
+				'status' => Status::SCANRESULT_UNCHECKED
 			],
 			
 			[
@@ -232,7 +231,7 @@ class RuleMapper extends Mapper {
 				'result' => 71,
 				'match' => '',
 				'description' => "Can't allocate memory (malloc).",
-				'status' => \OCA\Files_Antivirus\Status::SCANRESULT_UNCHECKED
+				'status' => Status::SCANRESULT_UNCHECKED
 			],
 			
 			[
@@ -241,7 +240,7 @@ class RuleMapper extends Mapper {
 				'result' => 0,
 				'match' => '/.*: OK$/',
 				'description' => '',
-				'status' => \OCA\Files_Antivirus\Status::SCANRESULT_CLEAN
+				'status' => Status::SCANRESULT_CLEAN
 			],
 			
 			[
@@ -250,7 +249,7 @@ class RuleMapper extends Mapper {
 				'result' => 0,
 				'match' => '/.*: (.*) FOUND$/',
 				'description' => '',
-				'status' => \OCA\Files_Antivirus\Status::SCANRESULT_INFECTED
+				'status' => Status::SCANRESULT_INFECTED
 			],
 			
 			[
@@ -259,7 +258,7 @@ class RuleMapper extends Mapper {
 				'result' => 0,
 				'match' => '/.*: (.*) ERROR$/',
 				'description' => '',
-				'status' => \OCA\Files_Antivirus\Status::SCANRESULT_UNCHECKED
+				'status' => Status::SCANRESULT_UNCHECKED
 			],
 		];
 		

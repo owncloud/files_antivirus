@@ -67,7 +67,7 @@ class Status {
 	public function parseResponse($rawResponse, $result = null) {
 		$matches = array();
 		$ruleMapper = new Db\RuleMapper(\OC::$server->getDb());
-		if (is_null($result)) { // Daemon or socket mode
+		if (\is_null($result)) { // Daemon or socket mode
 			try{
 				$allRules = $this->getResponseRules();
 			} catch (\Exception $e){
@@ -81,10 +81,10 @@ class Status {
 			
 			$isMatched = false;
 			foreach ($allRules as $rule) {
-				if (preg_match($rule->getMatch(), $rawResponse, $matches)) {
+				if (\preg_match($rule->getMatch(), $rawResponse, $matches)) {
 					$isMatched = true;
-					$this->numericStatus = intval($rule->getStatus());
-					if (intval($rule->getStatus()) === self::SCANRESULT_CLEAN) {
+					$this->numericStatus = \intval($rule->getStatus());
+					if (\intval($rule->getStatus()) === self::SCANRESULT_CLEAN) {
 						$this->details = '';
 					} else {
 						$this->details = isset($matches[1]) ? $matches[1] : 'unknown';
@@ -100,22 +100,22 @@ class Status {
 			
 		} else { // Executable mode
 			$scanStatus = $ruleMapper->findByResult($result);
-			if (is_array($scanStatus) && count($scanStatus)) {
-				$this->numericStatus = intval($scanStatus[0]->getStatus());
+			if (\is_array($scanStatus) && \count($scanStatus)) {
+				$this->numericStatus = \intval($scanStatus[0]->getStatus());
 				$this->details = $scanStatus[0]->getDescription();
 			}
 			
 			switch($this->numericStatus) {
 				case self::SCANRESULT_INFECTED:
 					$report = array();
-					$rawResponse = explode("\n", $rawResponse);
+					$rawResponse = \explode("\n", $rawResponse);
 					
 					foreach ($rawResponse as $line) {
-						if (preg_match('/.*: (.*) FOUND\s*$/', $line, $matches)) {
+						if (\preg_match('/.*: (.*) FOUND\s*$/', $line, $matches)) {
 							$report[] = $matches[1];
 						}
 					}
-					$this->details = implode(', ', $report);
+					$this->details = \implode(', ', $report);
 					
 					break;
 				case self::SCANRESULT_UNCHECKED:
@@ -136,7 +136,7 @@ class Status {
 		$cleanRules = $cleanRules ? $cleanRules : [];
 		
 		// order: clean, infected, try to guess error
-		$allRules = array_merge($cleanRules, $infectedRules, $uncheckedRules);
+		$allRules = \array_merge($cleanRules, $infectedRules, $uncheckedRules);
 		return $allRules;
 	}
 	

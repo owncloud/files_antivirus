@@ -16,7 +16,7 @@ class Notification {
 		$user = \OC::$server->getUserSession()->getUser();
 		$email = $user->getEMailAddress();
 		$displayName = $user->getDisplayName();
-		if (strval($displayName) === '') {
+		if (\strval($displayName) === '') {
 			$displayName = $user->getUID();
 		}
 		\OCP\Util::writeLog(

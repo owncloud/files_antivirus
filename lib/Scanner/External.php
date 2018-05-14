@@ -20,13 +20,13 @@ abstract class External extends AbstractScanner {
 	 * read response and close the handle
 	 */
 	protected function shutdownScanner() {
-		@fwrite($this->getWriteHandle(), pack('N', 0));
-		$response = fgets($this->getWriteHandle());
+		@\fwrite($this->getWriteHandle(), \pack('N', 0));
+		$response = \fgets($this->getWriteHandle());
 		$this->logger->debug(
 			'Response :: ' . $response,
 			['app' => 'files_antivirus']
 		);
-		@fclose($this->getWriteHandle());
+		@\fclose($this->getWriteHandle());
 
 		$this->status->parseResponse($response);
 	}
@@ -39,7 +39,7 @@ abstract class External extends AbstractScanner {
 	 * @return string
 	 */
 	protected function prepareChunk($data) {
-		$chunkLength = pack('N', strlen($data));
+		$chunkLength = \pack('N', \strlen($data));
 		return $chunkLength . $data;
 	}
 }

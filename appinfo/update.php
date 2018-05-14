@@ -12,13 +12,13 @@ $installedVersion = \OC::$server->getConfig()->getAppValue(
 	'installed_version'
 );
 
-if (version_compare($installedVersion, '0.5', '<')) {
+if (\version_compare($installedVersion, '0.5', '<')) {
 	$app = new \OCA\Files_Antivirus\AppInfo\Application();
 	$ruleMapper = $app->getContainer()->query('RuleMapper');
 	$ruleMapper->populate();
 }
 
-if (version_compare($installedVersion, '0.6', '<')) {
+if (\version_compare($installedVersion, '0.6', '<')) {
 	// remove the old job with old classname
 	$jobList = \OC::$server->getJobList();
 	$jobs = $jobList->getAll();

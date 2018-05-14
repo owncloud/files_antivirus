@@ -63,7 +63,7 @@ class Item implements IScannable{
 	public function __construct(IL10N $l10n, $view, $path, $id = null) {
 		$this->l10n = $l10n;
 		
-		if (!is_object($view)) {
+		if (!\is_object($view)) {
 			$this->logError('Can\'t init filesystem view.', $id, $path);
 			throw new \RuntimeException();
 		}
@@ -73,7 +73,7 @@ class Item implements IScannable{
 			throw new \RuntimeException();
 		}
 		
-		if (is_null($id)) {
+		if (\is_null($id)) {
 			$this->id = $view->getFileInfo($path)->getId();
 		} else {
 			$this->id = $id;
@@ -108,12 +108,12 @@ class Item implements IScannable{
 		if (!$this->isValid()) {
 			return;
 		}
-		if (is_null($this->fileHandle)) {
+		if (\is_null($this->fileHandle)) {
 			$this->getFileHandle();
 		}
 		
-		if (!is_null($this->fileHandle) && !$this->feof()) {
-			$chunk = fread($this->fileHandle, $this->chunkSize);
+		if (!\is_null($this->fileHandle) && !$this->feof()) {
+			$chunk = \fread($this->fileHandle, $this->chunkSize);
 			return $chunk;
 		}
 		return false;
@@ -160,7 +160,7 @@ class Item implements IScannable{
 			Notification::sendMail($this->path);
 			$message = $this->l10n->t(
 				"Virus detected! Can't upload the file %s",
-				[basename($this->path)]
+				[\basename($this->path)]
 			);
 			\OCP\JSON::error(["data" => ["message" => $message]]);
 			exit();
@@ -217,10 +217,10 @@ class Item implements IScannable{
 	 * @return boolean
 	 */
 	private function feof() {
-		$isDone = feof($this->fileHandle);
+		$isDone = \feof($this->fileHandle);
 		if ($isDone) {
 			$this->logDebug('Scan is done');
-			fclose($this->fileHandle);
+			\fclose($this->fileHandle);
 			$this->fileHandle = null;
 		}
 		return $isDone;
@@ -258,10 +258,10 @@ class Item implements IScannable{
 	 * @param string $path optional
 	 */
 	public function logError($message, $id=null, $path=null) {
-		$ownerInfo = is_null($this->view) ? '' : 'Account: ' . $this->view->getOwner($path);
-		$extra = ' File: ' . (is_null($id) ? $this->id : $id)
+		$ownerInfo = \is_null($this->view) ? '' : 'Account: ' . $this->view->getOwner($path);
+		$extra = ' File: ' . (\is_null($id) ? $this->id : $id)
 				. $ownerInfo 
-				. ' Path: ' . (is_null($path) ? $this->path : $path);
+				. ' Path: ' . (\is_null($path) ? $this->path : $path);
 		\OCP\Util::writeLog(
 			'files_antivirus',
 			$message . $extra,

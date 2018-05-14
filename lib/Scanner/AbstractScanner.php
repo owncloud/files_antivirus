@@ -178,8 +178,8 @@ abstract class AbstractScanner {
 			return;
 		}
 
-		$dataLength = strlen($data);
-		$streamSizeLimit = intval($this->appConfig->getAvStreamMaxLength());
+		$dataLength = \strlen($data);
+		$streamSizeLimit = \intval($this->appConfig->getAvStreamMaxLength());
 		if ($this->byteCount + $dataLength > $streamSizeLimit) {
 			$this->logger->debug(
 				'reinit scanner',
@@ -210,7 +210,7 @@ abstract class AbstractScanner {
 	 */
 	protected function retry() {
 		$this->initScanner();
-		if (!is_null($this->lastChunk)) {
+		if (!\is_null($this->lastChunk)) {
 			return $this->writeRaw($this->lastChunk);
 		}
 		return true;
@@ -222,8 +222,8 @@ abstract class AbstractScanner {
 	 * @return bool
 	 */
 	protected function writeRaw($data) {
-		$dataLength = strlen($data);
-		$bytesWritten = @fwrite($this->getWriteHandle(), $data);
+		$dataLength = \strlen($data);
+		$bytesWritten = @\fwrite($this->getWriteHandle(), $data);
 		if ($bytesWritten === $dataLength) {
 			$this->byteCount += $bytesWritten;
 			$this->lastChunk = $data;

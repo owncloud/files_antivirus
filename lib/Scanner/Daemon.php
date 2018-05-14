@@ -49,16 +49,16 @@ class Daemon extends External {
 		$errors = [];
 		foreach ($checks as $key => $check) {
 			if ($check === '') {
-				$errors[] = sprintf(
+				$errors[] = \sprintf(
 					'Daemon mode requires a %s but it is empty.',
 					$key
 				);
 			}
 		}
 
-		if (count($errors) > 0) {
+		if (\count($errors) > 0) {
 			throw new InitException(
-				'The app is not configured properly. ' . implode(' ', $errors)
+				'The app is not configured properly. ' . \implode(' ', $errors)
 			);
 		}
 	}
@@ -68,10 +68,10 @@ class Daemon extends External {
 	 */
 	public function initScanner() {
 		parent::initScanner();
-		$this->writeHandle = @fsockopen($this->avHost, $this->avPort);
+		$this->writeHandle = @\fsockopen($this->avHost, $this->avPort);
 		if (!$this->getWriteHandle()) {
 			throw new InitException(
-				sprintf(
+				\sprintf(
 					'Could not connect to host "%s" on port %d',
 					$this->avHost,
 					$this->avPort
@@ -79,6 +79,6 @@ class Daemon extends External {
 			);
 		}
 		// request scan from the daemon
-		@fwrite($this->getWriteHandle(), "nINSTREAM\n");
+		@\fwrite($this->getWriteHandle(), "nINSTREAM\n");
 	}
 }

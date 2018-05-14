@@ -47,12 +47,12 @@ class Socket extends External {
 	 */
 	public function initScanner() {
 		parent::initScanner();
-		$this->writeHandle = @stream_socket_client(
+		$this->writeHandle = @\stream_socket_client(
 			'unix://' . $this->socket, $errorCode, $errorMessage, 5
 		);
 		if (!$this->getWriteHandle()) {
 			throw new InitException(
-				sprintf(
+				\sprintf(
 					'Could not connect to socket "%s": %s (code %d)',
 					$this->socket,
 					$errorMessage,
@@ -61,9 +61,9 @@ class Socket extends External {
 			);
 		}
 
-		if (@fwrite($this->getWriteHandle(), "nINSTREAM\n") === false) {
+		if (@\fwrite($this->getWriteHandle(), "nINSTREAM\n") === false) {
 			throw new InitException(
-				sprintf(
+				\sprintf(
 					'Writing to socket "%s" failed',
 					$this->socket
 				)

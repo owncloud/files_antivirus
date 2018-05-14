@@ -80,18 +80,18 @@ class AppConfig {
 		
 		$shellArgs = [];
 		if ($avCmdOptions) {
-			$shellArgs = explode(',', $avCmdOptions);
-			$shellArgs = array_map(
+			$shellArgs = \explode(',', $avCmdOptions);
+			$shellArgs = \array_map(
 				function ($i) {
-					return escapeshellarg($i);
+					return \escapeshellarg($i);
 				},
 				$shellArgs
 			);
 		}
 		
 		$preparedArgs = '';
-		if (count($shellArgs)) {
-			$preparedArgs = implode(' ', $shellArgs);
+		if (\count($shellArgs)) {
+			$preparedArgs = \implode(' ', $shellArgs);
 		}
 		return $preparedArgs;
 	}
@@ -102,10 +102,10 @@ class AppConfig {
 	 * @return array
 	 */
 	public function getAllValues() {
-		$keys = array_keys($this->defaults);
-		$values = array_map(array($this, 'getAppValue'), $keys);
-		$preparedKeys = array_map(array($this, 'camelCase'), $keys);
-		return array_combine($preparedKeys, $values);
+		$keys = \array_keys($this->defaults);
+		$values = \array_map([$this, 'getAppValue'], $keys);
+		$preparedKeys = \array_map([$this, 'camelCase'], $keys);
+		return \array_combine($preparedKeys, $values);
 	}
 	
 	/**
@@ -117,7 +117,7 @@ class AppConfig {
 	 */
 	public function getAppValue($key) {
 		$defaultValue = null;
-		if (array_key_exists($key, $this->defaults)) {
+		if (\array_key_exists($key, $this->defaults)) {
 			$defaultValue = $this->defaults[$key];
 		}
 		return $this->config->getAppValue($this->appName, $key, $defaultValue);
@@ -144,7 +144,7 @@ class AppConfig {
 	 * @throws \BadFunctionCallException
 	 */
 	protected function setter($key, $args) {
-		if (array_key_exists($key, $this->defaults)) {
+		if (\array_key_exists($key, $this->defaults)) {
 			$this->setAppValue($key, $args[0]);
 		} else {
 			throw new \BadFunctionCallException($key . ' is not a valid key');
@@ -161,7 +161,7 @@ class AppConfig {
 	 * @throws \BadFunctionCallException
 	 */
 	protected function getter($key) {
-		if (array_key_exists($key, $this->defaults)) {
+		if (\array_key_exists($key, $this->defaults)) {
 			return $this->getAppValue($key);
 		} else {
 			throw new \BadFunctionCallException($key . ' is not a valid key');
@@ -176,9 +176,9 @@ class AppConfig {
 	 * @return string
 	 */
 	protected function camelCase($property) {
-		$split = explode('_', $property);
-		$ucFirst = implode('', array_map('ucfirst', $split));
-		$camelCase = lcfirst($ucFirst);
+		$split = \explode('_', $property);
+		$ucFirst = \implode('', \array_map('ucfirst', $split));
+		$camelCase = \lcfirst($ucFirst);
 		return $camelCase;
 	}
 	
@@ -190,14 +190,14 @@ class AppConfig {
 	 * @return string
 	 */
 	protected function propertyToKey($property) {
-		$parts = preg_split('/(?=[A-Z])/', $property);
+		$parts = \preg_split('/(?=[A-Z])/', $property);
 		$column = null;
 
 		foreach ($parts as $part) {
 			if ($column === null) {
 				$column = $part;
 			} else {
-				$column .= '_' . lcfirst($part);
+				$column .= '_' . \lcfirst($part);
 			}
 		}
 
@@ -215,11 +215,11 @@ class AppConfig {
 	 * @throws \BadFunctionCallException
 	 */
 	public function __call($methodName, $args) {
-		$attr = lcfirst(substr($methodName, 3));
+		$attr = \lcfirst(\substr($methodName, 3));
 		$key = $this->propertyToKey($attr);
-		if (strpos($methodName, 'set') === 0) {
+		if (\strpos($methodName, 'set') === 0) {
 			$this->setter($key, $args);
-		} elseif (strpos($methodName, 'get') === 0) {
+		} elseif (\strpos($methodName, 'get') === 0) {
 			return $this->getter($key);
 		} else {
 			throw new \BadFunctionCallException(

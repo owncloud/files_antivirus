@@ -40,7 +40,7 @@ class ScannerFactory {
 			// rethrow misconfiguration exception
 			throw $e;
 		} catch (\Exception $e) {
-			$message = 	implode(' ', [ __CLASS__, __METHOD__, $e->getMessage()]);
+			$message = 	\implode(' ', [ __CLASS__, __METHOD__, $e->getMessage()]);
 			$this->logger->warning($message, ['app' => 'files_antivirus']);
 		}
 	}
@@ -61,7 +61,7 @@ class ScannerFactory {
 				break;
 			default:
 				throw new InitException(
-					sprintf(
+					\sprintf(
 						'Please check the settings at the admin page. Invalid mode: "%s"',
 						$this->appConfig->getAvMode()
 					)

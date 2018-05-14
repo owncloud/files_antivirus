@@ -93,7 +93,7 @@ class SettingsController extends Controller {
 		$this->settings->setAvStreamMaxLength($avStreamMaxLength);
 		$this->settings->setAvMaxFileSize($avMaxFileSize);
 
-		$connectionStatus = intval(
+		$connectionStatus = \intval(
 			$this->scannerFactory->testConnection($this->settings)
 		);
 

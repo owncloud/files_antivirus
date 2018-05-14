@@ -22,10 +22,10 @@ class Content implements IScannable {
 	}
 	
 	public function fread() {
-		if ($this->currentPosition >=  strlen($this->content)) {
+		if ($this->currentPosition >= \strlen($this->content)) {
 			return false;
 		}
-		$chunk = substr($this->content, $this->currentPosition, $this->chunkSize);
+		$chunk = \substr($this->content, $this->currentPosition, $this->chunkSize);
 		$this->currentPosition = $this->currentPosition + $this->chunkSize;
 		
 		return $chunk;

@@ -79,7 +79,7 @@ class BackgroundScanner {
 	/**
 	 * Background scanner main job
 	 *
-	 * @return null
+	 * @return void
 	 */
 	public function run() {
 
@@ -122,7 +122,9 @@ class BackgroundScanner {
 	}
 
 	protected function getFilesForScan() {
-		$dirMimeTypeId = \OC::$server->getMimeTypeLoader()->getId('httpd/unix-directory');
+		$dirMimeTypeId = \OC::$server->getMimeTypeLoader()->getId(
+			'httpd/unix-directory'
+		);
 
 		$dbConnection = \OC::$server->getDatabaseConnection();
 		$qb = $dbConnection->getQueryBuilder();
@@ -136,8 +138,8 @@ class BackgroundScanner {
 			);
 		}
 
-		$sizeLimit = intval($this->appConfig->getAvMaxFileSize());
-		if ( $sizeLimit === -1 ) {
+		$sizeLimit = \intval($this->appConfig->getAvMaxFileSize());
+		if ($sizeLimit === -1) {
 			$sizeLimitExpr = $qb->expr()->neq('fc.size', $qb->expr()->literal('0'));
 		} else {
 			$sizeLimitExpr = $qb->expr()->andX(
@@ -182,7 +184,7 @@ class BackgroundScanner {
 		$this->initFilesystemForUser($owner);
 		$view = Filesystem::getView();
 		$path = $view->getPath($fileId);
-		if (!is_null($path)) {
+		if (!\is_null($path)) {
 			$item = new Item($this->l10n, $view, $path, $fileId);
 			$scanner = $this->scannerFactory->getScanner();
 			$status = $scanner->scan($item);

@@ -9,10 +9,10 @@ if (version_compare($installedVersion, '0.6', '<')) {
 		'SELECT COUNT(*) AS `count`, `fileid` FROM `*PREFIX*files_antivirus` GROUP BY `fileid` HAVING COUNT(*) > 1'
 	);
 	$result = $query->execute();
-	while( $row = $result->fetchRow()) {
+	while ($row = $result->fetchRow()) {
 		$deleteQuery = OCP\DB::prepare(
 			'DELETE FROM `*PREFIX*files_antivirus` WHERE `fileid` = ?',
-			$row['count']-1
+			$row['count'] - 1
 		);
 		$deleteQuery->execute([$row['fileid']]);
 	}

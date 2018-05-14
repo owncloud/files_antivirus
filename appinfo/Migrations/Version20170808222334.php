@@ -15,8 +15,6 @@ class Version20170808222334 implements ISimpleMigration {
 	 * Version20170808222334 constructor.
 	 *
 	 * @param RuleMapper $ruleMapper
-	 *
-	 * @return void
 	 */
 	public function __construct(RuleMapper $ruleMapper) {
 		$this->ruleMapper = $ruleMapper;
@@ -29,7 +27,7 @@ class Version20170808222334 implements ISimpleMigration {
 	 */
 	public function run(IOutput $out) {
 		$rules = $this->ruleMapper->findAll();
-		if (!count($rules)) {
+		if (!\count($rules)) {
 			$this->ruleMapper->populate();
 		}
 	}

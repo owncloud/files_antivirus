@@ -36,13 +36,13 @@ class RequestHelper {
 		$isRemoteScript = $this->isScriptName('remote.php');
 		$isPublicScript = $this->isScriptName('public.php');
 		// Are we uploading anything?
-		if (in_array($requestMethod, ['MOVE', 'PUT']) && $isRemoteScript) {
+		if (\in_array($requestMethod, ['MOVE', 'PUT']) && $isRemoteScript) {
 			// v1 && v2 Chunks are not scanned
-			if ($requestMethod === 'PUT' &&  strpos($path, 'uploads/') === 0) {
+			if ($requestMethod === 'PUT' &&  \strpos($path, 'uploads/') === 0) {
 				return null;
 			}
 
-			if (\OC_FileChunking::isWebdavChunk() && strpos($path, 'cache/') === 0) {
+			if (\OC_FileChunking::isWebdavChunk() && \strpos($path, 'cache/') === 0) {
 				return null;
 			}
 
@@ -65,7 +65,7 @@ class RequestHelper {
 	 * @return bool
 	 */
 	public function isScriptName($string) {
-		$pattern = sprintf('|/%s|', preg_quote($string));
-		return preg_match($pattern, $this->request->getScriptName()) === 1;
+		$pattern = \sprintf('|/%s|', \preg_quote($string));
+		return \preg_match($pattern, $this->request->getScriptName()) === 1;
 	}
 }

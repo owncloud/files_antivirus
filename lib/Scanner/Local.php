@@ -45,9 +45,9 @@ class Local extends AbstractScanner {
 		parent::__construct($config, $logger);
 
 		// get the path to the executable
-		$this->avPath = escapeshellcmd($this->appConfig->getAvPath());
+		$this->avPath = \escapeshellcmd($this->appConfig->getAvPath());
 
-		if (!file_exists($this->avPath)) {
+		if (!\file_exists($this->avPath)) {
 			throw new InitException(
 				sprintf(
 					'The antivirus executable could not be found at path "%s"',
@@ -62,13 +62,13 @@ class Local extends AbstractScanner {
 		
 		// using 2>&1 to grab the full command-line output.
 		$cmd = $this->avPath . " " . $this->appConfig->getCmdline() . " - 2>&1";
-		$descriptorSpec = array(
+		$descriptorSpec = [
 			0 => ["pipe","r"], // STDIN
 			1 => ["pipe","w"]  // STDOUT
-		);
+		];
 		
-		$this->process = proc_open($cmd, $descriptorSpec, $this->pipes);
-		if (!is_resource($this->process)) {
+		$this->process = \proc_open($cmd, $descriptorSpec, $this->pipes);
+		if (!\is_resource($this->process)) {
 			throw new InitException(
 				sprintf('Error starting process "%s"', $cmd)
 			);
@@ -77,11 +77,11 @@ class Local extends AbstractScanner {
 	}
 	
 	protected function shutdownScanner() {
-		@fclose($this->pipes[0]);
-		$output = stream_get_contents($this->pipes[1]);
-		@fclose($this->pipes[1]);
+		@\fclose($this->pipes[0]);
+		$output = \stream_get_contents($this->pipes[1]);
+		@\fclose($this->pipes[1]);
 		
-		$result = proc_close($this->process);
+		$result = \proc_close($this->process);
 		$this->logger->debug(
 			'Exit code :: ' . $result . ' Response :: ' . $output,
 			['app' => 'files_antivirus']

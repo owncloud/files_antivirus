@@ -89,13 +89,13 @@ class AvirWrapper extends Wrapper{
 
 			return parent::file_put_contents($path, $data);
 		} catch (InitException $e) {
-			$message = sprintf(self::AV_EXCEPTION_MESSAGE, $e->getMessage());
+			$message = \sprintf(self::AV_EXCEPTION_MESSAGE, $e->getMessage());
 			$this->logger->warning($message, ['app' => 'files_antivirus']);
 			throw new ForbiddenException($message, true, $e);
 		} catch (FileContentNotAllowedException $e) {
 			throw new ForbiddenException($e->getMessage(), false, $e);
 		} catch (\Exception $e){
-			$message = 	implode(' ', [ __CLASS__, __METHOD__, $e->getMessage()]);
+			$message = 	\implode(' ', [ __CLASS__, __METHOD__, $e->getMessage()]);
 			$this->logger->warning($message, ['app' => 'files_antivirus']);
 		}
 
@@ -113,7 +113,7 @@ class AvirWrapper extends Wrapper{
 	public function fopen($path, $mode) {
 		$stream = $this->storage->fopen($path, $mode);
 
-		if (is_resource($stream)
+		if (\is_resource($stream)
 			&& $this->isWritingMode($mode)
 			&& $this->isScannableSize($path)
 		) {
@@ -131,11 +131,11 @@ class AvirWrapper extends Wrapper{
 					}
 				);
 			} catch (InitException $e) {
-				$message = sprintf(self::AV_EXCEPTION_MESSAGE, $e->getMessage());
+				$message = \sprintf(self::AV_EXCEPTION_MESSAGE, $e->getMessage());
 				$this->logger->warning($message, ['app' => 'files_antivirus']);
 				throw new ForbiddenException($message, false, $e);
 			} catch (\Exception $e){
-				$message = 	implode(' ', [ __CLASS__, __METHOD__, $e->getMessage()]);
+				$message = 	\implode(' ', [ __CLASS__, __METHOD__, $e->getMessage()]);
 				$this->logger->warning($message, ['app' => 'files_antivirus']);
 			}
 		}
@@ -151,7 +151,7 @@ class AvirWrapper extends Wrapper{
 	 */
 	private function onScanComplete($scanner, $path, $shouldDelete) {
 		$status = $scanner->completeAsyncScan();
-		if (intval($status->getNumericStatus()) === Status::SCANRESULT_INFECTED) {
+		if (\intval($status->getNumericStatus()) === Status::SCANRESULT_INFECTED) {
 			$owner = $this->getOwner($path);
 
 			$this->logger->warning(
@@ -208,12 +208,12 @@ class AvirWrapper extends Wrapper{
 	 */
 	private function isWritingMode($mode) {
 		// Strip unessential binary/text flags
-		$cleanMode = str_replace(
+		$cleanMode = \str_replace(
 			['t', 'b'],
 			['', ''],
 			$mode
 		);
-		return in_array($cleanMode, $this->writingModes);
+		return \in_array($cleanMode, $this->writingModes);
 	}
 
 	/**
@@ -224,11 +224,11 @@ class AvirWrapper extends Wrapper{
 	 * @return bool
 	 */
 	private function isScannableSize($path) {
-		$scanSizeLimit = intval($this->appConfig->getAvMaxFileSize());
+		$scanSizeLimit = \intval($this->appConfig->getAvMaxFileSize());
 		$size = $this->requestHelper->getUploadSize($path);
 
 		// No upload in progress. Skip this file.
-		if (is_null($size)) {
+		if (\is_null($size)) {
 			$this->logger->debug(
 				'No upload in progress or chunk is being uploaded. Scanning is skipped.',
 				['app' => 'files_antivirus']
