@@ -1,9 +1,16 @@
 <?php
 /**
- * Copyright (c) 2012 Bart Visscher <bartv@thisnet.nl>
+ * ownCloud - Files_antivirus
+ *
  * This file is licensed under the Affero General Public License version 3 or
- * later.
- * See the COPYING-README file.
+ * later. See the COPYING file.
+ *
+ * @author Bart Visscher <bartv@thisnet.nl>
+ * @author Viktar Dubiniuk <dubiniuk@owncloud.com>
+ *
+ * @copyright 2012 Bart Visscher <bartv@thisnet.nl>
+ * @copyright Viktar Dubiniuk 2014-2018
+ * @license AGPL-3.0
  */
 
 namespace OCA\Files_Antivirus;

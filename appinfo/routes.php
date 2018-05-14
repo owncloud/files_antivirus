@@ -1,8 +1,16 @@
 <?php
 /**
- * Copyright (c) 2014, Lukas Reschke <lukas@owncloud.com>
+ * Files_antivirus
+ *
  * This file is licensed under the Affero General Public License version 3 or later.
- * See the COPYING-README file.
+ * See the COPYING file.
+ *
+ * @author Lukas Reschke <lukas@owncloud.com>
+ * @author Viktar Dubiniuk <dubiniuk@owncloud.com>
+ *
+ * @copyright Lukas Reschke 2014
+ * @copyright Viktar Dubiniuk 2014-2018
+ * @license AGPL-3.0
  */
 
 $application = new \OCA\Files_Antivirus\AppInfo\Application();

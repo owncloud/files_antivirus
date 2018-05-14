@@ -1,10 +1,13 @@
 <?php
-
 /**
- * ownCloud - files_antivirus
+ * ownCloud - Files_antivirus
  *
- * @author Manuel Deglado
+ * @author Manuel Deglado <manuel.delgado@ucr.ac.cr>
+ * @author Viktar Dubiniuk <dubiniuk@owncloud.com>
+ *
  * @copyright 2012 Manuel Deglado manuel.delgado@ucr.ac.cr
+ * @copyright 2014-2018 Viktar Dubiniuk
+ * @license AGPL-3.0
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE
