@@ -25,76 +25,108 @@ class Application extends App {
 		parent::__construct('files_antivirus', $urlParams);
 		
 		$container = $this->getContainer();
-		$container->registerService('RuleController', function($c) {
-			return new RuleController(
-				$c->query('AppName'),
-				$c->query('Request'),
-				$c->query('Logger'),
-				$c->query('L10N'),
-				$c->query('RuleMapper')
-			);
-		});
-		$container->registerService('SettingsController', function($c) {
-			return new SettingsController(
-				$c->query('Request'),
-				$c->query('AppConfig'),
-				$c->query('ScannerFactory'),
-				$c->query('L10N')	
-			);
-		});
-		$container->registerService('AppConfig', function($c) {
-			return new AppConfig(
-				$c->query('CoreConfig')
-			);
-		});
-		
-        $container->registerService('ScannerFactory', function($c) {
-			return new ScannerFactory(
-				$c->query('AppConfig'),
-				$c->query('Logger')
-			);
-        });
-		
-        $container->registerService('BackgroundScanner', function($c) {
-			return new BackgroundScanner(
-				$c->query('ScannerFactory'),
-				$c->query('L10N'),
-				$c->query('AppConfig'),
-				$c->getServer()->getRootFolder(),
-				$c->getServer()->getUserSession()
-			);
-		});
+		$container->registerService(
+			'RuleController',
+			function ($c) {
+				return new RuleController(
+					$c->query('AppName'),
+					$c->query('Request'),
+					$c->query('Logger'),
+					$c->query('L10N'),
+					$c->query('RuleMapper')
+				);
+			}
+		);
+		$container->registerService(
+			'SettingsController',
+			function ($c) {
+				return new SettingsController(
+					$c->query('Request'),
+					$c->query('AppConfig'),
+					$c->query('ScannerFactory'),
+					$c->query('L10N')
+				);
+			}
+		);
+		$container->registerService(
+			'AppConfig',
+			function ($c) {
+				return new AppConfig(
+					$c->query('CoreConfig')
+				);
+			}
+		);
 
-		$container->registerService('RuleMapper', function($c) {
-			return new RuleMapper(
-				$c->query('ServerContainer')->getDb()
-			);
-		});
+		$container->registerService(
+			'ScannerFactory',
+			function ($c) {
+				return new ScannerFactory(
+					$c->query('AppConfig'),
+					$c->query('Logger')
+				);
+			}
+		);
+		
+		$container->registerService(
+			'BackgroundScanner',
+			function ($c) {
+				return new BackgroundScanner(
+					$c->query('ScannerFactory'),
+					$c->query('L10N'),
+					$c->query('AppConfig'),
+					$c->getServer()->getRootFolder(),
+					$c->getServer()->getUserSession()
+				);
+			}
+		);
 
-		$container->registerService('RequestHelper', function($c) {
-			return new RequestHelper(
-				$c->query('ServerContainer')->getRequest()
-			);
-		});
+		$container->registerService(
+			'RuleMapper',
+			function ($c) {
+				return new RuleMapper(
+					$c->query('ServerContainer')->getDb()
+				);
+			}
+		);
+
+		$container->registerService(
+			'RequestHelper',
+			function ($c) {
+				return new RequestHelper(
+					$c->query('ServerContainer')->getRequest()
+				);
+			}
+		);
 		
 		/**
 		 * Core
 		 */
-		$container->registerService('Logger', function($c) {
-			return $c->query('ServerContainer')->getLogger();
-		});
-        $container->registerService('CoreConfig', function($c) {
-            return $c->query('ServerContainer')->getConfig();
-        });
-        $container->registerService('L10N', function($c) {
-            return $c->query('ServerContainer')->getL10N($c->query('AppName'));
-        });
+		$container->registerService(
+			'Logger',
+			function ($c) {
+				return $c->query('ServerContainer')->getLogger();
+			}
+		);
+		$container->registerService(
+			'CoreConfig',
+			function ($c) {
+				return $c->query('ServerContainer')->getConfig();
+			}
+		);
+		$container->registerService(
+			'L10N',
+			function ($c) {
+				return $c->query('ServerContainer')->getL10N($c->query('AppName'));
+			}
+		);
 	}
 	
 	/**
 	 * Add wrapper for local storages
+	 *
+	 * @return void
 	 */
-	public function setupWrapper(){
+	public function setupWrapper() {
 		\OC\Files\Filesystem::addStorageWrapper(
 			'oc_avir',
 			function ($mountPoint, $storage) {
@@ -107,14 +139,16 @@ class Application extends App {
 					$l10n = $this->getContainer()->query('L10N');
 					$logger = $this->getContainer()->query('Logger');
 					$requestHelper = $this->getContainer()->query('RequestHelper');
-					return new AvirWrapper([
-						'storage' => $storage,
-						'appConfig' => $appConfig,
-						'scannerFactory' => $scannerFactory,
-						'l10n' => $l10n,
-						'logger' => $logger,
-						'requestHelper' => $requestHelper
-					]);
+					return new AvirWrapper(
+						[
+							'storage' => $storage,
+							'appConfig' => $appConfig,
+							'scannerFactory' => $scannerFactory,
+							'l10n' => $l10n,
+							'logger' => $logger,
+							'requestHelper' => $requestHelper
+						]
+					);
 				} else {
 					return $storage;
 				}

@@ -12,7 +12,9 @@ use \OCP\IRequest;
 
 class RequestHelper {
 
-	/** @var  IRequest */
+	/**
+	 * @var  IRequest
+	 */
 	private $request;
 
 	public function __construct(IRequest $request) {
@@ -24,6 +26,7 @@ class RequestHelper {
 	 * returns null for chunks and when there is no upload
 	 *
 	 * @param string $path
+	 *
 	 * @return int|null
 	 */
 	public function getUploadSize($path) {
@@ -58,6 +61,7 @@ class RequestHelper {
 	/**
 	 *
 	 * @param string $string
+	 *
 	 * @return bool
 	 */
 	public function isScriptName($string) {

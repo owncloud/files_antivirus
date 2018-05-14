@@ -11,7 +11,12 @@ namespace OCA\Files_Antivirus\Db;
 use OCP\AppFramework\Db\Entity;
 use JsonSerializable;
 
-class Rule extends Entity implements JsonSerializable{
+/**
+ * Class Rule
+ *
+ * @package OCA\Files_Antivirus\Db
+ */
+class Rule extends Entity implements JsonSerializable {
 	
 	/*
 	 * Rule needs to be validated by the exit code returned by scanner
@@ -19,7 +24,7 @@ class Rule extends Entity implements JsonSerializable{
 	const RULE_TYPE_CODE = 1;
 	
 	/*
-	 * Rule needs to be validated by parsing the output returned by scanner with regexp
+	 * Rule needs to be validated by parsing the scanner output with regexp
 	 */
 	const RULE_TYPE_MATCH = 2;
 
@@ -59,13 +64,15 @@ class Rule extends Entity implements JsonSerializable{
 	
 	/**
 	 *
-	 * @var int status - file check status. SCANRESULT_UNCHECKED, SCANRESULT_INFECTED, 
-	 *   SCANRESULT_CLEAN are matching Unknown, Infected and Clean files accordingly.
+	 * @var int status - file check status.
+	 * SCANRESULT_UNCHECKED, SCANRESULT_INFECTED, SCANRESULT_CLEAN
+	 * are matching Unknown, Infected and Clean files accordingly.
 	 */
 	protected $status;
 
 	/**
 	 * Pack data into json
+	 *
 	 * @return array
 	 */
 	public function jsonSerialize() {

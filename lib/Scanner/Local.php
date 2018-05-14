@@ -12,7 +12,7 @@ namespace OCA\Files_Antivirus\Scanner;
 use OCA\Files_Antivirus\AppConfig;
 use OCP\ILogger;
 
-class Local extends AbstractScanner{
+class Local extends AbstractScanner {
 	
 	/**
 	 * @var string
@@ -21,17 +21,27 @@ class Local extends AbstractScanner{
 	
 	/**
 	 * STDIN and STDOUT descriptors
+	 *
 	 * @var array of resources
 	 */
 	private $pipes = [];
 	
 	/**
 	 * Process handle
+	 *
 	 * @var resource
 	 */
 	private $process;
-	
-	public function __construct(AppConfig $config, ILogger $logger){
+
+	/**
+	 * Local constructor.
+	 *
+	 * @param AppConfig $config
+	 * @param ILogger $logger
+	 *
+	 * @throws InitException
+	 */
+	public function __construct(AppConfig $config, ILogger $logger) {
 		parent::__construct($config, $logger);
 
 		// get the path to the executable
@@ -47,11 +57,11 @@ class Local extends AbstractScanner{
 		}
 	}
 	
-	public function initScanner(){
+	public function initScanner() {
 		parent::initScanner();
 		
 		// using 2>&1 to grab the full command-line output.
-		$cmd = $this->avPath . " " . $this->appConfig->getCmdline() ." - 2>&1";
+		$cmd = $this->avPath . " " . $this->appConfig->getCmdline() . " - 2>&1";
 		$descriptorSpec = array(
 			0 => ["pipe","r"], // STDIN
 			1 => ["pipe","w"]  // STDOUT
@@ -66,7 +76,7 @@ class Local extends AbstractScanner{
 		$this->writeHandle = $this->pipes[0];
 	}
 	
-	protected function shutdownScanner(){
+	protected function shutdownScanner() {
 		@fclose($this->pipes[0]);
 		$output = stream_get_contents($this->pipes[1]);
 		@fclose($this->pipes[1]);

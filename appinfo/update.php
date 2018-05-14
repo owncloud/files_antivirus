@@ -7,7 +7,10 @@
  */
 
 
-$installedVersion = \OC::$server->getConfig()->getAppValue('files_antivirus', 'installed_version');
+$installedVersion = \OC::$server->getConfig()->getAppValue(
+	'files_antivirus',
+	'installed_version'
+);
 
 if (version_compare($installedVersion, '0.5', '<')) {
 	$app = new \OCA\Files_Antivirus\AppInfo\Application();
@@ -21,7 +24,7 @@ if (version_compare($installedVersion, '0.6', '<')) {
 	$jobs = $jobList->getAll();
 	foreach ($jobs as $job) {
 		$jobArg = $job->getArgument();
-		if($jobArg[0] === 'OC_Files_Antivirus_BackgroundScanner') {
+		if ($jobArg[0] === 'OC_Files_Antivirus_BackgroundScanner') {
 			$jobList->remove($job);
 		}
 	}

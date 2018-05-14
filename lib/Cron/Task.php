@@ -22,8 +22,13 @@ class Task extends TimedJob {
 		$this->setInterval(60 * 15);
 	}
 
+	/**
+	 * @param string $argument
+	 *
+	 * @return void
+	 */
 	protected function run($argument) {
-		if (!\OCP\App::isEnabled('files_antivirus')){
+		if (!\OCP\App::isEnabled('files_antivirus')) {
 			return;
 		}
 

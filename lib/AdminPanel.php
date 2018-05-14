@@ -26,10 +26,11 @@ use OCA\Files_Antivirus\AppInfo\Application;
 use OCA\Files_Antivirus\Controller\SettingsController;
 use OCP\Settings\ISettings;
 
-class AdminPanel implements ISettings
-{
+class AdminPanel implements ISettings {
 
-	/** @var Application  */
+	/**
+	 * @var Application
+	 */
 	protected $app;
 
 	public function __construct(Application $app) {
@@ -47,5 +48,4 @@ class AdminPanel implements ISettings
 	public function getSectionID() {
 		return 'security';
 	}
-
 }

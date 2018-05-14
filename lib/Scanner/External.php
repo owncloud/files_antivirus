@@ -9,12 +9,17 @@
 
 namespace OCA\Files_Antivirus\Scanner;
 
+/**
+ * Class External
+ *
+ * @package OCA\Files_Antivirus\Scanner
+ */
 abstract class External extends AbstractScanner {
 	/**
 	 * Send an empty chunk to indicate the end of stream,
 	 * read response and close the handle
 	 */
-	protected function shutdownScanner(){
+	protected function shutdownScanner() {
 		@fwrite($this->getWriteHandle(), pack('N', 0));
 		$response = fgets($this->getWriteHandle());
 		$this->logger->debug(
@@ -28,10 +33,12 @@ abstract class External extends AbstractScanner {
 
 	/**
 	 * Prepend a chunk sent to ClamAv with its length
+	 *
 	 * @param string $data
+	 *
 	 * @return string
 	 */
-	protected function prepareChunk($data){
+	protected function prepareChunk($data) {
 		$chunkLength = pack('N', strlen($data));
 		return $chunkLength . $data;
 	}

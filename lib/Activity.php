@@ -37,10 +37,14 @@ class Activity implements IExtension {
 	const MESSAGE_FILE_DELETED = 'file_deleted';
 
 
-	/** @var Factory */
+	/**
+	 * @var Factory
+	 */
 	protected $languageFactory;
 
-	/** @var IURLGenerator */
+	/**
+	 * @var IURLGenerator
+	 */
 	protected $URLGenerator;
 
 	/**
@@ -61,13 +65,16 @@ class Activity implements IExtension {
 	 * If no additional types are to be added false is to be returned
 	 *
 	 * @param string $languageCode
+	 *
 	 * @return array|false
 	 */
 	public function getNotificationTypes($languageCode) {
 		$l = $this->getL10N($languageCode);
 
 		return [
-			self::TYPE_VIRUS_DETECTED => (string) $l->t('<strong>Infected file</strong> has been <strong>found</strong>'),
+			self::TYPE_VIRUS_DETECTED => (string) $l->t(
+				'<strong>Infected file</strong> has been <strong>found</strong>'
+			),
 		];
 	}
 
@@ -111,6 +118,7 @@ class Activity implements IExtension {
 	 * @param boolean $stripPath
 	 * @param boolean $highlightParams
 	 * @param string $languageCode
+	 *
 	 * @return string|false
 	 */
 	public function translate($app, $text, $params, $stripPath, $highlightParams, $languageCode) {
@@ -137,6 +145,7 @@ class Activity implements IExtension {
 	 *
 	 * @param string $app
 	 * @param string $text
+	 *
 	 * @return array|false
 	 */
 	public function getSpecialParameterList($app, $text) {
@@ -148,6 +157,7 @@ class Activity implements IExtension {
 	 * In case no grouping is required false is to be returned.
 	 *
 	 * @param array $activity
+	 *
 	 * @return integer|false
 	 */
 	public function getGroupParameter($activity) {
@@ -168,7 +178,10 @@ class Activity implements IExtension {
 				self::FILTER_AVIR => [
 					'id' => self::FILTER_AVIR,
 					'name' => (string) $l->t('Antivirus'),
-					'url' => $this->URLGenerator->linkToRoute('activity.Activities.showList', ['filter' => self::FILTER_AVIR]),
+					'url' => $this->URLGenerator->linkToRoute(
+						'activity.Activities.showList',
+						['filter' => self::FILTER_AVIR]
+					),
 				],
 			],
 			'top' => []
@@ -176,9 +189,11 @@ class Activity implements IExtension {
 	}
 
 	/**
-	 * The extension can check if a customer filter (given by a query string like filter=abc) is valid or not.
+	 * The extension can check if a customer filter (given by
+	 * a query string like filter=abc) is valid or not.
 	 *
 	 * @param string $filterValue
+	 *
 	 * @return boolean
 	 */
 	public function isFilterValid($filterValue) {
@@ -191,6 +206,7 @@ class Activity implements IExtension {
 	 *
 	 * @param array $types
 	 * @param string $filter
+	 *
 	 * @return array|false
 	 */
 	public function filterNotificationTypes($types, $filter) {
@@ -198,12 +214,14 @@ class Activity implements IExtension {
 	}
 
 	/**
-	 * For a given filter the extension can specify the sql query conditions including parameters for that query.
+	 * For a given filter the extension can specify the sql query conditions
+	 * including parameters for that query.
 	 * In case the extension does not know the filter false is to be returned.
 	 * The query condition and the parameters are to be returned as array with two elements.
-	 * E.g. return array('`app` = ? and `message` like ?', array('mail', 'ownCloud%'));
+	 * E.g. return ['`app` = ? and `message` like ?', array('mail', 'ownCloud%')];
 	 *
 	 * @param string $filter
+	 *
 	 * @return array|false
 	 */
 	public function getQueryForFilter($filter) {

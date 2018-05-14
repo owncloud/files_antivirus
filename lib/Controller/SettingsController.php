@@ -19,16 +19,32 @@ use \OCP\AppFramework\Http\JSONResponse;
 
 class SettingsController extends Controller {
 
-	/** @var AppConfig */
+	/**
+	 * @var AppConfig
+	 */
 	private $settings;
 
-	/** @var ScannerFactory */
+	/**
+	 * @var ScannerFactory
+	 */
 	private $scannerFactory;
 	
-	/** @var IL10N */
+	/**
+	 * @var IL10N
+	 */
 	private $l10n;
-	
-	public function __construct(IRequest $request, AppConfig $appConfig, ScannerFactory $scannerFactory, IL10N $l10n) {
+
+	/**
+	 * SettingsController constructor.
+	 *
+	 * @param IRequest $request
+	 * @param AppConfig $appConfig
+	 * @param ScannerFactory $scannerFactory
+	 * @param IL10N $l10n
+	 */
+	public function __construct(IRequest $request,
+		AppConfig $appConfig, ScannerFactory $scannerFactory, IL10N $l10n
+	) {
 		$this->settings = $appConfig;
 		$this->scannerFactory = $scannerFactory;
 		$this->l10n = $l10n;
@@ -36,6 +52,7 @@ class SettingsController extends Controller {
 	
 	/**
 	 * Print config section
+	 *
 	 * @return TemplateResponse
 	 */
 	public function index() {
@@ -53,11 +70,14 @@ class SettingsController extends Controller {
 	 * @param string $avCmdOptions - extra command line options
 	 * @param string $avPath - path to antivirus executable (Executable mode)
 	 * @param string $avInfectedAction - action performed on infected files
-	 * @param $avStreamMaxLength - reopen socket after bytes
+	 * @param int $avStreamMaxLength - reopen socket after bytes
 	 * @param int $avMaxFileSize - file size limit
+	 *
 	 * @return JSONResponse
 	 */
-	public function save($avMode, $avSocket, $avHost, $avPort, $avCmdOptions, $avPath, $avInfectedAction, $avStreamMaxLength, $avMaxFileSize) {
+	public function save($avMode, $avSocket, $avHost, $avPort,
+		$avCmdOptions, $avPath, $avInfectedAction, $avStreamMaxLength, $avMaxFileSize
+	) {
 		$this->settings->setAvMode($avMode);
 		if ($avMode === 'executable') {
 			$this->settings->setAvCmdOptions($avCmdOptions);
@@ -73,7 +93,9 @@ class SettingsController extends Controller {
 		$this->settings->setAvStreamMaxLength($avStreamMaxLength);
 		$this->settings->setAvMaxFileSize($avMaxFileSize);
 
-		$connectionStatus = intval($this->scannerFactory->testConnection($this->settings));
+		$connectionStatus = intval(
+			$this->scannerFactory->testConnection($this->settings)
+		);
 
 		return new JSONResponse(
 			['data' =>

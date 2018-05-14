@@ -11,7 +11,7 @@ namespace OCA\Files_Antivirus;
 use OCA\Files_Antivirus\Scanner\InitException;
 use \OCP\ILogger;
 
-class ScannerFactory{
+class ScannerFactory {
 	// We split it in two parts in order to prevent reports from av scanners
 	const EICAR_PART_1 = 'X5O!P%@AP[4\PZX54(P^)7CC)7}$';
 	const EICAR_PART_2 = 'EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*';
@@ -70,7 +70,8 @@ class ScannerFactory{
 	}
 	
 	/**
-	 * Produce a scanner instance 
+	 * Produce a scanner instance
+	 *
 	 * @return \OCA\Files_Antivirus\Scanner\AbstractScanner
 	 */
 	public function getScanner() {
@@ -79,6 +80,7 @@ class ScannerFactory{
 
 	/**
 	 * @param AppConfig $appConfig
+	 *
 	 * @return bool
 	 */
 	public function testConnection(AppConfig $appConfig) {

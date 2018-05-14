@@ -8,7 +8,7 @@
 
 namespace OCA\Files_Antivirus;
 
-class Content implements IScannable{
+class Content implements IScannable {
 	
 	protected $content;
 	
@@ -16,12 +16,12 @@ class Content implements IScannable{
 	
 	protected $chunkSize;
 	
-	public function __construct($content, $chunkSize){
+	public function __construct($content, $chunkSize) {
 		$this->content = $content;
 		$this->chunkSize = $chunkSize;
 	}
 	
-	public function fread(){
+	public function fread() {
 		if ($this->currentPosition >=  strlen($this->content)) {
 			return false;
 		}

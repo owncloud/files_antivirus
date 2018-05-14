@@ -6,13 +6,16 @@
  */
 
 $application = new \OCA\Files_Antivirus\AppInfo\Application();
-$application->registerRoutes($this, array(
-	'routes' => array(
-		array('name' => 'rule#listAll', 'url' => 'settings/rule/listall', 'verb' => 'GET'),
-		array('name' => 'rule#clear', 'url' => 'settings/rule/clear', 'verb' => 'POST'),
-		array('name' => 'rule#reset', 'url' => 'settings/rule/reset', 'verb' => 'POST'),
-		array('name' => 'rule#save', 'url' => 'settings/rule/save', 'verb' => 'POST'),
-		array('name' => 'rule#delete', 'url' => 'settings/rule/delete', 'verb' => 'POST'),
-		array('name' => 'settings#save', 'url' => 'settings/save', 'verb' => 'POST'),
-	)
-));
+$application->registerRoutes(
+	$this,
+	[
+		'routes' => [
+			['name' => 'rule#listAll', 'url' => 'settings/rule/listall', 'verb' => 'GET'],
+			['name' => 'rule#clear', 'url' => 'settings/rule/clear', 'verb' => 'POST'],
+			['name' => 'rule#reset', 'url' => 'settings/rule/reset', 'verb' => 'POST'],
+			['name' => 'rule#save', 'url' => 'settings/rule/save', 'verb' => 'POST'],
+			['name' => 'rule#delete', 'url' => 'settings/rule/delete', 'verb' => 'POST'],
+			['name' => 'settings#save', 'url' => 'settings/save', 'verb' => 'POST'],
+		]
+	]
+);

@@ -37,7 +37,9 @@ use \OCP\IConfig;
 class AppConfig {
 	private $appName = 'files_antivirus';
 
-	/** @var IConfig  */
+	/**
+	 * @var IConfig
+	 */
 	private $config;
 
 	private $defaults = [
@@ -62,7 +64,7 @@ class AppConfig {
 		$this->config = $config;
 	}
 
-	public function getAvChunkSize(){
+	public function getAvChunkSize() {
 		// See http://php.net/manual/en/function.stream-wrapper-register.php#74765
 		// and \OC_Helper::streamCopy
 		return 8192;
@@ -70,15 +72,17 @@ class AppConfig {
 	
 	/**
 	 * Get full commandline
+	 *
 	 * @return string
 	 */
-	public function getCmdline(){
+	public function getCmdline() {
 		$avCmdOptions = $this->getAvCmdOptions();
 		
 		$shellArgs = [];
 		if ($avCmdOptions) {
 			$shellArgs = explode(',', $avCmdOptions);
-				$shellArgs = array_map(function($i){
+			$shellArgs = array_map(
+				function ($i) {
 					return escapeshellarg($i);
 				},
 				$shellArgs
@@ -86,7 +90,7 @@ class AppConfig {
 		}
 		
 		$preparedArgs = '';
-		if (count($shellArgs)){
+		if (count($shellArgs)) {
 			$preparedArgs = implode(' ', $shellArgs);
 		}
 		return $preparedArgs;
@@ -94,6 +98,7 @@ class AppConfig {
 	
 	/**
 	 * Get all setting values as an array
+	 *
 	 * @return array
 	 */
 	public function getAllValues() {
@@ -105,12 +110,14 @@ class AppConfig {
 	
 	/**
 	 * Get a value by key
+	 *
 	 * @param string $key
+	 *
 	 * @return string
 	 */
 	public function getAppValue($key) {
 		$defaultValue = null;
-		if (array_key_exists($key, $this->defaults)){
+		if (array_key_exists($key, $this->defaults)) {
 			$defaultValue = $this->defaults[$key];
 		}
 		return $this->config->getAppValue($this->appName, $key, $defaultValue);
@@ -118,8 +125,10 @@ class AppConfig {
 
 	/**
 	 * Set a value by key
+	 *
 	 * @param string $key
 	 * @param string $value
+	 *
 	 * @return string
 	 */
 	public function setAppValue($key, $value) {
@@ -128,8 +137,10 @@ class AppConfig {
 	
 	/**
 	 * Set a value with magic __call invocation
+	 *
 	 * @param string $key
 	 * @param array $args
+	 *
 	 * @throws \BadFunctionCallException
 	 */
 	protected function setter($key, $args) {
@@ -142,8 +153,11 @@ class AppConfig {
 
 	/**
 	 * Get a value with magic __call invocation
+	 *
 	 * @param string $key
+	 *
 	 * @return string
+	 *
 	 * @throws \BadFunctionCallException
 	 */
 	protected function getter($key) {
@@ -156,10 +170,12 @@ class AppConfig {
 	
 	/**
 	 * Translates property_name into propertyName
+	 *
 	 * @param string $property
+	 *
 	 * @return string
 	 */
-	protected function camelCase($property){
+	protected function camelCase($property) {
 		$split = explode('_', $property);
 		$ucFirst = implode('', array_map('ucfirst', $split));
 		$camelCase = lcfirst($ucFirst);
@@ -168,15 +184,17 @@ class AppConfig {
 	
 	/**
 	 * Does all the someConfig to some_config magic
+	 *
 	 * @param string $property
+	 *
 	 * @return string
 	 */
-	protected function propertyToKey($property){
+	protected function propertyToKey($property) {
 		$parts = preg_split('/(?=[A-Z])/', $property);
 		$column = null;
 
-		foreach($parts as $part){
-			if($column === null){
+		foreach ($parts as $part) {
+			if ($column === null) {
 				$column = $part;
 			} else {
 				$column .= '_' . lcfirst($part);
@@ -188,21 +206,25 @@ class AppConfig {
 	
 	/**
 	 * Get/set an option value by calling getSomeOption method
+	 *
 	 * @param string $methodName
 	 * @param array $args
+	 *
 	 * @return string|null
+	 *
 	 * @throws \BadFunctionCallException
 	 */
-	public function __call($methodName, $args){
-		$attr = lcfirst( substr($methodName, 3) );
+	public function __call($methodName, $args) {
+		$attr = lcfirst(substr($methodName, 3));
 		$key = $this->propertyToKey($attr);
-		if(strpos($methodName, 'set') === 0){
+		if (strpos($methodName, 'set') === 0) {
 			$this->setter($key, $args);
-		} elseif(strpos($methodName, 'get') === 0) {
+		} elseif (strpos($methodName, 'get') === 0) {
 			return $this->getter($key);
 		} else {
-			throw new \BadFunctionCallException($methodName . 
-					' does not exist');
+			throw new \BadFunctionCallException(
+				$methodName . ' does not exist'
+			);
 		}
 	}
 }

@@ -15,36 +15,42 @@ use OCA\Files_Antivirus\Activity;
 class Item implements IScannable{
 	/**
 	 * Scanned fileid (optional)
+	 *
 	 * @var int
 	 */
 	protected $id;
 	
 	/**
 	 * File view
+	 *
 	 * @var \OC\Files\View
 	 */
 	protected $view;
 	
 	/**
 	 * Path relative to the view
+	 *
 	 * @var string
 	 */
 	protected $path;
 	
 	/**
 	 * file handle, user to read from the file
+	 *
 	 * @var resource
 	 */
 	protected $fileHandle;
 	
 	/**
 	 * Portion size
+	 *
 	 * @var int
 	 */
 	protected $chunkSize;
 	
 	/**
 	 * Is filesize match the size conditions
+	 *
 	 * @var bool
 	 */
 	protected $isValidSize;
@@ -57,17 +63,17 @@ class Item implements IScannable{
 	public function __construct(IL10N $l10n, $view, $path, $id = null) {
 		$this->l10n = $l10n;
 		
-		if (!is_object($view)){
+		if (!is_object($view)) {
 			$this->logError('Can\'t init filesystem view.', $id, $path);
 			throw new \RuntimeException();
 		}
 		
-		if(!$view->file_exists($path)) {
+		if (!$view->file_exists($path)) {
 			$this->logError('File does not exist.', $id, $path);
 			throw new \RuntimeException();
 		}
 		
-		if (is_null($id)){
+		if (is_null($id)) {
 			$this->id = $view->getFileInfo($path)->getId();
 		} else {
 			$this->id = $id;
@@ -84,7 +90,8 @@ class Item implements IScannable{
 	}
 	
 	/**
-	 * Is this file good for scanning? 
+	 * Is this file good for scanning?
+	 *
 	 * @return boolean
 	 */
 	public function isValid() {
@@ -94,6 +101,7 @@ class Item implements IScannable{
 	
 	/**
 	 * Reads a file portion by portion until the very end
+	 *
 	 * @return string|boolean
 	 */
 	public function fread() {
@@ -113,6 +121,7 @@ class Item implements IScannable{
 	
 	/**
 	 * Action to take if this item is infected
+	 *
 	 * @param Status $status
 	 * @param boolean $isBackground
 	 */
@@ -126,23 +135,23 @@ class Item implements IScannable{
 		$message = $shouldDelete ? Activity::MESSAGE_FILE_DELETED : '';
 		
 		\OC::$server->getActivityManager()->publishActivity(
-					'files_antivirus',
-					Activity::SUBJECT_VIRUS_DETECTED,
-					array($this->path, $status->getDetails()),
-					$message,
-					array(),
-					$this->path, 
-					'', 
-					$this->view->getOwner($this->path),
-					Activity::TYPE_VIRUS_DETECTED, 
-					Activity::PRIORITY_HIGH
-				);
+			'files_antivirus',
+			Activity::SUBJECT_VIRUS_DETECTED,
+			[$this->path, $status->getDetails()],
+			$message,
+			[],
+			$this->path,
+			'',
+			$this->view->getOwner($this->path),
+			Activity::TYPE_VIRUS_DETECTED,
+			Activity::PRIORITY_HIGH
+		);
 		if ($isBackground) {
 			if ($shouldDelete) {
 				$this->logError('Infected file deleted. ' . $status->getDetails());
 				$this->view->unlink($this->path);
 			} else {
-				$this->logError('File is infected. '  . $status->getDetails());
+				$this->logError('File is infected. ' . $status->getDetails());
 			}
 		} else {
 			$this->logError('Virus(es) found: ' . $status->getDetails());
@@ -150,16 +159,17 @@ class Item implements IScannable{
 			$this->view->unlink($this->path);
 			Notification::sendMail($this->path);
 			$message = $this->l10n->t(
-						"Virus detected! Can't upload the file %s", 
-						array(basename($this->path))
+				"Virus detected! Can't upload the file %s",
+				[basename($this->path)]
 			);
-			\OCP\JSON::error(array("data" => array( "message" => $message)));
+			\OCP\JSON::error(["data" => ["message" => $message]]);
 			exit();
 		}
 	}
 
 	/**
 	 * Action to take if this item status is unclear
+	 *
 	 * @param Status $status
 	 * @param boolean $isBackground
 	 */
@@ -170,6 +180,7 @@ class Item implements IScannable{
 	
 	/**
 	 * Action to take if this item status is not infected
+	 *
 	 * @param Status $status
 	 * @param boolean $isBackground
 	 */
@@ -184,18 +195,25 @@ class Item implements IScannable{
 				//TODO: Use logger
 				$this->logError(__METHOD__. ', DB error: ' . \OCP\DB::getErrorMessage());
 			}
-			$stmt = \OCP\DB::prepare('INSERT INTO `*PREFIX*files_antivirus` (`fileid`, `check_time`) VALUES (?, ?)');
+			$stmt = \OCP\DB::prepare(
+				'INSERT INTO `*PREFIX*files_antivirus` (`fileid`, `check_time`) VALUES (?, ?)'
+			);
 			$result = $stmt->execute(array($this->id, time()));
 			if (\OCP\DB::isError($result)) {
 				$this->logError(__METHOD__. ', DB error: ' . \OCP\DB::getErrorMessage());
 			}
 		} catch(\Exception $e) {
-			\OCP\Util::writeLog('files_antivirus', __METHOD__.', exception: '.$e->getMessage(), \OCP\Util::ERROR);
+			\OCP\Util::writeLog(
+				'files_antivirus',
+				__METHOD__ . ', exception: ' . $e->getMessage(),
+				\OCP\Util::ERROR
+			);
 		}
 	}
 
 	/**
 	 * Check if the end of file is reached
+	 *
 	 * @return boolean
 	 */
 	private function feof() {
@@ -210,6 +228,7 @@ class Item implements IScannable{
 	
 	/**
 	 * Opens a file for reading
+	 *
 	 * @throws \RuntimeException
 	 */
 	private function getFileHandle() {
@@ -244,9 +263,9 @@ class Item implements IScannable{
 				. $ownerInfo 
 				. ' Path: ' . (is_null($path) ? $this->path : $path);
 		\OCP\Util::writeLog(
-				'files_antivirus',
-				$message . $extra,
-				\OCP\Util::ERROR
+			'files_antivirus',
+			$message . $extra,
+			\OCP\Util::ERROR
 		);
 	}
 }

@@ -12,12 +12,21 @@ namespace OCA\Files_Antivirus\Scanner;
 use OCA\Files_Antivirus\AppConfig;
 use OCP\ILogger;
 
+/**
+ * Class Daemon
+ *
+ * @package OCA\Files_Antivirus\Scanner
+ */
 class Daemon extends External {
 
-	/** @var string  */
+	/**
+	 * @var string
+	 */
 	private $avHost;
 
-	/** @var int  */
+	/**
+	 * @var int
+	 */
 	private $avPort;
 
 	/**
@@ -25,6 +34,7 @@ class Daemon extends External {
 	 *
 	 * @param AppConfig $config
 	 * @param ILogger $logger
+	 *
 	 * @throws InitException
 	 */
 	public function __construct(AppConfig $config, ILogger $logger) {
@@ -56,13 +66,15 @@ class Daemon extends External {
 	/**
 	 * @throws InitException
 	 */
-	public function initScanner(){
+	public function initScanner() {
 		parent::initScanner();
 		$this->writeHandle = @fsockopen($this->avHost, $this->avPort);
 		if (!$this->getWriteHandle()) {
 			throw new InitException(
 				sprintf(
-					'Could not connect to host "%s" on port %d', $this->avHost, $this->avPort
+					'Could not connect to host "%s" on port %d',
+					$this->avHost,
+					$this->avPort
 				)
 			);
 		}

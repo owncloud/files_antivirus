@@ -8,6 +8,10 @@
 
 namespace OCA\Files_Antivirus\Scanner;
 
-
-class InitException extends \Exception{
+/**
+ * Class InitException
+ *
+ * @package OCA\Files_Antivirus\Scanner
+ */
+class InitException extends \Exception {
 }
