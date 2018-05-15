@@ -1,25 +1,28 @@
 <?php
-
 /**
-* ownCloud - files_antivirus
-*
-* @author Manuel Deglado
-* @copyright 2012 Manuel Deglado manuel.delgado@ucr.ac.cr
-*
-* This library is free software; you can redistribute it and/or
-* modify it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE
-* License as published by the Free Software Foundation; either
-* version 3 of the License, or any later version.
-*
-* This library is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU AFFERO GENERAL PUBLIC LICENSE for more details.
-*
-* You should have received a copy of the GNU Affero General Public
-* License along with this library.  If not, see <http://www.gnu.org/licenses/>.
-*
-*/
+ * ownCloud - Files_antivirus
+ *
+ * @author Manuel Deglado <manuel.delgado@ucr.ac.cr>
+ * @author Viktar Dubiniuk <dubiniuk@owncloud.com>
+ *
+ * @copyright 2012 Manuel Deglado manuel.delgado@ucr.ac.cr
+ * @copyright 2014-2018 Viktar Dubiniuk
+ * @license AGPL-3.0
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU AFFERO GENERAL PUBLIC LICENSE for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public
+ * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 
 namespace OCA\Files_Antivirus\Scanner;
 
@@ -32,6 +35,7 @@ abstract class AbstractScanner {
 	
 	/**
 	 * Scan result
+	 *
 	 * @var Status
 	 */
 	protected $status;
@@ -39,29 +43,44 @@ abstract class AbstractScanner {
 	/**
 	 * If scanning was done part by part
 	 * the first detected infected part is stored here
+	 *
 	 * @var Status
 	 */
 	protected $infectedStatus;
 
-	/** @var  int */
+	/**
+	 * @var int
+	 */
 	protected $byteCount;
 
-	/** @var  resource */
+	/**
+	 * @var resource
+	 */
 	protected $writeHandle;
 
-	/** @var AppConfig */
+	/**
+	 * @var AppConfig
+	 */
 	protected $appConfig;
 
-	/** @var  ILogger */
+	/**
+	 * @var  ILogger
+	 */
 	protected $logger;
 
-	/** @var string */
+	/**
+	 * @var string
+	 */
 	protected $lastChunk;
 
-	/** @var bool */
+	/**
+	 * @var bool
+	 */
 	protected $isLogUsed = false;
 
-	/** @var bool */
+	/**
+	 * @var bool
+	 */
 	protected $isAborted = false;
 
 	/**
@@ -69,16 +88,25 @@ abstract class AbstractScanner {
 	 */
 	abstract protected function shutdownScanner();
 
-	public function __construct(AppConfig $config, ILogger $logger){
+	/**
+	 * AbstractScanner constructor.
+	 *
+	 * @param AppConfig $config
+	 * @param ILogger $logger
+	 */
+	public function __construct(AppConfig $config, ILogger $logger) {
 		$this->appConfig = $config;
 		$this->logger = $logger;
 	}
 
-	public function getStatus(){
-		if ($this->infectedStatus instanceof Status){
+	/**
+	 * @return Status
+	 */
+	public function getStatus() {
+		if ($this->infectedStatus instanceof Status) {
 			return $this->infectedStatus;
 		}
-		if ($this->status instanceof Status){
+		if ($this->status instanceof Status) {
 			return $this->status;
 		}
 		return new Status();
@@ -86,7 +114,9 @@ abstract class AbstractScanner {
 
 	/**
 	 * Synchronous scan
+	 *
 	 * @param IScannable $item
+	 *
 	 * @return Status
 	 */
 	public function scan(IScannable $item) {
@@ -102,28 +132,33 @@ abstract class AbstractScanner {
 	
 	/**
 	 * Async scan - new portion of data is available
+	 *
 	 * @param string $data
 	 */
-	public function onAsyncData($data){
+	public function onAsyncData($data) {
 		$this->writeChunk($data);
 	}
 	
 	/**
 	 * Async scan - resource is closed
+	 *
 	 * @return Status
 	 */
-	public function completeAsyncScan(){
+	public function completeAsyncScan() {
 		$this->shutdownScanner();
 		return $this->getStatus();
 	}
 	
 	/**
 	 * Get write handle here.
-	 * Do NOT open connection in constructor because this method is used for reconnection
+	 * Do NOT open connection in constructor because this method
+	 * is used for reconnection
 	 */
-	public function initScanner(){
+	public function initScanner() {
 		$this->byteCount = 0;
-		if ($this->status instanceof Status && $this->status->getNumericStatus() === Status::SCANRESULT_INFECTED){
+		if ($this->status instanceof Status
+			&& $this->status->getNumericStatus() === Status::SCANRESULT_INFECTED
+		) {
 			$this->infectedStatus = clone $this->status;
 		}
 		$this->status = new Status();
@@ -132,7 +167,7 @@ abstract class AbstractScanner {
 	/**
 	 * @param string $chunk
 	 */
-	protected function writeChunk($chunk){
+	protected function writeChunk($chunk) {
 		$this->fwrite(
 			$this->prepareChunk($chunk)
 		);
@@ -141,14 +176,14 @@ abstract class AbstractScanner {
 	/**
 	 * @param string $data
 	 */
-	protected final function fwrite($data){
-		if ($this->isAborted){
+	protected final function fwrite($data) {
+		if ($this->isAborted) {
 			return;
 		}
 
-		$dataLength = strlen($data);
-		$streamSizeLimit = intval($this->appConfig->getAvStreamMaxLength());
-		if ($this->byteCount + $dataLength > $streamSizeLimit){
+		$dataLength = \strlen($data);
+		$streamSizeLimit = \intval($this->appConfig->getAvStreamMaxLength());
+		if ($this->byteCount + $dataLength > $streamSizeLimit) {
 			$this->logger->debug(
 				'reinit scanner',
 				['app' => 'files_antivirus']
@@ -159,7 +194,7 @@ abstract class AbstractScanner {
 			$isReopenSuccessful = true;
 		}
 
-		if (!$isReopenSuccessful || !$this->writeRaw($data)){
+		if (!$isReopenSuccessful || !$this->writeRaw($data)) {
 			if (!$this->isLogUsed) {
 				$this->isLogUsed = true;
 				$this->logger->warning(
@@ -176,22 +211,23 @@ abstract class AbstractScanner {
 	/**
 	 * @return bool
 	 */
-	protected function retry(){
+	protected function retry() {
 		$this->initScanner();
-		if (!is_null($this->lastChunk)) {
+		if (!\is_null($this->lastChunk)) {
 			return $this->writeRaw($this->lastChunk);
 		}
 		return true;
 	}
 
 	/**
-	 * @param $data
+	 * @param string $data
+	 *
 	 * @return bool
 	 */
-	protected function writeRaw($data){
-		$dataLength = strlen($data);
-		$bytesWritten = @fwrite($this->getWriteHandle(), $data);
-		if ($bytesWritten === $dataLength){
+	protected function writeRaw($data) {
+		$dataLength = \strlen($data);
+		$bytesWritten = @\fwrite($this->getWriteHandle(), $data);
+		if ($bytesWritten === $dataLength) {
 			$this->byteCount += $bytesWritten;
 			$this->lastChunk = $data;
 			return true;
@@ -201,18 +237,21 @@ abstract class AbstractScanner {
 
 	/**
 	 * Get a resource to write data into
+	 *
 	 * @return resource
 	 */
-	protected function getWriteHandle(){
+	protected function getWriteHandle() {
 		return $this->writeHandle;
 	}
 
 	/**
-	 * Prepare chunk (if required)
+	 * Prepare chunk (if needed)
+	 *
 	 * @param string $data
+	 *
 	 * @return string
 	 */
-	protected function prepareChunk($data){
+	protected function prepareChunk($data) {
 		return $data;
 	}
 }

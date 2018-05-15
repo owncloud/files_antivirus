@@ -3,7 +3,7 @@
 /**
  * @author Tom Needham <tom@owncloud.com>
  *
- * @copyright Copyright (c) 2017, ownCloud, GmbH.
+ * @copyright Copyright (c) 2018, ownCloud GmbH.
  * @license AGPL-3.0
  *
  * This code is free software: you can redistribute it and/or modify
@@ -26,10 +26,11 @@ use OCA\Files_Antivirus\AppInfo\Application;
 use OCA\Files_Antivirus\Controller\SettingsController;
 use OCP\Settings\ISettings;
 
-class AdminPanel implements ISettings
-{
+class AdminPanel implements ISettings {
 
-	/** @var Application  */
+	/**
+	 * @var Application
+	 */
 	protected $app;
 
 	public function __construct(Application $app) {
@@ -47,5 +48,4 @@ class AdminPanel implements ISettings
 	public function getSectionID() {
 		return 'security';
 	}
-
 }

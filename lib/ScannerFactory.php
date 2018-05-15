@@ -1,9 +1,14 @@
 <?php
 /**
- * Copyright (c) 2014 Viktar Dubiniuk <dubiniuk@owncloud.com>
+ * ownCloud - files_antivirus
+ *
  * This file is licensed under the Affero General Public License version 3 or
- * later.
- * See the COPYING-README file.
+ * later. See the COPYING file.
+ *
+ * @author Viktar Dubiniuk <dubiniuk@owncloud.com>
+ *
+ * @copyright Viktar Dubiniuk 2014-2018
+ * @license AGPL-3.0
  */
 
 namespace OCA\Files_Antivirus;
@@ -11,7 +16,7 @@ namespace OCA\Files_Antivirus;
 use OCA\Files_Antivirus\Scanner\InitException;
 use \OCP\ILogger;
 
-class ScannerFactory{
+class ScannerFactory {
 	// We split it in two parts in order to prevent reports from av scanners
 	const EICAR_PART_1 = 'X5O!P%@AP[4\PZX54(P^)7CC)7}$';
 	const EICAR_PART_2 = 'EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*';
@@ -40,7 +45,7 @@ class ScannerFactory{
 			// rethrow misconfiguration exception
 			throw $e;
 		} catch (\Exception $e) {
-			$message = 	implode(' ', [ __CLASS__, __METHOD__, $e->getMessage()]);
+			$message = 	\implode(' ', [ __CLASS__, __METHOD__, $e->getMessage()]);
 			$this->logger->warning($message, ['app' => 'files_antivirus']);
 		}
 	}
@@ -61,7 +66,7 @@ class ScannerFactory{
 				break;
 			default:
 				throw new InitException(
-					sprintf(
+					\sprintf(
 						'Please check the settings at the admin page. Invalid mode: "%s"',
 						$this->appConfig->getAvMode()
 					)
@@ -70,7 +75,8 @@ class ScannerFactory{
 	}
 	
 	/**
-	 * Produce a scanner instance 
+	 * Produce a scanner instance
+	 *
 	 * @return \OCA\Files_Antivirus\Scanner\AbstractScanner
 	 */
 	public function getScanner() {
@@ -79,6 +85,7 @@ class ScannerFactory{
 
 	/**
 	 * @param AppConfig $appConfig
+	 *
 	 * @return bool
 	 */
 	public function testConnection(AppConfig $appConfig) {

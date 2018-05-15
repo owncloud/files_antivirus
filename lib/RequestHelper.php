@@ -1,9 +1,14 @@
 <?php
 /**
- * Copyright (c) 2017 Viktar Dubiniuk <dubiniuk@owncloud.com>
+ * ownCloud - files_antivirus
+ *
  * This file is licensed under the Affero General Public License version 3 or
- * later.
- * See the COPYING-README file.
+ * later. See the COPYING file.
+ *
+ * @author Viktar Dubiniuk <dubiniuk@owncloud.com>
+ *
+ * @copyright Viktar Dubiniuk 2017-2018
+ * @license AGPL-3.0
  */
 
 namespace OCA\Files_Antivirus;
@@ -12,7 +17,9 @@ use \OCP\IRequest;
 
 class RequestHelper {
 
-	/** @var  IRequest */
+	/**
+	 * @var  IRequest
+	 */
 	private $request;
 
 	public function __construct(IRequest $request) {
@@ -24,6 +31,7 @@ class RequestHelper {
 	 * returns null for chunks and when there is no upload
 	 *
 	 * @param string $path
+	 *
 	 * @return int|null
 	 */
 	public function getUploadSize($path) {
@@ -33,13 +41,13 @@ class RequestHelper {
 		$isRemoteScript = $this->isScriptName('remote.php');
 		$isPublicScript = $this->isScriptName('public.php');
 		// Are we uploading anything?
-		if (in_array($requestMethod, ['MOVE', 'PUT']) && $isRemoteScript) {
+		if (\in_array($requestMethod, ['MOVE', 'PUT']) && $isRemoteScript) {
 			// v1 && v2 Chunks are not scanned
-			if ($requestMethod === 'PUT' &&  strpos($path, 'uploads/') === 0) {
+			if ($requestMethod === 'PUT' &&  \strpos($path, 'uploads/') === 0) {
 				return null;
 			}
 
-			if (\OC_FileChunking::isWebdavChunk() && strpos($path, 'cache/') === 0) {
+			if (\OC_FileChunking::isWebdavChunk() && \strpos($path, 'cache/') === 0) {
 				return null;
 			}
 
@@ -58,10 +66,11 @@ class RequestHelper {
 	/**
 	 *
 	 * @param string $string
+	 *
 	 * @return bool
 	 */
 	public function isScriptName($string) {
-		$pattern = sprintf('|/%s|', preg_quote($string));
-		return preg_match($pattern, $this->request->getScriptName()) === 1;
+		$pattern = \sprintf('|/%s|', \preg_quote($string));
+		return \preg_match($pattern, $this->request->getScriptName()) === 1;
 	}
 }

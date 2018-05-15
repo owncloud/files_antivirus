@@ -1,9 +1,14 @@
 <?php
 /**
- * Copyright (c) 2014 Viktar Dubiniuk <dubiniuk@owncloud.com>
+ * ownCloud - Files_antivirus
+ *
  * This file is licensed under the Affero General Public License version 3 or
- * later.
- * See the COPYING-README file.
+ * later. See the COPYING file.
+ *
+ * @author Viktar Dubiniuk <dubiniuk@owncloud.com>
+ *
+ * @copyright Viktar Dubiniuk 2014-2018
+ * @license AGPL-3.0
  */
 
 namespace OCA\Files_Antivirus;
@@ -12,6 +17,7 @@ use OC\Files\Filesystem;
 use OC\Files\Storage\Wrapper\Wrapper;
 use OCA\Files_Antivirus\Scanner\AbstractScanner;
 use OCA\Files_Antivirus\Scanner\InitException;
+use OCA\Files_Antivirus\Status;
 use OCP\App;
 use OCP\Files\FileContentNotAllowedException;
 use OCP\IL10N;
@@ -26,6 +32,7 @@ class AvirWrapper extends Wrapper{
 
 	/**
 	 * Modes that are used for writing
+	 *
 	 * @var array
 	 */
 	private $writingModes = array('r+', 'w', 'w+', 'a', 'a+', 'x', 'x+', 'c', 'c+');
@@ -50,7 +57,9 @@ class AvirWrapper extends Wrapper{
 	 */
 	protected $logger;
 
-	/** @var  RequestHelper */
+	/**
+	 * @var  RequestHelper
+	 */
 	protected $requestHelper;
 
 	/**
@@ -68,27 +77,30 @@ class AvirWrapper extends Wrapper{
 	/**
 	 * @param string $path
 	 * @param string $data
+	 *
 	 * @return bool
+	 *
+	 * @throws ForbiddenException
 	 */
 	public function file_put_contents($path, $data) {
 		try {
 			$scanner = $this->scannerFactory->getScanner();
 			$scanner->initScanner();
 			$content = new Content($data, $this->appConfig->getAvChunkSize());
-			while (($chunk = $content->fread()) !== false ){
+			while (($chunk = $content->fread()) !== false ) {
 				$scanner->onAsyncData($chunk);
 			}
 			$this->onScanComplete($scanner, $path, false);
 
 			return parent::file_put_contents($path, $data);
 		} catch (InitException $e) {
-			$message = sprintf(self::AV_EXCEPTION_MESSAGE, $e->getMessage());
+			$message = \sprintf(self::AV_EXCEPTION_MESSAGE, $e->getMessage());
 			$this->logger->warning($message, ['app' => 'files_antivirus']);
 			throw new ForbiddenException($message, true, $e);
 		} catch (FileContentNotAllowedException $e) {
 			throw new ForbiddenException($e->getMessage(), false, $e);
 		} catch (\Exception $e){
-			$message = 	implode(' ', [ __CLASS__, __METHOD__, $e->getMessage()]);
+			$message = 	\implode(' ', [ __CLASS__, __METHOD__, $e->getMessage()]);
 			$this->logger->warning($message, ['app' => 'files_antivirus']);
 		}
 
@@ -97,15 +109,16 @@ class AvirWrapper extends Wrapper{
 	
 	/**
 	 * Asynchronously scan data that are written to the file
+	 *
 	 * @param string $path
 	 * @param string $mode
+	 *
 	 * @return resource | bool
 	 */
-	public function fopen($path, $mode){
+	public function fopen($path, $mode) {
 		$stream = $this->storage->fopen($path, $mode);
 
-		if (
-			is_resource($stream)
+		if (\is_resource($stream)
 			&& $this->isWritingMode($mode)
 			&& $this->isScannableSize($path)
 		) {
@@ -123,11 +136,11 @@ class AvirWrapper extends Wrapper{
 					}
 				);
 			} catch (InitException $e) {
-				$message = sprintf(self::AV_EXCEPTION_MESSAGE, $e->getMessage());
+				$message = \sprintf(self::AV_EXCEPTION_MESSAGE, $e->getMessage());
 				$this->logger->warning($message, ['app' => 'files_antivirus']);
 				throw new ForbiddenException($message, false, $e);
 			} catch (\Exception $e){
-				$message = 	implode(' ', [ __CLASS__, __METHOD__, $e->getMessage()]);
+				$message = 	\implode(' ', [ __CLASS__, __METHOD__, $e->getMessage()]);
 				$this->logger->warning($message, ['app' => 'files_antivirus']);
 			}
 		}
@@ -138,11 +151,12 @@ class AvirWrapper extends Wrapper{
 	 * @param AbstractScanner $scanner
 	 * @param string $path
 	 * @param bool $shouldDelete
+	 *
 	 * @throws FileContentNotAllowedException
 	 */
-	private function onScanComplete($scanner, $path, $shouldDelete){
+	private function onScanComplete($scanner, $path, $shouldDelete) {
 		$status = $scanner->completeAsyncScan();
-		if (intval($status->getNumericStatus()) === \OCA\Files_Antivirus\Status::SCANRESULT_INFECTED) {
+		if (\intval($status->getNumericStatus()) === Status::SCANRESULT_INFECTED) {
 			$owner = $this->getOwner($path);
 
 			$this->logger->warning(
@@ -164,13 +178,15 @@ class AvirWrapper extends Wrapper{
 				Activity::PRIORITY_HIGH
 			);
 
-			if ($shouldDelete){
+			if ($shouldDelete) {
 				//prevent from going to trashbin
 				if (App::isEnabled('files_trashbin')) {
-					\OCA\Files_Trashbin\Storage::preRenameHook([
-						Filesystem::signal_param_oldpath => '',
-						Filesystem::signal_param_newpath => ''
-					]);
+					\OCA\Files_Trashbin\Storage::preRenameHook(
+						[
+							Filesystem::signal_param_oldpath => '',
+							Filesystem::signal_param_newpath => ''
+						]
+					);
 				}
 				$this->unlink($path);
 				if (App::isEnabled('files_trashbin')) {
@@ -189,32 +205,35 @@ class AvirWrapper extends Wrapper{
 	}
 	
 	/**
-	 * Checks whether passed mode is suitable for writing 
+	 * Checks whether passed mode is suitable for writing
+	 *
 	 * @param string $mode
+	 *
 	 * @return bool
 	 */
-	private function isWritingMode($mode){
+	private function isWritingMode($mode) {
 		// Strip unessential binary/text flags
-		$cleanMode = str_replace(
+		$cleanMode = \str_replace(
 			['t', 'b'],
 			['', ''],
 			$mode
 		);
-		return in_array($cleanMode, $this->writingModes);
+		return \in_array($cleanMode, $this->writingModes);
 	}
 
 	/**
 	 * Checks upload size against the av_max_file_size config option
 	 *
 	 * @param string $path
+	 *
 	 * @return bool
 	 */
 	private function isScannableSize($path) {
-		$scanSizeLimit = intval($this->appConfig->getAvMaxFileSize());
+		$scanSizeLimit = \intval($this->appConfig->getAvMaxFileSize());
 		$size = $this->requestHelper->getUploadSize($path);
 
 		// No upload in progress. Skip this file.
-		if (is_null($size)){
+		if (\is_null($size)) {
 			$this->logger->debug(
 				'No upload in progress or chunk is being uploaded. Scanning is skipped.',
 				['app' => 'files_antivirus']

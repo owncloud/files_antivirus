@@ -1,9 +1,16 @@
 <?php
 /**
- * Copyright (c) 2012 Bart Visscher <bartv@thisnet.nl>
+ * ownCloud - Files_antivirus
+ *
  * This file is licensed under the Affero General Public License version 3 or
- * later.
- * See the COPYING-README file.
+ * later. See the COPYING file.
+ *
+ * @author Bart Visscher <bartv@thisnet.nl>
+ * @author Viktar Dubiniuk <dubiniuk@owncloud.com>
+ *
+ * @copyright 2012 Bart Visscher <bartv@thisnet.nl>
+ * @copyright Viktar Dubiniuk 2014-2018
+ * @license AGPL-3.0
  */
 
 namespace OCA\Files_Antivirus;
@@ -19,25 +26,39 @@ class BackgroundScanner {
 
 	const BATCH_SIZE = 10;
 
-	/** @var IRootFolder */
+	/**
+	 * @var IRootFolder
+	 */
 	protected $rootFolder;
 
-	/** @var \OCP\Files\Folder[] */
+	/**
+	 * @var \OCP\Files\Folder[]
+	 */
 	protected $userFolders;
 
-	/** @var ScannerFactory */
+	/**
+	 * @var ScannerFactory
+	 */
 	private $scannerFactory;
 
-	/** @var IL10N */
+	/**
+	 * @var IL10N
+	 */
 	private $l10n;
 
-	/** @var  AppConfig  */
+	/**
+	 * @var  AppConfig
+	 */
 	private $appConfig;
 
-	/** @var string */
+	/**
+	 * @var string
+	 */
 	protected $currentFilesystemUser;
 
-	/** @var \OCP\IUserSession */
+	/**
+	 * @var \OCP\IUserSession
+	 */
 	protected $userSession;
 
 	/**
@@ -54,7 +75,7 @@ class BackgroundScanner {
 								AppConfig $appConfig,
 								IRootFolder $rootFolder,
 								IUserSession $userSession
-	){
+	) {
 		$this->rootFolder = $rootFolder;
 		$this->scannerFactory = $scannerFactory;
 		$this->l10n = $l10n;
@@ -64,11 +85,12 @@ class BackgroundScanner {
 	
 	/**
 	 * Background scanner main job
-	 * @return null
+	 *
+	 * @return void
 	 */
-	public function run(){
+	public function run() {
 
-		if ( $this->appConfig->getAvScanBackground() !== 'true') {
+		if ($this->appConfig->getAvScanBackground() !== 'true') {
 			return;
 		}
 
@@ -76,7 +98,10 @@ class BackgroundScanner {
 		try {
 			$result = $this->getFilesForScan();
 		} catch(\Exception $e) {
-			\OC::$server->getLogger()->error( __METHOD__ . ', exception: ' . $e->getMessage(), ['app' => 'files_antivirus']);
+			\OC::$server->getLogger()->error(
+				__METHOD__ . ', exception: ' . $e->getMessage(),
+				['app' => 'files_antivirus']
+			);
 			return;
 		}
 
@@ -87,21 +112,26 @@ class BackgroundScanner {
 				$userId = $row['user_id'];
 				/** @var IUser $owner */
 				$owner = \OC::$server->getUserManager()->get($userId);
-				if (!$owner instanceof IUser){
+				if (!$owner instanceof IUser) {
 					continue;
 				}
 				$this->scanOneFile($owner, $fileId);
 				// increased only for successfully scanned files
 				$cnt = $cnt + 1;
 			} catch (\Exception $e){
-				\OC::$server->getLogger()->error( __METHOD__ . ', exception: ' . $e->getMessage(), ['app' => 'files_antivirus']);
+				\OC::$server->getLogger()->error(
+					__METHOD__ . ', exception: ' . $e->getMessage(),
+					['app' => 'files_antivirus']
+				);
 			}
 		}
 		$this->tearDownFilesystem();
 	}
 
-	protected function getFilesForScan(){
-		$dirMimeTypeId = \OC::$server->getMimeTypeLoader()->getId('httpd/unix-directory');
+	protected function getFilesForScan() {
+		$dirMimeTypeId = \OC::$server->getMimeTypeLoader()->getId(
+			'httpd/unix-directory'
+		);
 
 		$dbConnection = \OC::$server->getDatabaseConnection();
 		$qb = $dbConnection->getQueryBuilder();
@@ -115,8 +145,8 @@ class BackgroundScanner {
 			);
 		}
 
-		$sizeLimit = intval($this->appConfig->getAvMaxFileSize());
-		if ( $sizeLimit === -1 ){
+		$sizeLimit = \intval($this->appConfig->getAvMaxFileSize());
+		if ($sizeLimit === -1) {
 			$sizeLimitExpr = $qb->expr()->neq('fc.size', $qb->expr()->literal('0'));
 		} else {
 			$sizeLimitExpr = $qb->expr()->andX(
@@ -149,8 +179,7 @@ class BackgroundScanner {
 			->andWhere(
 				$qb->expr()->like('fc.path', $qb->expr()->literal('files/%'))
 			)
-			->andWhere( $sizeLimitExpr )
-		;
+			->andWhere($sizeLimitExpr);
 		return $qb->execute();
 	}
 
@@ -158,11 +187,11 @@ class BackgroundScanner {
 	 * @param IUser $owner
 	 * @param int $fileId
 	 */
-	protected function scanOneFile($owner, $fileId){
+	protected function scanOneFile($owner, $fileId) {
 		$this->initFilesystemForUser($owner);
 		$view = Filesystem::getView();
 		$path = $view->getPath($fileId);
-		if (!is_null($path)) {
+		if (!\is_null($path)) {
 			$item = new Item($this->l10n, $view, $path, $fileId);
 			$scanner = $this->scannerFactory->getScanner();
 			$status = $scanner->scan($item);
@@ -172,6 +201,7 @@ class BackgroundScanner {
 
 	/**
 	 * @param \OCP\IUser $user
+	 *
 	 * @return \OCP\Files\Folder
 	 */
 	protected function getUserFolder(IUser $user) {
@@ -198,16 +228,18 @@ class BackgroundScanner {
 	}
 
 	/**
-	 *
+	 * @return void
 	 */
-	protected function tearDownFilesystem(){
+	protected function tearDownFilesystem() {
 		$this->userSession->setUser(null);
 		\OC_Util::tearDownFS();
 	}
 
 	/**
 	 * @deprecated since  v8.0.0
+	 *
+	 * @return void
 	 */
-	public static function check(){
+	public static function check() {
 	}
 }

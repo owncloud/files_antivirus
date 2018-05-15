@@ -1,20 +1,31 @@
 <?php
 /**
- * Copyright (c) 2017 Viktar Dubiniuk <dubiniuk@owncloud.com>
+ * ownCloud - Files_antivirus
+ *
  * This file is licensed under the Affero General Public License version 3 or
- * later.
- * See the COPYING-README file.
+ * later. See the COPYING file.
+ *
+ * @author Viktar Dubiniuk <dubiniuk@owncloud.com>
+ *
+ * @copyright Viktar Dubiniuk 2017-2018
+ * @license AGPL-3.0
  */
-
 
 namespace OCA\Files_Antivirus\Scanner;
 
 use OCA\Files_Antivirus\AppConfig;
 use OCP\ILogger;
 
+/**
+ * Class Socket
+ *
+ * @package OCA\Files_Antivirus\Scanner
+ */
 class Socket extends External {
 
-	/** @var string  */
+	/**
+	 * @var string
+	 */
 	private $socket;
 
 	/**
@@ -22,6 +33,7 @@ class Socket extends External {
 	 *
 	 * @param AppConfig $config
 	 * @param ILogger $logger
+	 *
 	 * @throws InitException
 	 */
 	public function __construct(AppConfig $config, ILogger $logger) {
@@ -37,14 +49,14 @@ class Socket extends External {
 	/**
 	 * @throws InitException
 	 */
-	public function initScanner(){
+	public function initScanner() {
 		parent::initScanner();
-		$this->writeHandle = @stream_socket_client(
+		$this->writeHandle = @\stream_socket_client(
 			'unix://' . $this->socket, $errorCode, $errorMessage, 5
 		);
 		if (!$this->getWriteHandle()) {
 			throw new InitException(
-				sprintf(
+				\sprintf(
 					'Could not connect to socket "%s": %s (code %d)',
 					$this->socket,
 					$errorMessage,
@@ -53,9 +65,9 @@ class Socket extends External {
 			);
 		}
 
-		if (@fwrite($this->getWriteHandle(), "nINSTREAM\n") === false) {
+		if (@\fwrite($this->getWriteHandle(), "nINSTREAM\n") === false) {
 			throw new InitException(
-				sprintf(
+				\sprintf(
 					'Writing to socket "%s" failed',
 					$this->socket
 				)
