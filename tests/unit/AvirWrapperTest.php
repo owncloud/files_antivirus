@@ -1,12 +1,10 @@
 <?php
-
 /**
  * Copyright (c) 2016 Viktar Dubiniuk <dubiniuk@owncloud.com>
  * This file is licensed under the Affero General Public License version 3 or
  * later.
  * See the COPYING-README file.
  */
-
 
 namespace OCA\Files_Antivirus\Tests\unit;
 
@@ -16,15 +14,24 @@ use OCA\Files_Antivirus\RequestHelper;
 use OCA\Files_Antivirus\Tests\util\DummyClam;
 use Test\Util\User\Dummy;
 
-
 class AvirWrapperTest extends TestBase {
-	
 	const UID = 'testo';
 	const PWD = 'test';
 
+	/**
+	 * @var  Mock\ScannerFactory
+	 */
 	protected $scannerFactory;
 
+	/**
+	 * @var RequestHelper
+	 */
 	protected $requestHelper;
+
+	/**
+	 * @var string
+	 */
+	protected $skeletonDirectory;
 
 	public static function setUpBeforeClass() {
 		parent::setUpBeforeClass();
@@ -34,6 +41,14 @@ class AvirWrapperTest extends TestBase {
 
 	public function setUp() {
 		parent::setUp();
+		$this->skeletonDirectory = \OC::$server->getConfig()->getSystemValue(
+			'skeletondirectory',
+			null
+		);
+		\OC::$server->getConfig()->setSystemValue(
+			'skeletondirectory',
+			''
+		);
 		if (!\OC::$server->getUserManager()->get(self::UID)) {
 			\OC::$server->getUserManager()->createUser(self::UID, self::PWD);
 		}
@@ -59,35 +74,35 @@ class AvirWrapperTest extends TestBase {
 	/**
 	 * @expectedException \OCP\Files\FileContentNotAllowedException
 	 */
-	public function testInfectedFwrite(){
+	public function testInfectedFwrite() {
 		$wrapper = $this->getWrapper();
 		$fd = $wrapper->fopen('killing bee', 'w+');
-		@fwrite($fd, 'it ' . DummyClam::TEST_SIGNATURE);
-		@fclose($fd);
+		@\fwrite($fd, 'it ' . DummyClam::TEST_SIGNATURE);
+		@\fclose($fd);
 	}
 
 	/**
 	 * @expectedException \OCP\Files\FileContentNotAllowedException
 	 */
-	public function testBigInfectedFwrite(){
+	public function testBigInfectedFwrite() {
 		$wrapper = $this->getWrapper();
 		$fd = $wrapper->fopen('killing whale', 'w+');
-		@fwrite($fd, str_repeat('0', DummyClam::TEST_STREAM_SIZE-2) . DummyClam::TEST_SIGNATURE );
-		@fwrite($fd, DummyClam::TEST_SIGNATURE);
-		@fclose($fd);
+		@\fwrite($fd, \str_repeat('0', DummyClam::TEST_STREAM_SIZE-2) . DummyClam::TEST_SIGNATURE);
+		@\fwrite($fd, DummyClam::TEST_SIGNATURE);
+		@\fclose($fd);
 	}
 
 	/**
 	 * @expectedException \OCP\Files\ForbiddenException
 	 */
-	public function testInfectedFilePutContents(){
+	public function testInfectedFilePutContents() {
 		$wrapper = $this->getWrapper();
-		$wrapper->file_put_contents('test_put_infected','it ' . DummyClam::TEST_SIGNATURE);
+		$wrapper->file_put_contents('test_put_infected', 'it ' . DummyClam::TEST_SIGNATURE);
 	}
 
-	public function testHealthFilePutContents(){
+	public function testHealthFilePutContents() {
 		$wrapper = $this->getWrapper();
-		$result = $wrapper->file_put_contents('test_put_healthly','it works!');
+		$result = $wrapper->file_put_contents('test_put_healthly', 'it works!');
 		$this->assertNotFalse($result);
 	}
 
@@ -104,9 +119,19 @@ class AvirWrapperTest extends TestBase {
 		return $wrapper;
 	}
 
-	public static function tearDownAfterClassClass() {
+	public static function tearDownAfterClass() {
 		parent::tearDownAfterClass();
 		\OC::$server->getUserManager()->get(self::UID)->delete();
 		\OC_User::clearBackends();
+	}
+
+	protected function tearDown() {
+		parent::tearDown();
+		if ($this->skeletonDirectory !== null) {
+			\OC::$server->getConfig()->setSystemValue(
+				'skeletondirectory',
+				$this->skeletonDirectory
+			);
+		}
 	}
 }

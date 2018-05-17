@@ -16,4 +16,3 @@
 	'av_path',
 	'/usr/bin/clamscan'
 );
-\OC::$server->getJobList()->add('OCA\Files_Antivirus\Cron\Task');

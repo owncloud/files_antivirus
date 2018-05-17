@@ -11,14 +11,12 @@ namespace OCA\Files_Antivirus\Tests\unit;
 use \OCA\Files_Antivirus\Db\RuleMapper;
 
 class StatusTest extends TestBase {
-	
 	// See OCA\Files_Antivirus\Status::init for details
 	const TEST_CLEAN = 0;
 	const TEST_INFECTED = 1;
 	const TEST_ERROR = 40;
 	
 	protected $ruleMapper;
-
 
 	public function setUp() {
 		parent::setUp();
@@ -27,7 +25,7 @@ class StatusTest extends TestBase {
 		$this->ruleMapper->populate();
 	}
 	
-	public function testParseResponse(){
+	public function testParseResponse() {
 		// Testing status codes
 		$testStatus = new \OCA\Files_Antivirus\Status();
 		
@@ -46,8 +44,7 @@ class StatusTest extends TestBase {
 		$failedScan = $testStatus->getNumericStatus();
 		$this->assertEquals(\OCA\Files_Antivirus\Status::SCANRESULT_UNCHECKED, $failedScan);
 		$this->assertEquals('Unknown option passed.', $testStatus->getDetails());
-		
-		
+
 		// Testing raw output (e.g. daemon mode)
 		// Empty content means result is unknown
 		$testStatus->parseResponse('');
