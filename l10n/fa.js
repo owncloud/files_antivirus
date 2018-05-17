@@ -46,4 +46,4 @@ OC.L10N.register(
     "Mark as" : "انتخاب به عنوان",
     "Add a rule" : "افزودن قانون"
 },
-"nplurals=1; plural=0;");
+"nplurals=2; plural=((n<=1 && n>= 0) ? 1);");
