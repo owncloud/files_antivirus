@@ -15,6 +15,7 @@ use OCA\Files_Antivirus\Tests\util\DummyClam;
 use Test\Util\User\Dummy;
 
 class AvirWrapperTest extends TestBase {
+
 	const UID = 'testo';
 	const PWD = 'test';
 

@@ -1,0 +1,255 @@
+workspace:
+  base: /var/www/owncloud
+  path: apps/files_antivirus
+
+branches: [master, release*, release/*]
+
+pipeline:
+  install-server:
+    image: owncloudci/core
+    pull: true
+    version: ${OC_VERSION}
+    db_type: ${DB_TYPE}
+    db_name: ${DB_NAME}
+    db_host: ${DB_HOST}
+    db_username: ${DB_USERNAME}
+    db_password: ${DB_PASSWORD}
+    db_timeout: 120
+
+  install-app:
+    image: owncloudci/php:${PHP_VERSION}
+    pull: true
+    commands:
+      - cd /var/www/owncloud/apps/files_antivirus
+      - make
+      - cd /var/www/owncloud/
+      - php occ app:list
+      - php occ app:enable files_antivirus
+      - php occ app:list
+      - php occ log:manage --level 0
+
+  code-compliance-check:
+    image: owncloudci/php:${PHP_VERSION}
+    pull: true
+    commands:
+      # currently failing
+      #- make test-php-codecheck
+      - make test-php-lint
+
+  phpunit:
+    image: owncloudci/php:${PHP_VERSION}
+    pull: true
+    commands:
+      # dummy clamav required for unit tests
+      - php /var/www/owncloud/apps/files_antivirus/tests/util/avirserver.php&
+      # wait shortly for the server to be available
+      - wait-for-it 127.0.0.1:5555
+      # required to pass the executable tests
+      - ln -s /var/www/owncloud/apps/files_antivirus/tests/util/avir.sh /usr/bin/clamscan
+      - cd /var/www/owncloud/apps/files_antivirus/tests/unit
+      - phpdbg -d memory_limit=4096M -rr ../../../../lib/composer/bin/phpunit --configuration phpunit.xml
+    when:
+      matrix:
+        TEST_SUITE: phpunit
+
+  codecov:
+    image: plugins/codecov:2
+    secrets: [codecov_token]
+    pull: true
+    files:
+     - 'tests/unit/clover.xml'
+    when:
+      local: false
+      matrix:
+        TEST_SUITE: phpunit
+        PHP_VERSION: 7.0
+
+  scrutinizer:
+    image: owncloudci/php:7.1
+    pull: true
+    commands:
+      - wget -q https://scrutinizer-ci.com/ocular.phar
+      - php ocular.phar code-coverage:upload --format=php-clover clover.xml
+    when:
+      local: false
+      matrix:
+        PHP_VERSION: 7.0
+
+  owncloud-log:
+    image: owncloudci/php:${PHP_VERSION}
+    pull: true
+    commands:
+      - cat /var/www/owncloud/data/owncloud.log
+    when:
+      status: [ failure ]
+
+  notify:
+    image: plugins/slack:1
+    pull: true
+    secrets: [ slack_webhook ]
+    channel: builds
+    when:
+      status: [ failure, changed ]
+      event: [ push, tag ]
+
+services:
+  oci:
+    image: deepdiver/docker-oracle-xe-11g
+    environment:
+       - ORACLE_USER=autotest
+       - ORACLE_DB=XE
+    when:
+      matrix:
+        DB_TYPE: oci
+
+  mysql:
+    image: mysql:5.5
+    environment:
+      - MYSQL_USER=admin
+      - MYSQL_PASSWORD=secret
+      - MYSQL_DATABASE=oc_db
+      - MYSQL_ROOT_PASSWORD=secret
+    when:
+      matrix:
+        DB_TYPE: mysql
+        DB_HOST: mysql
+
+  mysqlmb4:
+    image: mysql:5.7
+    environment:
+      - MYSQL_USER=admin
+      - MYSQL_PASSWORD=secret
+      - MYSQL_DATABASE=oc_db
+      - MYSQL_ROOT_PASSWORD=secret
+    when:
+      matrix:
+        DB_TYPE: mysql
+        DB_HOST: mysqlmb4
+
+  pgsql:
+    image: postgres:9.4
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=secret
+      - POSTGRES_DB=oc_db
+    when:
+      matrix:
+        DB_TYPE: pgsql
+
+matrix:
+  include:
+
+    #UNIT TESTS
+    #PHP 5.6
+    - PHP_VERSION: 5.6
+      OC_VERSION: daily-stable10-qa
+      TEST_SUITE: phpunit
+      DB_TYPE: mysql
+      DB_HOST: mysql
+      DB_NAME: oc_db
+      DB_USERNAME: admin
+      DB_PASSWORD: secret
+
+    #PHP 7.0
+
+    - PHP_VERSION: 7.0
+      OC_VERSION: daily-stable10-qa
+      TEST_SUITE: phpunit
+      DB_TYPE: mysql
+      DB_HOST: mysql
+      DB_NAME: oc_db
+      DB_USERNAME: admin
+      DB_PASSWORD: secret
+
+    #PHP 7.1
+
+    - PHP_VERSION: 7.1
+      OC_VERSION: daily-stable10-qa
+      TEST_SUITE: phpunit
+      DB_TYPE: mysql
+      DB_HOST: mysql
+      DB_NAME: oc_db
+      DB_USERNAME: admin
+      DB_PASSWORD: secret
+
+    - PHP_VERSION: 7.1
+      OC_VERSION: daily-stable10-qa
+      TEST_SUITE: phpunit
+      DB_TYPE: sqlite
+
+    - PHP_VERSION: 7.1
+      OC_VERSION: daily-stable10-qa
+      TEST_SUITE: phpunit
+      DB_TYPE: pgsql
+      DB_HOST: pgsql
+      DB_NAME: oc_db
+      DB_USERNAME: admin
+      DB_PASSWORD: secret
+
+    - PHP_VERSION: 7.1
+      OC_VERSION: daily-stable10-qa
+      TEST_SUITE: phpunit
+      DB_TYPE: oci
+      DB_HOST: oci
+      DB_NAME: XE
+      DB_USERNAME: autotest
+
+    - PHP_VERSION: 7.1
+      OC_VERSION: daily-stable10-qa
+      TEST_SUITE: phpunit
+      DB_TYPE: mysql
+      DB_HOST: mysqlmb4
+      DB_NAME: oc_db
+      DB_USERNAME: admin
+      DB_PASSWORD: secret
+
+    - PHP_VERSION: 7.1
+      OC_VERSION: daily-master-qa
+      TEST_SUITE: phpunit
+      DB_TYPE: mysql
+      DB_HOST: mysql
+      DB_NAME: oc_db
+      DB_USERNAME: admin
+      DB_PASSWORD: secret
+
+    - PHP_VERSION: 7.1
+      OC_VERSION: daily-master-qa
+      TEST_SUITE: phpunit
+      DB_TYPE: sqlite
+
+    - PHP_VERSION: 7.1
+      OC_VERSION: daily-master-qa
+      TEST_SUITE: phpunit
+      DB_TYPE: pgsql
+      DB_HOST: pgsql
+      DB_NAME: oc_db
+      DB_USERNAME: admin
+      DB_PASSWORD: secret
+
+    - PHP_VERSION: 7.1
+      OC_VERSION: daily-master-qa
+      TEST_SUITE: phpunit
+      DB_TYPE: mysql
+      DB_HOST: mysqlmb4
+      DB_NAME: oc_db
+      DB_USERNAME: admin
+      DB_PASSWORD: secret
+
+    - PHP_VERSION: 7.1
+      OC_VERSION: daily-master-qa
+      TEST_SUITE: phpunit
+      DB_TYPE: oci
+      DB_HOST: oci
+      DB_NAME: XE
+      DB_USERNAME: autotest
+
+    #PHP 7.2
+
+    - PHP_VERSION: 7.2
+      OC_VERSION: daily-master-qa
+      TEST_SUITE: phpunit
+      DB_TYPE: mysql
+      DB_HOST: mysql
+      DB_NAME: oc_db
+      DB_USERNAME: admin
+      DB_PASSWORD: secret
