@@ -23,7 +23,6 @@ use OCP\IUser;
 use OCP\IUserSession;
 
 class BackgroundScanner {
-
 	const BATCH_SIZE = 10;
 
 	/**
@@ -89,7 +88,6 @@ class BackgroundScanner {
 	 * @return void
 	 */
 	public function run() {
-
 		if ($this->appConfig->getAvScanBackground() !== 'true') {
 			return;
 		}
@@ -97,7 +95,7 @@ class BackgroundScanner {
 		// locate files that are not checked yet
 		try {
 			$result = $this->getFilesForScan();
-		} catch(\Exception $e) {
+		} catch (\Exception $e) {
 			\OC::$server->getLogger()->error(
 				__METHOD__ . ', exception: ' . $e->getMessage(),
 				['app' => 'files_antivirus']
@@ -118,7 +116,7 @@ class BackgroundScanner {
 				$this->scanOneFile($owner, $fileId);
 				// increased only for successfully scanned files
 				$cnt = $cnt + 1;
-			} catch (\Exception $e){
+			} catch (\Exception $e) {
 				\OC::$server->getLogger()->error(
 					__METHOD__ . ', exception: ' . $e->getMessage(),
 					['app' => 'files_antivirus']
@@ -191,7 +189,7 @@ class BackgroundScanner {
 		$this->initFilesystemForUser($owner);
 		$view = Filesystem::getView();
 		$path = $view->getPath($fileId);
-		if (!\is_null($path)) {
+		if ($path !== null) {
 			$item = new Item($this->l10n, $view, $path, $fileId);
 			$scanner = $this->scannerFactory->getScanner();
 			$status = $scanner->scan($item);

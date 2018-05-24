@@ -23,8 +23,8 @@ class DaemonTest extends TestBase {
 		;
 		$config->method('__call')
 			->will($this->returnCallback(
-				function ($methodName){
-					switch ($methodName){
+				function ($methodName) {
+					switch ($methodName) {
 						case 'getAvHost':
 							return  'localhost';
 						case 'getAvPort':
@@ -54,8 +54,8 @@ class DaemonTest extends TestBase {
 		;
 		$config->method('__call')
 			->will($this->returnCallback(
-				function ($methodName){
-					switch ($methodName){
+				function ($methodName) {
+					switch ($methodName) {
 						case 'getAvHost':
 							return  '';
 						case 'getAvPort':
@@ -84,8 +84,8 @@ class DaemonTest extends TestBase {
 		;
 		$config->method('__call')
 			->will($this->returnCallback(
-				function ($methodName){
-					switch ($methodName){
+				function ($methodName) {
+					switch ($methodName) {
 						case 'getAvHost':
 							return  'localhost';
 						case 'getAvPort':

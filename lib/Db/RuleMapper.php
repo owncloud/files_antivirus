@@ -54,8 +54,8 @@ class RuleMapper extends Mapper {
 	 * @return Rule
 	 */
 	public function find($id) {
-        $sql = 'SELECT * FROM `*PREFIX*files_avir_status` WHERE `id` = ?';
-        return $this->findEntity($sql, array($id));
+		$sql = 'SELECT * FROM `*PREFIX*files_avir_status` WHERE `id` = ?';
+		return $this->findEntity($sql, [$id]);
 	}
 	
 	/**
@@ -63,7 +63,7 @@ class RuleMapper extends Mapper {
 	 */
 	public function findAll() {
 		$sql = 'SELECT * FROM `*PREFIX*files_avir_status`';
-        return $this->findEntities($sql);
+		return $this->findEntities($sql);
 	}
 
 	/**
@@ -85,9 +85,9 @@ class RuleMapper extends Mapper {
 	 *
 	 * @return array
 	 */
-	public function findAllMatchedByStatus($status){
+	public function findAllMatchedByStatus($status) {
 		$sql = 'SELECT * FROM `*PREFIX*files_avir_status` WHERE `status_type`=? and `status`=?';
-		return $this->findEntities($sql, array(Rule::RULE_TYPE_MATCH, $status));
+		return $this->findEntities($sql, [Rule::RULE_TYPE_MATCH, $status]);
 	}
 	
 	/**

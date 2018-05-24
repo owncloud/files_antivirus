@@ -16,7 +16,6 @@ use OCA\Files_Antivirus\Status;
 use OCA\Files_Antivirus\Tests\unit\TestBase;
 
 class LocalTest extends TestBase {
-	
 	const TEST_CLEAN_FILENAME = 'foo.txt';
 	const TEST_INFECTED_FILENAME = 'kitten.inf';
 
@@ -48,7 +47,7 @@ class LocalTest extends TestBase {
 		$userManager = $this->application->getContainer()->query('ServerContainer')->getUserManager();
 		$results = $userManager->search('', 1, 0);
 
-		if (!count($results)) {
+		if (!\count($results)) {
 			\OC::$server->getUserManager()->createUser('test', 'test');
 		}
 		$this->scannerFactory = new ScannerFactory(
@@ -67,8 +66,8 @@ class LocalTest extends TestBase {
 		;
 		$config->method('__call')
 			->will($this->returnCallback(
-				function ($methodName){
-					switch ($methodName){
+				function ($methodName) {
+					switch ($methodName) {
 						case 'getAvPath':
 							return  __DIR__ . '/../util/wrong_av_path.sh';
 						case 'getAvMode':
@@ -87,7 +86,7 @@ class LocalTest extends TestBase {
 	}
 	
 	public function testCleanFile() {
-		$handle = fopen($this->getTestDataDirItem('foo.txt'), 'r');
+		$handle = \fopen($this->getTestDataDirItem('foo.txt'), 'r');
 		$this->view->method('fopen')->willReturn($handle);
 		$this->assertTrue($this->cleanItem->isValid());
 		
@@ -112,7 +111,7 @@ class LocalTest extends TestBase {
 	}
 	
 	public function testInfected() {
-		$handle = fopen($this->getTestDataDirItem('kitten.inf'), 'r');
+		$handle = \fopen($this->getTestDataDirItem('kitten.inf'), 'r');
 		$this->view->method('fopen')->willReturn($handle);
 		$this->assertTrue($this->infectedItem->isValid());
 		$scanner = $this->scannerFactory->getScanner();

@@ -18,13 +18,13 @@ class TaskTest extends TestBase {
 	/** @var  ScannerFactory */
 	protected $scannerFactory;
 
-	public function setUp(){
+	public function setUp() {
 		parent::setUp();
 		//Background scanner requires at least one user on the current instance
 		$userManager = $this->application->getContainer()->query('ServerContainer')->getUserManager();
 		$results = $userManager->search('', 1, 0);
 
-		if (!count($results)) {
+		if (!\count($results)) {
 			\OC::$server->getUserManager()->createUser('test', 'test');
 		}
 		$this->scannerFactory = new ScannerFactory(
@@ -33,7 +33,7 @@ class TaskTest extends TestBase {
 		);
 	}
 	
-	public function testRun(){
+	public function testRun() {
 		$backgroundScanner = new BackgroundScanner(
 				$this->scannerFactory,
 				$this->l10n,

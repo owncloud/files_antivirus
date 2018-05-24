@@ -7,7 +7,6 @@
  * See the COPYING-README file.
  */
 
-
 namespace OCA\Files_Antivirus\Tests\unit\Controller;
 
 use OCA\Files_Antivirus\AppConfig;
@@ -16,7 +15,6 @@ use OCA\Files_Antivirus\Tests\unit\TestBase;
 use OCA\Files_Antivirus\Controller\SettingsController;
 use OCP\IRequest;
 use OCP\IL10N;
-
 
 class AvirWrapperTest extends TestBase {
 

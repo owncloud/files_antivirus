@@ -70,12 +70,12 @@ class Status {
 	 * @param integer $result
 	 */
 	public function parseResponse($rawResponse, $result = null) {
-		$matches = array();
+		$matches = [];
 		$ruleMapper = new Db\RuleMapper(\OC::$server->getDb());
-		if (\is_null($result)) { // Daemon or socket mode
-			try{
+		if ($result === null) { // Daemon or socket mode
+			try {
 				$allRules = $this->getResponseRules();
-			} catch (\Exception $e){
+			} catch (\Exception $e) {
 				\OCP\Util::writeLog(
 					'files_antivirus',
 					__METHOD__.', exception: '.$e->getMessage(),
@@ -102,7 +102,6 @@ class Status {
 				$this->numericStatus = self::SCANRESULT_UNCHECKED;
 				$this->details = 'No matching rules. Please check antivirus rules.';
 			}
-			
 		} else { // Executable mode
 			$scanStatus = $ruleMapper->findByResult($result);
 			if (\is_array($scanStatus) && \count($scanStatus)) {
@@ -110,9 +109,9 @@ class Status {
 				$this->details = $scanStatus[0]->getDescription();
 			}
 			
-			switch($this->numericStatus) {
+			switch ($this->numericStatus) {
 				case self::SCANRESULT_INFECTED:
-					$report = array();
+					$report = [];
 					$rawResponse = \explode("\n", $rawResponse);
 					
 					foreach ($rawResponse as $line) {
@@ -146,7 +145,7 @@ class Status {
 	}
 	
 	public function dispatch($item, $isBackground = false) {
-		switch($this->getNumericStatus()) {
+		switch ($this->getNumericStatus()) {
 			case self::SCANRESULT_UNCHECKED:
 				$item->processUnchecked($this, $isBackground);
 				break;

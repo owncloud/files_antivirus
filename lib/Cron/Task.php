@@ -16,7 +16,6 @@ namespace OCA\Files_Antivirus\Cron;
 use OC\BackgroundJob\TimedJob;
 use OCA\Files_Antivirus\AppInfo\Application;
 
-
 class Task extends TimedJob {
 
 	/**

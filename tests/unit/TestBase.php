@@ -12,15 +12,13 @@ namespace OCA\Files_Antivirus\Tests\unit;
 use OCA\Files_Antivirus\AppInfo\Application;
 
 abstract class TestBase extends \PHPUnit_Framework_TestCase {
-
 	protected $db;
 	protected $application;
 	protected $container;
 	protected $config;
 	protected $l10n;
 	
-
-	public function setUp(){
+	public function setUp() {
 		parent::setUp();
 		\OC_App::enable('files_antivirus');
 		
@@ -34,10 +32,9 @@ abstract class TestBase extends \PHPUnit_Framework_TestCase {
 				->getMock()
 		;
 		$this->config->method('__call')
-			->will($this->returnCallback(array($this, 'getAppValue')));
+			->will($this->returnCallback([$this, 'getAppValue']));
 		$this->config->method('getAvChunkSize')
 			->will($this->returnValue(8192));
-
 
 		$this->l10n = $this->getMockBuilder('\OCP\IL10N')
 				->disableOriginalConstructor()
@@ -46,8 +43,8 @@ abstract class TestBase extends \PHPUnit_Framework_TestCase {
 		$this->l10n->method('t')->will($this->returnArgument(0));
 	}
 
-	public function getAppValue($methodName){
-		switch ($methodName){
+	public function getAppValue($methodName) {
+		switch ($methodName) {
 			case 'getAvPath':
 				return  __DIR__ . '/../util/avir.sh';
 			case 'getAvMode':
@@ -57,7 +54,7 @@ abstract class TestBase extends \PHPUnit_Framework_TestCase {
 		}
 	}
 
-	protected function getTestDataDirItem($relativePath){
+	protected function getTestDataDirItem($relativePath) {
 		return __DIR__ . '/../data/' . $relativePath;
 	}
 }

@@ -15,29 +15,29 @@ namespace OCA\Files_Antivirus;
 
 use \OCP\IConfig;
 
-	/**
-	 * @method string getAvMode()
-	 * @method string getAvSocket()
-	 * @method string getAvHost()
-	 * @method int getAvPort()
-	 * @method int getAvMaxFileSize()
-	 * @method int getAvStreamMaxLength()
-	 * @method string getAvCmdOptions()
-	 * @method string getAvPath()
-	 * @method string getAvInfectedAction()
-	 * @method string getAvScanBackground()
-	 *
-	 * @method null setAvMode(string $avMode)
-	 * @method null setAvSocket(string $avsocket)
-	 * @method null setAvHost(string $avHost)
-	 * @method null setAvPort(int $avPort)
-	 * @method null setAvMaxFileSize(int $fileSize)
-	 * @method null setAvStreamMaxLength(int $streamMaxLength)
-	 * @method null setAvCmdOptions(string $avCmdOptions)
-	 * @method null setAvPath(string $avPath)
-	 * @method null setAvInfectedAction(string $avInfectedAction)
-	 * @method null setAvScanBackground(string $scanBackground)
-	 */
+/**
+ * @method string getAvMode()
+ * @method string getAvSocket()
+ * @method string getAvHost()
+ * @method int getAvPort()
+ * @method int getAvMaxFileSize()
+ * @method int getAvStreamMaxLength()
+ * @method string getAvCmdOptions()
+ * @method string getAvPath()
+ * @method string getAvInfectedAction()
+ * @method string getAvScanBackground()
+ *
+ * @method null setAvMode(string $avMode)
+ * @method null setAvSocket(string $avsocket)
+ * @method null setAvHost(string $avHost)
+ * @method null setAvPort(int $avPort)
+ * @method null setAvMaxFileSize(int $fileSize)
+ * @method null setAvStreamMaxLength(int $streamMaxLength)
+ * @method null setAvCmdOptions(string $avCmdOptions)
+ * @method null setAvPath(string $avPath)
+ * @method null setAvInfectedAction(string $avInfectedAction)
+ * @method null setAvScanBackground(string $scanBackground)
+ */
 
 class AppConfig {
 	private $appName = 'files_antivirus';

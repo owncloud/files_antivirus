@@ -24,7 +24,7 @@ use OCA\Files_Antivirus\ScannerFactory;
 use OCP\AppFramework\App;
 
 class Application extends App {
-	public function __construct (array $urlParams = array()) {
+	public function __construct(array $urlParams = []) {
 		parent::__construct('files_antivirus', $urlParams);
 		
 		$container = $this->getContainer();

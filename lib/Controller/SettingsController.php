@@ -87,10 +87,10 @@ class SettingsController extends Controller {
 		if ($avMode === 'executable') {
 			$this->settings->setAvCmdOptions($avCmdOptions);
 			$this->settings->setAvPath($avPath);
-		} else if ($avMode === 'daemon') {
+		} elseif ($avMode === 'daemon') {
 			$this->settings->setAvPort($avPort);
 			$this->settings->setAvHost($avHost);
-		} else if ($avMode === 'socket') {
+		} elseif ($avMode === 'socket') {
 			$this->settings->setAvSocket($avSocket);
 		}
 

@@ -22,7 +22,6 @@ use \OCA\Files_Antivirus\Db\Rule;
 use \OCA\Files_Antivirus\Db\RuleMapper;
 
 class RuleController extends Controller {
-	
 	private $logger;
 	private $l10n;
 	private $ruleMapper;

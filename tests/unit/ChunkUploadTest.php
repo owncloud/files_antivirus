@@ -7,7 +7,6 @@
  * See the COPYING-README file.
  */
 
-
 namespace OCA\Files_Antivirus\Tests\unit;
 
 use OC\Files\Filesystem;
@@ -16,7 +15,7 @@ use OC\Files\Storage\Storage;
 use OCA\Files_Antivirus\AvirWrapper;
 use Test\Util\User\Dummy;
 
-class ChunkUploadTest extends TestBase{
+class ChunkUploadTest extends TestBase {
 	const UID = 'testo';
 	const PWD = 'test';
 
@@ -57,7 +56,7 @@ class ChunkUploadTest extends TestBase{
 		\OC::$server->getUserFolder(self::UID);
 	}
 
-	public function testSkipIndividualChunks(){
+	public function testSkipIndividualChunks() {
 		$this->scannerFactory->expects($this->never())
 			->method('getScanner');
 
@@ -68,11 +67,11 @@ class ChunkUploadTest extends TestBase{
 		}
 		$view = new View($path);
 		$fd = $view->fopen('/chunk', 'w+');
-		@fwrite($fd, 'abcdead');
-		@fclose($fd);
+		@\fwrite($fd, 'abcdead');
+		@\fclose($fd);
 	}
 	
-	public function wrapperCallback($mountPoint, $storage){
+	public function wrapperCallback($mountPoint, $storage) {
 		/**
 		 * @var Storage $storage
 		 */

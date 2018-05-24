@@ -25,9 +25,7 @@ use OCP\ILogger;
 use OCP\Files\ForbiddenException;
 use Icewind\Streams\CallbackWrapper;
 
-
-class AvirWrapper extends Wrapper{
-
+class AvirWrapper extends Wrapper {
 	const AV_EXCEPTION_MESSAGE = 'Either the ownCloud antivirus app is misconfigured or the external antivirus service is not accessible. %s';
 
 	/**
@@ -35,7 +33,7 @@ class AvirWrapper extends Wrapper{
 	 *
 	 * @var array
 	 */
-	private $writingModes = array('r+', 'w', 'w+', 'a', 'a+', 'x', 'x+', 'c', 'c+');
+	private $writingModes = ['r+', 'w', 'w+', 'a', 'a+', 'x', 'x+', 'c', 'c+'];
 
 	/**
 	 * @var AppConfig
@@ -48,7 +46,7 @@ class AvirWrapper extends Wrapper{
 	protected $scannerFactory;
 	
 	/**
-	 * @var IL10N 
+	 * @var IL10N
 	 */
 	protected $l10n;
 	
@@ -87,7 +85,7 @@ class AvirWrapper extends Wrapper{
 			$scanner = $this->scannerFactory->getScanner();
 			$scanner->initScanner();
 			$content = new Content($data, $this->appConfig->getAvChunkSize());
-			while (($chunk = $content->fread()) !== false ) {
+			while (($chunk = $content->fread()) !== false) {
 				$scanner->onAsyncData($chunk);
 			}
 			$this->onScanComplete($scanner, $path, false);
@@ -99,7 +97,7 @@ class AvirWrapper extends Wrapper{
 			throw new ForbiddenException($message, true, $e);
 		} catch (FileContentNotAllowedException $e) {
 			throw new ForbiddenException($e->getMessage(), false, $e);
-		} catch (\Exception $e){
+		} catch (\Exception $e) {
 			$message = 	\implode(' ', [ __CLASS__, __METHOD__, $e->getMessage()]);
 			$this->logger->warning($message, ['app' => 'files_antivirus']);
 		}
@@ -139,7 +137,7 @@ class AvirWrapper extends Wrapper{
 				$message = \sprintf(self::AV_EXCEPTION_MESSAGE, $e->getMessage());
 				$this->logger->warning($message, ['app' => 'files_antivirus']);
 				throw new ForbiddenException($message, false, $e);
-			} catch (\Exception $e){
+			} catch (\Exception $e) {
 				$message = 	\implode(' ', [ __CLASS__, __METHOD__, $e->getMessage()]);
 				$this->logger->warning($message, ['app' => 'files_antivirus']);
 			}
@@ -201,7 +199,6 @@ class AvirWrapper extends Wrapper{
 				), false
 			);
 		}
-
 	}
 	
 	/**
@@ -233,7 +230,7 @@ class AvirWrapper extends Wrapper{
 		$size = $this->requestHelper->getUploadSize($this->storage, $path);
 
 		// No upload in progress. Skip this file.
-		if (\is_null($size)) {
+		if ($size === null) {
 			$this->logger->debug(
 				'No upload in progress or chunk is being uploaded. Scanning is skipped.',
 				['app' => 'files_antivirus']

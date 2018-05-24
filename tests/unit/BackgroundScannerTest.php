@@ -7,7 +7,6 @@
  * See the COPYING-README file.
  */
 
-
 namespace OCA\Files_Antivirus\Tests\unit;
 
 use OCA\Files_Antivirus\BackgroundScanner;
@@ -15,9 +14,7 @@ use OCA\Files_Antivirus\ScannerFactory;
 use Doctrine\DBAL\Driver\Statement;
 
 class BackgroundScannerTest extends TestBase {
-
-	public function testGetFilesForScan(){
-		
+	public function testGetFilesForScan() {
 		$scannerFactory = new Mock\ScannerFactory(
 			new Mock\Config($this->container->query('CoreConfig')),
 			$this->container->query('Logger')
@@ -39,5 +36,4 @@ class BackgroundScannerTest extends TestBase {
 		$result = $method->invokeArgs($scannerMock, []);
 		$this->assertInstanceOf(Statement::class, $result);
 	}
-
 }

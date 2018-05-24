@@ -122,7 +122,7 @@ abstract class AbstractScanner {
 	public function scan(IScannable $item) {
 		$this->initScanner();
 
-		while (false !== ($chunk = $item->fread())) {
+		while (($chunk = $item->fread()) !== false) {
 			$this->writeChunk($chunk);
 		}
 		
@@ -176,7 +176,7 @@ abstract class AbstractScanner {
 	/**
 	 * @param string $data
 	 */
-	protected final function fwrite($data) {
+	final protected function fwrite($data) {
 		if ($this->isAborted) {
 			return;
 		}
@@ -213,7 +213,7 @@ abstract class AbstractScanner {
 	 */
 	protected function retry() {
 		$this->initScanner();
-		if (!\is_null($this->lastChunk)) {
+		if ($this->lastChunk !== null) {
 			return $this->writeRaw($this->lastChunk);
 		}
 		return true;

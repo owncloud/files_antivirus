@@ -17,7 +17,7 @@ use OCP\IL10N;
 use OCA\Files_Antivirus\Status;
 use OCA\Files_Antivirus\Activity;
 
-class Item implements IScannable{
+class Item implements IScannable {
 	/**
 	 * Scanned fileid (optional)
 	 *
@@ -78,7 +78,7 @@ class Item implements IScannable{
 			throw new \RuntimeException();
 		}
 		
-		if (\is_null($id)) {
+		if ($id === null) {
 			$this->id = $view->getFileInfo($path)->getId();
 		} else {
 			$this->id = $id;
@@ -113,11 +113,11 @@ class Item implements IScannable{
 		if (!$this->isValid()) {
 			return;
 		}
-		if (\is_null($this->fileHandle)) {
+		if ($this->fileHandle === null) {
 			$this->getFileHandle();
 		}
 		
-		if (!\is_null($this->fileHandle) && !$this->feof()) {
+		if ($this->fileHandle !== null && !$this->feof()) {
 			$chunk = \fread($this->fileHandle, $this->chunkSize);
 			return $chunk;
 		}
@@ -195,7 +195,7 @@ class Item implements IScannable{
 		}
 		try {
 			$stmt = \OCP\DB::prepare('DELETE FROM `*PREFIX*files_antivirus` WHERE `fileid` = ?');
-			$result = $stmt->execute(array($this->id));
+			$result = $stmt->execute([$this->id]);
 			if (\OCP\DB::isError($result)) {
 				//TODO: Use logger
 				$this->logError(__METHOD__. ', DB error: ' . \OCP\DB::getErrorMessage());
@@ -203,11 +203,11 @@ class Item implements IScannable{
 			$stmt = \OCP\DB::prepare(
 				'INSERT INTO `*PREFIX*files_antivirus` (`fileid`, `check_time`) VALUES (?, ?)'
 			);
-			$result = $stmt->execute(array($this->id, time()));
+			$result = $stmt->execute([$this->id, \time()]);
 			if (\OCP\DB::isError($result)) {
 				$this->logError(__METHOD__. ', DB error: ' . \OCP\DB::getErrorMessage());
 			}
-		} catch(\Exception $e) {
+		} catch (\Exception $e) {
 			\OCP\Util::writeLog(
 				'files_antivirus',
 				__METHOD__ . ', exception: ' . $e->getMessage(),
@@ -251,8 +251,8 @@ class Item implements IScannable{
 	 * @param string $message
 	 */
 	public function logDebug($message) {
-		$extra = ' File: ' . $this->id 
-				. ' Account: ' . $this->view->getOwner($this->path) 
+		$extra = ' File: ' . $this->id
+				. ' Account: ' . $this->view->getOwner($this->path)
 				. ' Path: ' . $this->path;
 		\OCP\Util::writeLog('files_antivirus', $message . $extra, \OCP\Util::DEBUG);
 	}
@@ -263,10 +263,10 @@ class Item implements IScannable{
 	 * @param string $path optional
 	 */
 	public function logError($message, $id=null, $path=null) {
-		$ownerInfo = \is_null($this->view) ? '' : 'Account: ' . $this->view->getOwner($path);
-		$extra = ' File: ' . (\is_null($id) ? $this->id : $id)
-				. $ownerInfo 
-				. ' Path: ' . (\is_null($path) ? $this->path : $path);
+		$ownerInfo = $this->view === null ? '' : 'Account: ' . $this->view->getOwner($path);
+		$extra = ' File: ' . ($id === null ? $this->id : $id)
+				. $ownerInfo
+				. ' Path: ' . ($path === null ? $this->path : $path);
 		\OCP\Util::writeLog(
 			'files_antivirus',
 			$message . $extra,

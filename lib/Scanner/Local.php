@@ -53,7 +53,7 @@ class Local extends AbstractScanner {
 
 		if (!\file_exists($this->avPath)) {
 			throw new InitException(
-				sprintf(
+				\sprintf(
 					'The antivirus executable could not be found at path "%s"',
 					$this->avPath
 				)
@@ -74,7 +74,7 @@ class Local extends AbstractScanner {
 		$this->process = \proc_open($cmd, $descriptorSpec, $this->pipes);
 		if (!\is_resource($this->process)) {
 			throw new InitException(
-				sprintf('Error starting process "%s"', $cmd)
+				\sprintf('Error starting process "%s"', $cmd)
 			);
 		}
 		$this->writeHandle = $this->pipes[0];

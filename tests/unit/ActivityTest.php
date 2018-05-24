@@ -14,7 +14,7 @@ class ActivityTest extends TestBase {
 	/** @var  Activity */
 	protected $activity;
 	
-	public function setUp(){
+	public function setUp() {
 		parent::setUp();
 		$langFactory = $this->getMockBuilder('OC\L10N\Factory')
 				->disableOriginalConstructor()
@@ -29,21 +29,21 @@ class ActivityTest extends TestBase {
 		$this->activity = new Activity($langFactory, $urlGenerator);
 	}
 	
-	public function testGetTypeIcon(){
+	public function testGetTypeIcon() {
 		$this->assertFalse(
 				$this->activity->getTypeIcon(null)
 		);
 		
-		$this->assertEquals('icon-info', $this->activity->getTypeIcon(Activity::TYPE_VIRUS_DETECTED) );
+		$this->assertEquals('icon-info', $this->activity->getTypeIcon(Activity::TYPE_VIRUS_DETECTED));
 	}
 	
-	public function testGetSpecialParameterList(){
+	public function testGetSpecialParameterList() {
 		$this->assertFalse(
 				$this->activity->getSpecialParameterList(null, null)
 		);
 	}
 	
-	public function testGetGroupParameter(){
+	public function testGetGroupParameter() {
 		$this->assertFalse(
 				$this->activity->getGroupParameter(null)
 		);

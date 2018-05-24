@@ -34,5 +34,4 @@ class Item extends Entity {
 	 * @var int
 	 */
 	protected $checkTime;
-	
 }
