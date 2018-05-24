@@ -1,4 +1,5 @@
 /build
+/vendor
 
 # just sane ignores
 .*.sw[po]
@@ -45,3 +46,4 @@ nbproject
 .DS_Store
 
 tests/unit/clover.xml
+.php_cs.cache

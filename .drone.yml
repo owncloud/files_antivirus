@@ -35,6 +35,7 @@ pipeline:
       # currently failing
       #- make test-php-codecheck
       - make test-php-lint
+      - make test-php-style
 
   phpunit:
     image: owncloudci/php:${PHP_VERSION}
