@@ -65,7 +65,7 @@ class DummyClam {
 
 			$dataChunk = '';
 			do {
-				$dataChunk .= @fread($connection, $chunkSize);
+				$dataChunk .= @fread($connection, $chunkSize - strlen($dataChunk) );
 			} while (is_resource($connection) && strlen($dataChunk) !== $chunkSize);
 
 			$nextBufferSize = strlen($buffer) + strlen($dataChunk);

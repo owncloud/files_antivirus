@@ -64,3 +64,12 @@ else
 	@echo $(sign_skip_msg)
 endif
 	tar -czf $(appstore_package_name).tar.gz -C $(appstore_package_name)/../ $(app_name)
+
+.PHONY: test-php-codecheck
+test-php-codecheck:
+	$(occ) app:check-code $(app_name) -c private -c strong-comparison
+	$(occ) app:check-code $(app_name) -c deprecation
+
+.PHONY: test-php-lint
+test-php-lint:
+	../../lib/composer/bin/parallel-lint . --exclude 3rdparty --exclude build .
