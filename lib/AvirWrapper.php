@@ -230,7 +230,7 @@ class AvirWrapper extends Wrapper{
 	 */
 	private function isScannableSize($path) {
 		$scanSizeLimit = \intval($this->appConfig->getAvMaxFileSize());
-		$size = $this->requestHelper->getUploadSize($path);
+		$size = $this->requestHelper->getUploadSize($this->storage, $path);
 
 		// No upload in progress. Skip this file.
 		if (\is_null($size)) {

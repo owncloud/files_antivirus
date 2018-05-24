@@ -13,17 +13,15 @@
 
 namespace OCA\Files_Antivirus\AppInfo;
 
-use \OCP\AppFramework\App;
-
 use OCA\Files_Antivirus\AppConfig;
+use OCA\Files_Antivirus\AvirWrapper;
 use OCA\Files_Antivirus\Controller\RuleController;
 use OCA\Files_Antivirus\Controller\SettingsController;
 use OCA\Files_Antivirus\Db\RuleMapper;
 use OCA\Files_Antivirus\BackgroundScanner;
 use OCA\Files_Antivirus\RequestHelper;
 use OCA\Files_Antivirus\ScannerFactory;
-
-use \OCA\Files_Antivirus\AvirWrapper;
+use OCP\AppFramework\App;
 
 class Application extends App {
 	public function __construct (array $urlParams = array()) {
