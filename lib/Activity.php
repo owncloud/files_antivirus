@@ -18,7 +18,6 @@ use OCP\Activity\IExtension;
 use OCP\IURLGenerator;
 
 class Activity implements IExtension {
-	
 	const APP_NAME = 'files_antivirus';
 
 	/**
@@ -40,7 +39,6 @@ class Activity implements IExtension {
 	 * Infected file deletion notice
 	 */
 	const MESSAGE_FILE_DELETED = 'file_deleted';
-
 
 	/**
 	 * @var Factory

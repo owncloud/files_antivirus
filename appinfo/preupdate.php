@@ -4,7 +4,7 @@ $installedVersion = \OC::$server->getConfig()->getAppValue(
 	'files_antivirus',
 	'installed_version'
 );
-if (version_compare($installedVersion, '0.6', '<')) {
+if (\version_compare($installedVersion, '0.6', '<')) {
 	$query = OCP\DB::prepare(
 		'SELECT COUNT(*) AS `count`, `fileid` FROM `*PREFIX*files_antivirus` GROUP BY `fileid` HAVING COUNT(*) > 1'
 	);
@@ -17,8 +17,8 @@ if (version_compare($installedVersion, '0.6', '<')) {
 		$deleteQuery->execute([$row['fileid']]);
 	}
 }
-if (version_compare($installedVersion, '0.6.1', '<')
-	&& version_compare($installedVersion, '0.5', '>=')
+if (\version_compare($installedVersion, '0.6.1', '<')
+	&& \version_compare($installedVersion, '0.5', '>=')
 ) {
 	$alterQuery = OCP\DB::prepare(
 		'ALTER TABLE `*PREFIX*files_antivirus_status` RENAME TO `*PREFIX*files_avir_status`'

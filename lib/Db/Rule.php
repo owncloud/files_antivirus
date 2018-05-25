@@ -41,21 +41,21 @@ class Rule extends Entity implements JsonSerializable {
 	
 	/**
 	 *
-	 * @var int statusType - RULE_TYPE_CODE or RULE_TYPE_MATCH defines whether 
+	 * @var int statusType - RULE_TYPE_CODE or RULE_TYPE_MATCH defines whether
 	 *   rule should be checked by the shell exit code or regexp
 	 */
 	protected $statusType;
 	
 	/**
 	 *
-	 * @var int result - shell exit code for rules 
+	 * @var int result - shell exit code for rules
 	 *   of the type RULE_TYPE_CODE, 0 otherwise
 	 */
 	protected $result;
 	
 	/**
 	 *
-	 * @var string match - regexp to match for rules 
+	 * @var string match - regexp to match for rules
 	 *   of the type RULE_TYPE_MATCH, '' otherwise
 	 */
 	protected $match;

@@ -47,7 +47,7 @@ class Notification {
 				$message->setPlainBody($msg);
 				$message->setHtmlBody($msg);
 				$mailer->send($message);
-			} catch (\Exception $e){
+			} catch (\Exception $e) {
 				\OC::$server->getLogger()->error(
 					__METHOD__ . ', exception: ' . $e->getMessage(),
 					['app' => 'files_antivirus']

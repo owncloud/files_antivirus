@@ -1,0 +1,12 @@
+{
+    "name": "owncloud/files_antivirus",
+    "description": "files_antivirus is an antivirus app for ownCloud based on ClamAV",
+    "config": {
+        "platform": {
+            "php": "5.6"
+        }
+    },
+    "require-dev": {
+        "owncloud/coding-standard": "^1.0"
+    }
+}

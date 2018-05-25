@@ -1,4 +1,4 @@
-<?php		
+<?php	
 style('files_antivirus', 'settings');
 script('files_antivirus', 'settings');
 ?>
@@ -9,7 +9,7 @@ script('files_antivirus', 'settings');
 			<p class="av_mode">
 				<label for="av_mode"><?php p($l->t('Mode'));?></label>
 				<select id="av_mode" name="avMode">
-					<?php print_unescaped(html_select_options(array('executable' => $l->t('Executable'), 'daemon' => $l->t('Daemon'), 'socket' => $l->t('Daemon (Socket)')), $_['avMode'])) ?>
+					<?php print_unescaped(html_select_options(['executable' => $l->t('Executable'), 'daemon' => $l->t('Daemon'), 'socket' => $l->t('Daemon (Socket)')], $_['avMode'])) ?>
 				</select>
 			</p>
 		    <p class="av_socket">
@@ -50,7 +50,7 @@ script('files_antivirus', 'settings');
 			</p>
 			<p class="infected_action">
 				<label for="av_infected_action"><?php p($l->t('When infected files were found during a background scan'));?></label>
-				<select id="av_infected_action" name="avInfectedAction"><?php print_unescaped(html_select_options(array('only_log' => $l->t('Only log'), 'delete' => $l->t('Delete file')), $_['avInfectedAction'])) ?></select>
+				<select id="av_infected_action" name="avInfectedAction"><?php print_unescaped(html_select_options(['only_log' => $l->t('Only log'), 'delete' => $l->t('Delete file')], $_['avInfectedAction'])) ?></select>
 			</p>
 			<button id="av_submit" type="button"><?php p($l->t('Save'));?></button>
 			<span id="antivirus_save_msg"></span>

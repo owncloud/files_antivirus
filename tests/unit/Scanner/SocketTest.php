@@ -23,8 +23,8 @@ class SocketTest extends TestBase {
 		;
 		$config->method('__call')
 			->will($this->returnCallback(
-				function ($methodName){
-					switch ($methodName){
+				function ($methodName) {
+					switch ($methodName) {
 						case 'getAvSocket':
 							return  '/some/wrong/socket.sock';
 						case 'getAvMode':

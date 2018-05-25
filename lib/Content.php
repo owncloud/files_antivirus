@@ -14,7 +14,6 @@
 namespace OCA\Files_Antivirus;
 
 class Content implements IScannable {
-	
 	protected $content;
 	
 	protected $currentPosition = 0;

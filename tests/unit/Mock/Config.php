@@ -7,7 +7,6 @@
  * See the COPYING-README file.
  */
 
-
 namespace OCA\Files_Antivirus\Tests\unit\Mock;
 
 use \OCA\Files_Antivirus\AppConfig;
@@ -22,7 +21,7 @@ class Config extends AppConfig {
 			'av_mode' => 'daemon',
 			'av_max_file_size' => '-1'
 		];
-		if (array_key_exists($key, $map)){
+		if (\array_key_exists($key, $map)) {
 			return $map[$key];
 		}
 		return '';

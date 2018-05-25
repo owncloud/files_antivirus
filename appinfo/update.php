@@ -11,7 +11,6 @@
  * @license AGPL-3.0
  */
 
-
 $installedVersion = \OC::$server->getConfig()->getAppValue(
 	'files_antivirus',
 	'installed_version'
