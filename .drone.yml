@@ -36,6 +36,9 @@ pipeline:
       #- make test-php-codecheck
       - make test-php-lint
       - make test-php-style
+    when:
+      matrix:
+        TEST_SUITE: phpunit
 
   phpunit:
     image: owncloudci/php:${PHP_VERSION}
@@ -74,7 +77,34 @@ pipeline:
     when:
       local: false
       matrix:
+        TEST_SUITE: phpunit
         PHP_VERSION: 7.0
+
+  fix-permissions:
+    image: owncloudci/php:${PHP_VERSION}
+    pull: true
+    commands:
+      - cd /var/www/owncloud/
+      - chown www-data * -R
+    when:
+      matrix:
+        TEST_SUITE: api-acceptance
+
+  api-acceptance-tests:
+    image: owncloudci/php:${PHP_VERSION}
+    pull: true
+    commands:
+      # dummy clamav required for unit tests
+      - php /var/www/owncloud/apps/files_antivirus/tests/util/avirserver.php&
+      # wait shortly for the server to be available
+      - wait-for-it 127.0.0.1:5555
+      # required to pass the acceptance tests which used the "dummy" clamscan
+      - ln -s /var/www/owncloud/apps/files_antivirus/tests/util/avir.sh /usr/bin/clamscan
+      - cd /var/www/owncloud/apps/files_antivirus/tests/acceptance
+      - su-exec www-data ./run.sh
+    when:
+      matrix:
+        TEST_SUITE: api-acceptance
 
   owncloud-log:
     image: owncloudci/php:${PHP_VERSION}
@@ -249,6 +279,52 @@ matrix:
     - PHP_VERSION: 7.2
       OC_VERSION: daily-master-qa
       TEST_SUITE: phpunit
+      DB_TYPE: mysql
+      DB_HOST: mysql
+      DB_NAME: oc_db
+      DB_USERNAME: admin
+      DB_PASSWORD: secret
+
+    #Acceptance tests
+    - PHP_VERSION: 5.6
+      OC_VERSION: daily-stable10-qa
+      TEST_SUITE: api-acceptance
+      DB_TYPE: mysql
+      DB_HOST: mysql
+      DB_NAME: oc_db
+      DB_USERNAME: admin
+      DB_PASSWORD: secret
+
+    - PHP_VERSION: 7.0
+      OC_VERSION: daily-stable10-qa
+      TEST_SUITE: api-acceptance
+      DB_TYPE: mysql
+      DB_HOST: mysql
+      DB_NAME: oc_db
+      DB_USERNAME: admin
+      DB_PASSWORD: secret
+
+    - PHP_VERSION: 7.1
+      OC_VERSION: daily-stable10-qa
+      TEST_SUITE: api-acceptance
+      DB_TYPE: mysql
+      DB_HOST: mysql
+      DB_NAME: oc_db
+      DB_USERNAME: admin
+      DB_PASSWORD: secret
+
+    - PHP_VERSION: 7.1
+      OC_VERSION: daily-master-qa
+      TEST_SUITE: api-acceptance
+      DB_TYPE: mysql
+      DB_HOST: mysql
+      DB_NAME: oc_db
+      DB_USERNAME: admin
+      DB_PASSWORD: secret
+
+    - PHP_VERSION: 7.2
+      OC_VERSION: daily-master-qa
+      TEST_SUITE: api-acceptance
       DB_TYPE: mysql
       DB_HOST: mysql
       DB_NAME: oc_db
