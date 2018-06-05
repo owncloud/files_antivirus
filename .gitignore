@@ -45,5 +45,6 @@ nbproject
 # Mac OS
 .DS_Store
 
+tests/acceptance/output
 tests/unit/clover.xml
 .php_cs.cache

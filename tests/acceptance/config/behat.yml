@@ -1,0 +1,24 @@
+default:
+  autoload:
+     '': %paths.base%/../features/bootstrap
+
+  suites:
+    apiAntivirus:
+      paths:
+        - %paths.base%/../features/apiAntivirus
+      context:
+        parameters:
+          ocPath: apps/testing/api/v1/occ
+      contexts:
+        - AntivirusContext:
+        - FeatureContext: &common_feature_context_params
+            baseUrl:  http://localhost:8080
+            adminUsername: admin
+            adminPassword: admin
+            regularUserPassword: 123456
+            ocPath: ../../../../
+
+  extensions:
+      jarnaiz\JUnitFormatter\JUnitFormatterExtension:
+          filename: report.xml
+          outputDir: %paths.base%/../output/

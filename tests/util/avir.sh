@@ -2,7 +2,8 @@
 
 content=$(tee)
 
-if [[ $content =~ .*kitten  ]]; then
+if [[ $content =~ .*kitten  ]]
+then
 	echo "Oh my god! : Kitten FOUND"
 	exit 1
 fi
