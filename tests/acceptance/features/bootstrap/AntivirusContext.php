@@ -21,7 +21,6 @@
  */
 
 use Behat\Behat\Context\Context;
-use Behat\Behat\Context\SnippetAcceptingContext;
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
 use TestHelpers\SetupHelper;
 
@@ -30,7 +29,7 @@ require_once 'bootstrap.php';
 /**
  * Defines test steps specific to the antivirus app
  */
-class AntivirusContext implements Context, SnippetAcceptingContext {
+class AntivirusContext implements Context {
 	use Logging;
 
 	/**
