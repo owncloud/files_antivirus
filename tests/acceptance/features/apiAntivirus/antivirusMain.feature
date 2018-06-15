@@ -6,6 +6,7 @@ Feature: Antivirus basic
 
 	Background:
 		Given the administrator has enabled the files_antivirus app
+		And the owncloud log level has been set to warning
 		And the owncloud log has been cleared
 		And user "user0" has been created
 
