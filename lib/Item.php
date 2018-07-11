@@ -263,7 +263,7 @@ class Item implements IScannable {
 	 * @param string $path optional
 	 */
 	public function logError($message, $id=null, $path=null) {
-		$ownerInfo = $this->view === null ? '' : 'Account: ' . $this->view->getOwner($path);
+		$ownerInfo = $this->view === null ? '' : ' Account: ' . $this->view->getOwner($path);
 		$extra = ' File: ' . ($id === null ? $this->id : $id)
 				. $ownerInfo
 				. ' Path: ' . ($path === null ? $this->path : $path);

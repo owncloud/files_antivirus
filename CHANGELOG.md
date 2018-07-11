@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
+## [0.13.0] - 2018-07-11
+### Fixed
+- Obey file size limits when uploads are chunked [#226](https://github.com/owncloud/files_antivirus/pull/226)
+- Don't log exceptions on virus detection [#219](https://github.com/owncloud/files_antivirus/pull/219)
+
+### Changed
+- Return HTTP status code `403` on virus detection [#219](https://github.com/owncloud/files_antivirus/pull/219)
+
 
 ## [0.12.0] - 2018-02-08
 
@@ -250,4 +258,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 - Initial implementation
 
+[Unreleased]: https://github.com/owncloud/files_antivirus/compare/v0.13.0...HEAD
+[0.13.0]: https://github.com/owncloud/files_antivirus/compare/v0.12.0...release/0.13.0
 [0.12.0]: https://github.com/owncloud/files_antivirus/compare/v0.11.2...release/0.12.0

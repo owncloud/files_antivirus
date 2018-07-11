@@ -40,7 +40,8 @@ Feature: Antivirus basic
 			| 1 | AAAAA |
 			| 2 | BBBBB |
 			| 3 | CCCCC |
-		Then as "user0" the file "/myChunkedFile.txt" should exist
+		Then the HTTP status code should be "200"
+		And as "user0" the file "/myChunkedFile.txt" should exist
 		And the content of file "/myChunkedFile.txt" for user "user0" should be "AAAAABBBBBCCCCC"
 
 	Scenario: A small file with a virus cannot be uploaded in chunks using API version 1 and old DAV path
@@ -50,7 +51,8 @@ Feature: Antivirus basic
 			| 1 | This kitten |
 			| 2 | is a nasty  |
 			| 3 | virus       |
-		Then the last lines of the log file should contain log-entries containing these attributes:
+		Then the HTTP status code should be "403"
+		And the last lines of the log file should contain log-entries containing these attributes:
 			| user  | app             | method | message               |
 			| user0 | files_antivirus | PUT    | Infected file deleted |
 		And as "user0" the file "/myChunkedFile.txt" should not exist
@@ -62,7 +64,8 @@ Feature: Antivirus basic
 			| 1 | AAAAA |
 			| 2 | BBBBB |
 			| 3 | CCCCC |
-		Then as "user0" the file "/myChunkedFile.txt" should exist
+		Then the HTTP status code should be "201"
+		And as "user0" the file "/myChunkedFile.txt" should exist
 		And the content of file "/myChunkedFile.txt" for user "user0" should be "AAAAABBBBBCCCCC"
 		Examples:
 			| api-version |
@@ -76,7 +79,8 @@ Feature: Antivirus basic
 			| 1 | This kitten |
 			| 2 | is a nasty  |
 			| 3 | virus       |
-		Then the last lines of the log file should contain log-entries containing these attributes:
+		Then the HTTP status code should be "403"
+		And the last lines of the log file should contain log-entries containing these attributes:
 			| user  | app             | method | message               |
 			| user0 | files_antivirus | MOVE   | Infected file deleted |
 		And as "user0" the file "/myChunkedFile.txt" should not exist
