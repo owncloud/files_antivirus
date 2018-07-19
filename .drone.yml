@@ -111,12 +111,11 @@ pipeline:
     image: owncloudci/php:${PHP_VERSION}
     pull: true
     commands:
-      # dummy clamav required for unit tests
-      - php /var/www/owncloud/apps/files_antivirus/tests/util/avirserver.php&
-      # wait shortly for the server to be available
-      - wait-for-it 127.0.0.1:5555
-      # required to pass the acceptance tests which used the "dummy" clamscan
-      - ln -s /var/www/owncloud/apps/files_antivirus/tests/util/avir.sh /usr/bin/clamscan
+      # set app settings
+      - cd /var/www/owncloud/
+      - su-exec www-data php occ config:app:set --value "clamav" files_antivirus av_host
+      - su-exec www-data php occ config:app:set --value "daemon" files_antivirus av_mode
+      - su-exec www-data php occ config:app:set --value "3310" files_antivirus av_port
       - cd /var/www/owncloud/apps/files_antivirus/tests/acceptance
       - su-exec www-data ./run.sh
     when:
@@ -192,6 +191,13 @@ services:
     when:
       matrix:
         TEST_OBJECTSTORAGE: true
+
+  clamav:
+    image: dinkel/clamavd
+    pull: true
+    when:
+      matrix:
+        TEST_SUITE: api-acceptance
 
 matrix:
   include:
