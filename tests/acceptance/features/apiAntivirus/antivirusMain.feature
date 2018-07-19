@@ -88,3 +88,36 @@ Feature: Antivirus basic
 			| api-version |
 			| 1           |
 			| 2           |
+
+	Scenario: A small file without a virus can be uploaded via public upload
+		Given as user "user0"
+		And user "user0" has created a public share of folder "FOLDER" with change permissions
+		When the public uploads file "data/textfile.txt" using the API
+		Then the HTTP status code should be "201"
+		And as "user0" the file "/FOLDER/textfile.txt" should exist
+
+	Scenario Outline: A small file with a virus cannot be uploaded via public upload
+		Given as user "user0"
+		And user "user0" has created a public share of folder "FOLDER" with change permissions
+		When the public uploads file "data/<virus-file-name>" using the API
+		Then the HTTP status code should be "403"
+		And the last lines of the log file should contain log-entries containing these attributes:
+			| user | app             | method | message               |
+			| --   | files_antivirus | PUT    | Infected file deleted |
+		And as "user0" the file "/FOLDER/<virus-file-name>" should not exist
+		Examples:
+			| virus-file-name |
+			| eicar.com       |
+			| eicar_com.zip   |
+			| eicarcom2.zip   |
+
+	Scenario: A file cannot be overwritten with a file containing a virus via public upload
+		Given as user "user0"
+		And user "user0" has created a public share of folder "FOLDER" with change permissions
+		When the public uploads file "data/textfile.txt" using the API
+		And the public overwrites file "textfile.txt" with content "X5O!P%@AP[4\PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*" using the API
+		Then the HTTP status code should be "403"
+		And the last lines of the log file should contain log-entries containing these attributes:
+			| user | app             | method | message               |
+			| --   | files_antivirus | PUT    | Infected file deleted |
+		And the content of file "/FOLDER/textfile.txt" for user "user0" should be "Small text file without virus."
