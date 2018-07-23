@@ -75,6 +75,7 @@ Feature: Antivirus file size
 		Then the HTTP status code should be "201"
 		And as "user0" the file "/FOLDER/eicar_com.zip" should exist
 
+	@skip @files_primary_s3#69
 	Scenario: Files smaller than the upload threshold are checked for viruses when uploaded overwriting via public upload
 		Given as user "user0"
 		And user "user0" has created a public share of folder "FOLDER" with change permissions
