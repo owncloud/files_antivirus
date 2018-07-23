@@ -22,7 +22,9 @@
 
 use Behat\Behat\Context\Context;
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
+use TestHelpers\AppConfigHelper;
 use TestHelpers\SetupHelper;
+use Behat\Behat\Hook\Scope\AfterScenarioScope;
 
 require_once 'bootstrap.php';
 
@@ -71,6 +73,23 @@ class AntivirusContext implements Context {
 			$this->featureContext->getAdminPassword(),
 			$this->featureContext->getBaseUrl(),
 			$suiteParameters['ocPath']
+		);
+	}
+
+	/**
+	 * @AfterScenario
+	 *
+	 * @param AfterScenarioScope $scope
+	 *
+	 * @return void
+	 */
+	public function tearDownScenario(AfterScenarioScope $scope) {
+		AppConfigHelper::modifyServerConfigs(
+			$this->featureContext->getBaseUrl(),
+			$this->featureContext->getAdminUsername(),
+			$this->featureContext->getAdminPassword(),
+			[['appid' => 'files_antivirus', 'configkey' => 'av_max_file_size', 'value'=>'-1']],
+			2
 		);
 	}
 }
