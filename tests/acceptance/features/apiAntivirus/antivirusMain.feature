@@ -111,6 +111,7 @@ Feature: Antivirus basic
 			| eicar_com.zip   |
 			| eicarcom2.zip   |
 
+	@skip @files_primary_s3#69
 	Scenario: A file cannot be overwritten with a file containing a virus via public upload
 		Given as user "user0"
 		And user "user0" has created a public share of folder "FOLDER" with change permissions
