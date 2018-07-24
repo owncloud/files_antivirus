@@ -12,7 +12,7 @@ Feature: Antivirus basic
 
 	Scenario Outline: A small file without a virus can be uploaded
 		Given using <dav-path-version> DAV path
-		When user "user0" uploads file "data/textfile.txt" to "/ok-textfile.txt" using the API
+		When user "user0" uploads file "data/textfile.txt" to "/ok-textfile.txt" using the WebDAV API
 		Then the HTTP status code should be "201"
 		And as "user0" the file "/ok-textfile.txt" should exist
 		And the content of file "/ok-textfile.txt" for user "user0" should be "Small text file without virus."
@@ -23,7 +23,7 @@ Feature: Antivirus basic
 
 	Scenario Outline: A small file with a virus cannot be uploaded
 		Given using <dav-path-version> DAV path
-		When user "user0" uploads file "data/eicar.com" to "/virusfile.txt" using the API
+		When user "user0" uploads file "data/eicar.com" to "/virusfile.txt" using the WebDAV API
 		Then the HTTP status code should be "403"
 		And the last lines of the log file should contain log-entries containing these attributes:
 			| user  | app             | method | message               |
@@ -37,7 +37,7 @@ Feature: Antivirus basic
 	Scenario Outline: A small file with a virus can be uploaded when the antivirus app is disabled
 		Given using <dav-path-version> DAV path
 		When the administrator disables the files_antivirus app
-		And user "user0" uploads file "data/eicar.com" to "/virusfile.txt" using the API
+		And user "user0" uploads file "data/eicar.com" to "/virusfile.txt" using the WebDAV API
 		Then the HTTP status code should be "201"
 		And the log file should not contain any log-entries containing these attributes:
 			| user  | app             | method | message               |
@@ -50,7 +50,7 @@ Feature: Antivirus basic
 
 	Scenario Outline: A small file without a virus can be uploaded in chunks
 		Given using <dav-path-version> DAV path
-		When user "user0" uploads the following chunks to "/myChunkedFile.txt" with <dav-path-version> chunking and using the API
+		When user "user0" uploads the following chunks to "/myChunkedFile.txt" with <dav-path-version> chunking and using the WebDAV API
 			| 1 | AAAAA |
 			| 2 | BBBBB |
 			| 3 | CCCCC |
@@ -64,7 +64,7 @@ Feature: Antivirus basic
 
 	Scenario Outline: A small file with a virus cannot be uploaded in chunks
 		Given using <dav-path-version> DAV path
-		When user "user0" uploads the following chunks to "/myChunkedFile.txt" with <dav-path-version> chunking and using the API
+		When user "user0" uploads the following chunks to "/myChunkedFile.txt" with <dav-path-version> chunking and using the WebDAV API
 			| 1 | X5O!P%@AP[4\PZX54(P^)7C |
 			| 2 | C)7}$EICAR-STANDARD-ANT |
 			| 3 | IVIRUS-TEST-FILE!$H+H*  |
@@ -81,14 +81,14 @@ Feature: Antivirus basic
 	Scenario: A small file without a virus can be uploaded via public upload
 		Given as user "user0"
 		And user "user0" has created a public share of folder "FOLDER" with change permissions
-		When the public uploads file "data/textfile.txt" using the API
+		When the public uploads file "data/textfile.txt" using the old WebDAV API
 		Then the HTTP status code should be "201"
 		And as "user0" the file "/FOLDER/textfile.txt" should exist
 
 	Scenario Outline: A small file with a virus cannot be uploaded via public upload
 		Given as user "user0"
 		And user "user0" has created a public share of folder "FOLDER" with change permissions
-		When the public uploads file "data/<virus-file-name>" using the API
+		When the public uploads file "data/<virus-file-name>" using the old WebDAV API
 		Then the HTTP status code should be "403"
 		And the last lines of the log file should contain log-entries containing these attributes:
 			| user | app             | method | message               |
@@ -104,8 +104,8 @@ Feature: Antivirus basic
 	Scenario: A file cannot be overwritten with a file containing a virus via public upload
 		Given as user "user0"
 		And user "user0" has created a public share of folder "FOLDER" with change permissions
-		When the public uploads file "data/textfile.txt" using the API
-		And the public overwrites file "textfile.txt" with content "X5O!P%@AP[4\PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*" using the API
+		When the public uploads file "data/textfile.txt" using the old WebDAV API
+		And the public overwrites file "textfile.txt" with content "X5O!P%@AP[4\PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*" using the old WebDAV API
 		Then the HTTP status code should be "403"
 		And the last lines of the log file should contain log-entries containing these attributes:
 			| user | app             | method | message               |
