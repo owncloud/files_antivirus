@@ -24,7 +24,6 @@ use Behat\Behat\Context\Context;
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
 use TestHelpers\AppConfigHelper;
 use TestHelpers\SetupHelper;
-use Behat\Behat\Hook\Scope\AfterScenarioScope;
 
 require_once 'bootstrap.php';
 
@@ -40,6 +39,13 @@ class AntivirusContext implements Context {
 	private $featureContext;
 
 	/**
+	 * The relative path from the core tests/acceptance folder to the test data folder.
+	 *
+	 * @var string
+	 */
+	private $relativePathToTestDataFolder = '../../apps/files_antivirus/tests/acceptance/data/';
+
+	/**
 	 * @When /^the administrator (enables|disables) the files_antivirus app$/
 	 * @Given /^the administrator (has enabled|has disabled) the files_antivirus app$/
 	 *
@@ -53,6 +59,34 @@ class AntivirusContext implements Context {
 		} else {
 			$this->featureContext->invokingTheCommand("app:disable files_antivirus");
 		}
+	}
+
+	/**
+	 * @When user :user uploads file :source from the antivirus test data folder to :destination using the WebDAV API
+	 * @Given user :user has uploaded file :source from the antivirus test data folder to :destination
+	 *
+	 * @param string $user
+	 * @param string $source
+	 * @param string $destination
+	 *
+	 * @return void
+	 */
+	public function userUploadsFileFromAntivirusDataFolderTo($user, $source, $destination) {
+		$source = $this->relativePathToTestDataFolder . $source;
+		$this->featureContext->userUploadsAFileTo($user, $source, $destination);
+	}
+
+	/**
+	 * @When the public uploads file ":filename" from the antivirus test data folder using the old WebDAV API
+	 * @Given the public has uploaded file ":filename" from the antivirus test data folder
+	 *
+	 * @param string $source target file name
+	 *
+	 * @return void
+	 */
+	public function publicUploadsFileFromAntivirusDataFolder($source) {
+		$source = $this->relativePathToTestDataFolder . $source;
+		$this->featureContext->publiclyUploadingFile($source);
 	}
 
 	/**
