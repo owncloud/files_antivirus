@@ -67,23 +67,20 @@ class AntivirusContext implements Context {
 		$environment = $scope->getEnvironment();
 		// Get all the contexts you need in this context
 		$this->featureContext = $environment->getContext('FeatureContext');
-		$suiteParameters = SetupHelper::getSuiteParameters($scope);
 		SetupHelper::init(
 			$this->featureContext->getAdminUsername(),
 			$this->featureContext->getAdminPassword(),
 			$this->featureContext->getBaseUrl(),
-			$suiteParameters['ocPath']
+			$this->featureContext->getOcPath()
 		);
 	}
 
 	/**
 	 * @AfterScenario
 	 *
-	 * @param AfterScenarioScope $scope
-	 *
 	 * @return void
 	 */
-	public function tearDownScenario(AfterScenarioScope $scope) {
+	public function tearDownScenario() {
 		AppConfigHelper::modifyServerConfigs(
 			$this->featureContext->getBaseUrl(),
 			$this->featureContext->getAdminUsername(),
