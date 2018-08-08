@@ -6,9 +6,6 @@ default:
     apiAntivirus:
       paths:
         - %paths.base%/../features/apiAntivirus
-      context:
-        parameters:
-          ocPath: apps/testing/api/v1/occ
       contexts:
         - AntivirusContext:
         - FeatureContext: &common_feature_context_params
@@ -16,7 +13,7 @@ default:
             adminUsername: admin
             adminPassword: admin
             regularUserPassword: 123456
-            ocPath: ../../../../
+            ocPath: apps/testing/api/v1/occ
 
   extensions:
       jarnaiz\JUnitFormatter\JUnitFormatterExtension:

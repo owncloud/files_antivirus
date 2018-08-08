@@ -12,7 +12,7 @@ Feature: Antivirus file size
 
 	Scenario: Files smaller than the upload threshold are checked for viruses
 		Given parameter "av_max_file_size" of app "files_antivirus" has been set to "100"
-		When user "user0" uploads file "data/eicar.com" to "/virusfile.txt" using the WebDAV API
+		When user "user0" uploads file "eicar.com" from the antivirus test data folder to "/virusfile.txt" using the WebDAV API
 		Then the HTTP status code should be "403"
 		And the last lines of the log file should contain log-entries containing these attributes:
 			| user  | app             | method | message               |
@@ -21,7 +21,7 @@ Feature: Antivirus file size
 
 	Scenario: Files bigger than the upload threshold are not checked for viruses
 		Given parameter "av_max_file_size" of app "files_antivirus" has been set to "100"
-		When user "user0" uploads file "data/eicar_com.zip" to "/virusfile.txt" using the WebDAV API
+		When user "user0" uploads file "eicar_com.zip" from the antivirus test data folder to "/virusfile.txt" using the WebDAV API
 		Then the HTTP status code should be "201"
 		And as "user0" the file "/virusfile.txt" should exist
 
@@ -60,7 +60,7 @@ Feature: Antivirus file size
 		Given as user "user0"
 		And user "user0" has created a public share of folder "FOLDER" with change permissions
 		And parameter "av_max_file_size" of app "files_antivirus" has been set to "100"
-		When the public uploads file "data/eicar.com" using the old WebDAV API
+		When the public uploads file "eicar.com" from the antivirus test data folder using the old WebDAV API
 		Then the HTTP status code should be "403"
 		And the last lines of the log file should contain log-entries containing these attributes:
 			| user | app             | method | message               |
@@ -71,7 +71,7 @@ Feature: Antivirus file size
 		Given as user "user0"
 		And user "user0" has created a public share of folder "FOLDER" with change permissions
 		And parameter "av_max_file_size" of app "files_antivirus" has been set to "100"
-		When the public uploads file "data/eicar_com.zip" using the old WebDAV API
+		When the public uploads file "eicar_com.zip" from the antivirus test data folder using the old WebDAV API
 		Then the HTTP status code should be "201"
 		And as "user0" the file "/FOLDER/eicar_com.zip" should exist
 
@@ -80,7 +80,7 @@ Feature: Antivirus file size
 		Given as user "user0"
 		And user "user0" has created a public share of folder "FOLDER" with change permissions
 		And parameter "av_max_file_size" of app "files_antivirus" has been set to "100"
-		When the public uploads file "data/textfile.txt" using the old WebDAV API
+		When the public uploads file "textfile.txt" from the antivirus test data folder using the old WebDAV API
 		And the public overwrites file "textfile.txt" with content "X5O!P%@AP[4\PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*" using the old WebDAV API
 		Then the HTTP status code should be "403"
 		And the last lines of the log file should contain log-entries containing these attributes:
@@ -92,7 +92,7 @@ Feature: Antivirus file size
 		Given as user "user0"
 		And user "user0" has created a public share of folder "FOLDER" with change permissions
 		And parameter "av_max_file_size" of app "files_antivirus" has been set to "60"
-		When the public uploads file "data/textfile.txt" using the old WebDAV API
+		When the public uploads file "textfile.txt" from the antivirus test data folder using the old WebDAV API
 		And the public overwrites file "textfile.txt" with content "X5O!P%@AP[4\PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*" using the old WebDAV API
 		Then the HTTP status code should be "204"
 		And the content of file "/FOLDER/textfile.txt" for user "user0" should be "X5O!P%@AP[4\PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*"

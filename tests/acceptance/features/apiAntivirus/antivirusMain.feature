@@ -12,7 +12,7 @@ Feature: Antivirus basic
 
 	Scenario Outline: A small file without a virus can be uploaded
 		Given using <dav-path-version> DAV path
-		When user "user0" uploads file "data/textfile.txt" to "/ok-textfile.txt" using the WebDAV API
+		When user "user0" uploads file "textfile.txt" from the antivirus test data folder to "/ok-textfile.txt" using the WebDAV API
 		Then the HTTP status code should be "201"
 		And as "user0" the file "/ok-textfile.txt" should exist
 		And the content of file "/ok-textfile.txt" for user "user0" should be "Small text file without virus."
@@ -23,7 +23,7 @@ Feature: Antivirus basic
 
 	Scenario Outline: A small file with a virus cannot be uploaded
 		Given using <dav-path-version> DAV path
-		When user "user0" uploads file "data/eicar.com" to "/virusfile.txt" using the WebDAV API
+		When user "user0" uploads file "eicar.com" from the antivirus test data folder to "/virusfile.txt" using the WebDAV API
 		Then the HTTP status code should be "403"
 		And the last lines of the log file should contain log-entries containing these attributes:
 			| user  | app             | method | message               |
@@ -37,7 +37,7 @@ Feature: Antivirus basic
 	Scenario Outline: A small file with a virus can be uploaded when the antivirus app is disabled
 		Given using <dav-path-version> DAV path
 		When the administrator disables the files_antivirus app
-		And user "user0" uploads file "data/eicar.com" to "/virusfile.txt" using the WebDAV API
+		And user "user0" uploads file "eicar.com" from the antivirus test data folder to "/virusfile.txt" using the WebDAV API
 		Then the HTTP status code should be "201"
 		And the log file should not contain any log-entries containing these attributes:
 			| user  | app             | method | message               |
@@ -81,14 +81,14 @@ Feature: Antivirus basic
 	Scenario: A small file without a virus can be uploaded via public upload
 		Given as user "user0"
 		And user "user0" has created a public share of folder "FOLDER" with change permissions
-		When the public uploads file "data/textfile.txt" using the old WebDAV API
+		When the public uploads file "textfile.txt" from the antivirus test data folder using the old WebDAV API
 		Then the HTTP status code should be "201"
 		And as "user0" the file "/FOLDER/textfile.txt" should exist
 
 	Scenario Outline: A small file with a virus cannot be uploaded via public upload
 		Given as user "user0"
 		And user "user0" has created a public share of folder "FOLDER" with change permissions
-		When the public uploads file "data/<virus-file-name>" using the old WebDAV API
+		When the public uploads file "<virus-file-name>" from the antivirus test data folder using the old WebDAV API
 		Then the HTTP status code should be "403"
 		And the last lines of the log file should contain log-entries containing these attributes:
 			| user | app             | method | message               |
@@ -104,7 +104,7 @@ Feature: Antivirus basic
 	Scenario: A file cannot be overwritten with a file containing a virus via public upload
 		Given as user "user0"
 		And user "user0" has created a public share of folder "FOLDER" with change permissions
-		When the public uploads file "data/textfile.txt" using the old WebDAV API
+		When the public uploads file "textfile.txt" from the antivirus test data folder using the old WebDAV API
 		And the public overwrites file "textfile.txt" with content "X5O!P%@AP[4\PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*" using the old WebDAV API
 		Then the HTTP status code should be "403"
 		And the last lines of the log file should contain log-entries containing these attributes:
