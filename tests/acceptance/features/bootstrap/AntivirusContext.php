@@ -39,11 +39,13 @@ class AntivirusContext implements Context {
 	private $featureContext;
 
 	/**
-	 * The relative path from the core tests/acceptance folder to the test data folder.
+	 * The relative path from the core tests/acceptance folder to the test data
+	 * folder.
 	 *
 	 * @var string
 	 */
-	private $relativePathToTestDataFolder = '../../apps/files_antivirus/tests/acceptance/data/';
+	private $relativePathToTestDataFolder
+		= '../../apps/files_antivirus/tests/acceptance/data/';
 
 	/**
 	 * @When /^the administrator (enables|disables) the files_antivirus app$/
@@ -71,7 +73,9 @@ class AntivirusContext implements Context {
 	 *
 	 * @return void
 	 */
-	public function userUploadsFileFromAntivirusDataFolderTo($user, $source, $destination) {
+	public function userUploadsFileFromAntivirusDataFolderTo(
+		$user, $source, $destination
+	) {
 		$source = $this->relativePathToTestDataFolder . $source;
 		$this->featureContext->userUploadsAFileTo($user, $source, $destination);
 	}
@@ -119,7 +123,11 @@ class AntivirusContext implements Context {
 			$this->featureContext->getBaseUrl(),
 			$this->featureContext->getAdminUsername(),
 			$this->featureContext->getAdminPassword(),
-			[['appid' => 'files_antivirus', 'configkey' => 'av_max_file_size', 'value'=>'-1']],
+			[[
+				'appid' => 'files_antivirus',
+				'configkey' => 'av_max_file_size',
+				'value' => '-1'
+			]],
 			2
 		);
 	}
