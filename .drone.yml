@@ -38,11 +38,14 @@ pipeline:
     image: owncloudci/php:${PHP_VERSION}
     pull: true
     commands:
+      - cd /var/www/owncloud/apps
+      - git clone https://github.com/owncloud/testing.git
       - cd /var/www/owncloud/apps/files_antivirus
       - make
       - cd /var/www/owncloud/
       - php occ app:list
       - php occ app:enable files_antivirus
+      - php occ app:enable testing
       - php occ app:list
       - php occ log:manage --level 0
 
