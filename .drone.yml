@@ -43,6 +43,7 @@ pipeline:
       - cd /var/www/owncloud/
       - php occ app:list
       - php occ app:enable files_antivirus
+      - php occ app:enable testing
       - php occ app:list
       - php occ config:system:set trusted_domains 1 --value=server
       - php occ log:manage --level 0
@@ -130,7 +131,7 @@ pipeline:
       - su-exec www-data php occ config:app:set --value "3310" files_antivirus av_port
       - cd /var/www/owncloud/tests/acceptance
       - chmod +x run.sh
-      - su-exec www-data ./run.sh --config /var/www/owncloud/apps/files_antivirus/tests/acceptance/config/behat.yml
+      - ./run.sh --config /var/www/owncloud/apps/files_antivirus/tests/acceptance/config/behat.yml
     when:
       matrix:
         TEST_SUITE: api-acceptance
