@@ -119,7 +119,7 @@ class AntivirusContext implements Context {
 	 * @return void
 	 */
 	public function tearDownScenario() {
-		AppConfigHelper::modifyServerConfigs(
+		AppConfigHelper::modifyAppConfigs(
 			$this->featureContext->getBaseUrl(),
 			$this->featureContext->getAdminUsername(),
 			$this->featureContext->getAdminPassword(),
