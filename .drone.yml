@@ -44,7 +44,15 @@ pipeline:
       - php occ app:list
       - php occ app:enable files_antivirus
       - php occ app:list
+      - php occ config:system:set trusted_domains 1 --value=server
       - php occ log:manage --level 0
+
+  owncloud-log:
+    image: owncloud/ubuntu:16.04
+    detach: true
+    pull: true
+    commands:
+    - tail -f /var/www/owncloud/data/owncloud.log
 
   code-compliance-check:
     image: owncloudci/php:${PHP_VERSION}
@@ -112,6 +120,7 @@ pipeline:
     image: owncloudci/php:${PHP_VERSION}
     pull: true
     environment:
+      - TEST_SERVER_URL=http://server
       - BEHAT_SUITE=${BEHAT_SUITE}
     commands:
       # set app settings
@@ -125,14 +134,6 @@ pipeline:
     when:
       matrix:
         TEST_SUITE: api-acceptance
-
-  owncloud-log:
-    image: owncloudci/php:${PHP_VERSION}
-    pull: true
-    commands:
-      - cat /var/www/owncloud/data/owncloud.log
-    when:
-      status: [ failure ]
 
   notify:
     image: plugins/slack:1
@@ -202,6 +203,16 @@ services:
     when:
       matrix:
         TEST_SUITE: api-acceptance
+
+  server:
+    image: owncloudci/php:${PHP_VERSION}
+    pull: true
+    environment:
+    - APACHE_WEBROOT=/var/www/owncloud
+    command: [ "/usr/local/bin/apachectl", "-e", "debug" , "-D", "FOREGROUND" ]
+    when:
+      matrix:
+        USE_SERVER: true
 
 matrix:
   include:
@@ -335,6 +346,7 @@ matrix:
       OC_VERSION: daily-stable10-qa
       TEST_SUITE: api-acceptance
       BEHAT_SUITE: apiAntivirus
+      USE_SERVER: true
       DB_TYPE: mysql
       DB_HOST: mysql
       DB_NAME: oc_db
@@ -345,6 +357,7 @@ matrix:
       OC_VERSION: daily-stable10-qa
       TEST_SUITE: api-acceptance
       BEHAT_SUITE: apiAntivirus
+      USE_SERVER: true
       DB_TYPE: mysql
       DB_HOST: mysql
       DB_NAME: oc_db
@@ -355,6 +368,7 @@ matrix:
       OC_VERSION: daily-stable10-qa
       TEST_SUITE: api-acceptance
       BEHAT_SUITE: apiAntivirus
+      USE_SERVER: true
       DB_TYPE: mysql
       DB_HOST: mysql
       DB_NAME: oc_db
@@ -365,6 +379,7 @@ matrix:
       OC_VERSION: daily-master-qa
       TEST_SUITE: api-acceptance
       BEHAT_SUITE: apiAntivirus
+      USE_SERVER: true
       DB_TYPE: mysql
       DB_HOST: mysql
       DB_NAME: oc_db
@@ -375,6 +390,7 @@ matrix:
       OC_VERSION: daily-master-qa
       TEST_SUITE: api-acceptance
       BEHAT_SUITE: apiAntivirus
+      USE_SERVER: true
       DB_TYPE: mysql
       DB_HOST: mysql
       DB_NAME: oc_db
@@ -387,6 +403,7 @@ matrix:
       OC_VERSION: daily-stable10-qa
       TEST_SUITE: api-acceptance
       BEHAT_SUITE: apiAntivirus
+      USE_SERVER: true
       DB_TYPE: mysql
       DB_HOST: mysql
       DB_NAME: oc_db
@@ -398,6 +415,7 @@ matrix:
       OC_VERSION: daily-master-qa
       TEST_SUITE: api-acceptance
       BEHAT_SUITE: apiAntivirus
+      USE_SERVER: true
       DB_TYPE: mysql
       DB_HOST: mysql
       DB_NAME: oc_db
