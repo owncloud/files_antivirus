@@ -107,6 +107,18 @@ pipeline:
         TEST_SUITE: phpunit
         PHP_VERSION: 7.0
 
+  configure-app:
+    image: owncloudci/php:${PHP_VERSION}
+    pull: true
+    commands:
+      - cd /var/www/owncloud/
+      - php occ config:app:set --value "clamav" files_antivirus av_host
+      - php occ config:app:set --value "daemon" files_antivirus av_mode
+      - php occ config:app:set --value "3310" files_antivirus av_port
+    when:
+      matrix:
+        TEST_SUITE: api-acceptance
+
   fix-permissions:
     image: owncloudci/php:${PHP_VERSION}
     pull: true
@@ -124,11 +136,6 @@ pipeline:
       - TEST_SERVER_URL=http://server
       - BEHAT_SUITE=${BEHAT_SUITE}
     commands:
-      # set app settings
-      - cd /var/www/owncloud/
-      - su-exec www-data php occ config:app:set --value "clamav" files_antivirus av_host
-      - su-exec www-data php occ config:app:set --value "daemon" files_antivirus av_mode
-      - su-exec www-data php occ config:app:set --value "3310" files_antivirus av_port
       - cd /var/www/owncloud/tests/acceptance
       - chmod +x run.sh
       - ./run.sh --config /var/www/owncloud/apps/files_antivirus/tests/acceptance/config/behat.yml
