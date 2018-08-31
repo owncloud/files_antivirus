@@ -54,13 +54,13 @@ Feature: Antivirus basic
 			| 1 | AAAAA |
 			| 2 | BBBBB |
 			| 3 | CCCCC |
-		Then the HTTP status code should be "<http-status-code>"
+		Then the HTTP status code should be "201"
 		And as "user0" the file "/myChunkedFile.txt" should exist
 		And the content of file "/myChunkedFile.txt" for user "user0" should be "AAAAABBBBBCCCCC"
 		Examples:
-			| dav-path-version | http-status-code |
-			| old              | 200              |
-			| new              | 201              |
+			| dav-path-version |
+			| old              |
+			| new              |
 
 	Scenario Outline: A small file with a virus cannot be uploaded in chunks
 		Given using <dav-path-version> DAV path

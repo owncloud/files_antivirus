@@ -49,12 +49,12 @@ Feature: Antivirus file size
 			| 1 | X5O!P%@AP[4\PZX54(P^)7C |
 			| 2 | C)7}$EICAR-STANDARD-ANT |
 			| 3 | IVIRUS-TEST-FILE!$H+H*  |
-		Then the HTTP status code should be "<http-status-code>"
+		Then the HTTP status code should be "201"
 		And as "user0" the file "/myChunkedFile.txt" should exist
 		Examples:
-			| dav-path-version | http-status-code |
-			| old              | 200              |
-			| new              | 201              |
+			| dav-path-version |
+			| old              |
+			| new              |
 
 	Scenario: Files smaller than the upload threshold are checked for viruses when uploaded via public upload
 		Given as user "user0"
