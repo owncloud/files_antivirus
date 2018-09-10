@@ -7,3 +7,4 @@ file_filter = <lang>/files_antivirus.po
 source_file = templates/files_antivirus.pot
 source_lang = en
 type = PO
+
