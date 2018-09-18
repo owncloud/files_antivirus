@@ -80,14 +80,14 @@ Feature: Antivirus basic
 
 	Scenario: A small file without a virus can be uploaded via public upload
 		Given as user "user0"
-		And user "user0" has created a public share of folder "FOLDER" with change permissions
+		And user "user0" has created a public link share of folder "FOLDER" with change permissions
 		When the public uploads file "textfile.txt" from the antivirus test data folder using the old WebDAV API
 		Then the HTTP status code should be "201"
 		And as "user0" the file "/FOLDER/textfile.txt" should exist
 
 	Scenario Outline: A small file with a virus cannot be uploaded via public upload
 		Given as user "user0"
-		And user "user0" has created a public share of folder "FOLDER" with change permissions
+		And user "user0" has created a public link share of folder "FOLDER" with change permissions
 		When the public uploads file "<virus-file-name>" from the antivirus test data folder using the old WebDAV API
 		Then the HTTP status code should be "403"
 		And the last lines of the log file should contain log-entries containing these attributes:
@@ -103,7 +103,7 @@ Feature: Antivirus basic
 	@skip @files_primary_s3#69
 	Scenario: A file cannot be overwritten with a file containing a virus via public upload
 		Given as user "user0"
-		And user "user0" has created a public share of folder "FOLDER" with change permissions
+		And user "user0" has created a public link share of folder "FOLDER" with change permissions
 		When the public uploads file "textfile.txt" from the antivirus test data folder using the old WebDAV API
 		And the public overwrites file "textfile.txt" with content "X5O!P%@AP[4\PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*" using the old WebDAV API
 		Then the HTTP status code should be "403"
