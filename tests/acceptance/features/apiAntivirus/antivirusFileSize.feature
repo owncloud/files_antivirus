@@ -58,7 +58,7 @@ Feature: Antivirus file size
 
 	Scenario: Files smaller than the upload threshold are checked for viruses when uploaded via public upload
 		Given as user "user0"
-		And user "user0" has created a public share of folder "FOLDER" with change permissions
+		And user "user0" has created a public link share of folder "FOLDER" with change permissions
 		And parameter "av_max_file_size" of app "files_antivirus" has been set to "100"
 		When the public uploads file "eicar.com" from the antivirus test data folder using the old WebDAV API
 		Then the HTTP status code should be "403"
@@ -69,7 +69,7 @@ Feature: Antivirus file size
 
 	Scenario: Files bigger than the upload threshold are not checked for viruses when uploaded via public upload
 		Given as user "user0"
-		And user "user0" has created a public share of folder "FOLDER" with change permissions
+		And user "user0" has created a public link share of folder "FOLDER" with change permissions
 		And parameter "av_max_file_size" of app "files_antivirus" has been set to "100"
 		When the public uploads file "eicar_com.zip" from the antivirus test data folder using the old WebDAV API
 		Then the HTTP status code should be "201"
@@ -78,7 +78,7 @@ Feature: Antivirus file size
 	@skip @files_primary_s3#69
 	Scenario: Files smaller than the upload threshold are checked for viruses when uploaded overwriting via public upload
 		Given as user "user0"
-		And user "user0" has created a public share of folder "FOLDER" with change permissions
+		And user "user0" has created a public link share of folder "FOLDER" with change permissions
 		And parameter "av_max_file_size" of app "files_antivirus" has been set to "100"
 		When the public uploads file "textfile.txt" from the antivirus test data folder using the old WebDAV API
 		And the public overwrites file "textfile.txt" with content "X5O!P%@AP[4\PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*" using the old WebDAV API
@@ -90,7 +90,7 @@ Feature: Antivirus file size
 
 	Scenario: Files bigger than the upload threshold are not checked for viruses when uploaded overwriting via public upload
 		Given as user "user0"
-		And user "user0" has created a public share of folder "FOLDER" with change permissions
+		And user "user0" has created a public link share of folder "FOLDER" with change permissions
 		And parameter "av_max_file_size" of app "files_antivirus" has been set to "60"
 		When the public uploads file "textfile.txt" from the antivirus test data folder using the old WebDAV API
 		And the public overwrites file "textfile.txt" with content "X5O!P%@AP[4\PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*" using the old WebDAV API
