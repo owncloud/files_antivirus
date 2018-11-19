@@ -17,13 +17,13 @@ Feature: Antivirus file size
     And the last lines of the log file should contain log-entries containing these attributes:
       | user  | app             | method | message               |
       | user0 | files_antivirus | PUT    | Infected file deleted |
-    And as "user0" the file "/virusfile.txt" should not exist
+    And as "user0" file "/virusfile.txt" should not exist
 
   Scenario: Files bigger than the upload threshold are not checked for viruses
     Given parameter "av_max_file_size" of app "files_antivirus" has been set to "100"
     When user "user0" uploads file "eicar_com.zip" from the antivirus test data folder to "/virusfile.txt" using the WebDAV API
     Then the HTTP status code should be "201"
-    And as "user0" the file "/virusfile.txt" should exist
+    And as "user0" file "/virusfile.txt" should exist
 
   Scenario Outline: Files smaller than the upload threshold are checked for viruses when using chunking
     Given parameter "av_max_file_size" of app "files_antivirus" has been set to "100"
@@ -36,7 +36,7 @@ Feature: Antivirus file size
     And the last lines of the log file should contain log-entries containing these attributes:
       | user  | app             | message               |
       | user0 | files_antivirus | Infected file deleted |
-    And as "user0" the file "/myChunkedFile.txt" should not exist
+    And as "user0" file "/myChunkedFile.txt" should not exist
     Examples:
       | dav-path-version |
       | old              |
@@ -50,7 +50,7 @@ Feature: Antivirus file size
       | 2 | C)7}$EICAR-STANDARD-ANT |
       | 3 | IVIRUS-TEST-FILE!$H+H*  |
     Then the HTTP status code should be "201"
-    And as "user0" the file "/myChunkedFile.txt" should exist
+    And as "user0" file "/myChunkedFile.txt" should exist
     Examples:
       | dav-path-version |
       | old              |
@@ -65,7 +65,7 @@ Feature: Antivirus file size
     And the last lines of the log file should contain log-entries containing these attributes:
       | user | app             | method | message               |
       | --   | files_antivirus | PUT    | Infected file deleted |
-    And as "user0" the file "/FOLDER/eicar.com" should not exist
+    And as "user0" file "/FOLDER/eicar.com" should not exist
 
   Scenario: Files bigger than the upload threshold are not checked for viruses when uploaded via public upload
     Given as user "user0"
@@ -73,7 +73,7 @@ Feature: Antivirus file size
     And parameter "av_max_file_size" of app "files_antivirus" has been set to "100"
     When the public uploads file "eicar_com.zip" from the antivirus test data folder using the old WebDAV API
     Then the HTTP status code should be "201"
-    And as "user0" the file "/FOLDER/eicar_com.zip" should exist
+    And as "user0" file "/FOLDER/eicar_com.zip" should exist
 
   @skip @files_primary_s3#69
   Scenario: Files smaller than the upload threshold are checked for viruses when uploaded overwriting via public upload
