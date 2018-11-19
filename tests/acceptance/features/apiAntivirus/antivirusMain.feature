@@ -14,7 +14,7 @@ Feature: Antivirus basic
     Given using <dav-path-version> DAV path
     When user "user0" uploads file "textfile.txt" from the antivirus test data folder to "/ok-textfile.txt" using the WebDAV API
     Then the HTTP status code should be "201"
-    And as "user0" the file "/ok-textfile.txt" should exist
+    And as "user0" file "/ok-textfile.txt" should exist
     And the content of file "/ok-textfile.txt" for user "user0" should be "Small text file without virus."
     Examples:
       | dav-path-version |
@@ -28,7 +28,7 @@ Feature: Antivirus basic
     And the last lines of the log file should contain log-entries containing these attributes:
       | user  | app             | method | message               |
       | user0 | files_antivirus | PUT    | Infected file deleted |
-    And as "user0" the file "/virusfile.txt" should not exist
+    And as "user0" file "/virusfile.txt" should not exist
     Examples:
       | dav-path-version |
       | old              |
@@ -42,7 +42,7 @@ Feature: Antivirus basic
     And the log file should not contain any log-entries containing these attributes:
       | user  | app             | method | message               |
       | user0 | files_antivirus | PUT    | Infected file deleted |
-    And as "user0" the file "/virusfile.txt" should exist
+    And as "user0" file "/virusfile.txt" should exist
     Examples:
       | dav-path-version |
       | old              |
@@ -55,7 +55,7 @@ Feature: Antivirus basic
       | 2 | BBBBB |
       | 3 | CCCCC |
     Then the HTTP status code should be "201"
-    And as "user0" the file "/myChunkedFile.txt" should exist
+    And as "user0" file "/myChunkedFile.txt" should exist
     And the content of file "/myChunkedFile.txt" for user "user0" should be "AAAAABBBBBCCCCC"
     Examples:
       | dav-path-version |
@@ -72,7 +72,7 @@ Feature: Antivirus basic
     And the last lines of the log file should contain log-entries containing these attributes:
       | user  | app             | message               |
       | user0 | files_antivirus | Infected file deleted |
-    And as "user0" the file "/myChunkedFile.txt" should not exist
+    And as "user0" file "/myChunkedFile.txt" should not exist
     Examples:
       | dav-path-version |
       | old              |
@@ -83,7 +83,7 @@ Feature: Antivirus basic
     And user "user0" has created a public link share of folder "FOLDER" with change permissions
     When the public uploads file "textfile.txt" from the antivirus test data folder using the old WebDAV API
     Then the HTTP status code should be "201"
-    And as "user0" the file "/FOLDER/textfile.txt" should exist
+    And as "user0" file "/FOLDER/textfile.txt" should exist
 
   Scenario Outline: A small file with a virus cannot be uploaded via public upload
     Given as user "user0"
@@ -93,7 +93,7 @@ Feature: Antivirus basic
     And the last lines of the log file should contain log-entries containing these attributes:
       | user | app             | method | message               |
       | --   | files_antivirus | PUT    | Infected file deleted |
-    And as "user0" the file "/FOLDER/<virus-file-name>" should not exist
+    And as "user0" file "/FOLDER/<virus-file-name>" should not exist
     Examples:
       | virus-file-name |
       | eicar.com       |
