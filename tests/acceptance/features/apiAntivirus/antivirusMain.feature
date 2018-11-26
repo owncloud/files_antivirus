@@ -78,6 +78,19 @@ Feature: Antivirus basic
       | old              |
       | new              |
 
+  Scenario: A small file with a virus cannot be uploaded in chunks (use async move to upload)
+    Given using new DAV path
+    And the administrator has enabled async operations
+    And user "user0" has created a new chunking upload with id "chunking-42"
+    And user "user0" has uploaded new chunk file "1" with "X5O!P%@AP[4\PZX54(P^)7C" to id "chunking-42"
+    And user "user0" has uploaded new chunk file "2" with "C)7}$EICAR-STANDARD-ANT" to id "chunking-42"
+    And user "user0" has uploaded new chunk file "3" with "IVIRUS-TEST-FILE!$H+H*" to id "chunking-42"
+    When user "user0" moves new chunk file with id "chunking-42" asynchronously to "/myChunkedFile.txt" using the WebDAV API
+    Then the HTTP status code should be "202"
+    And the oc job status values of last request for user "user0" should match these regular expressions
+      | status | /^error$/      |
+    And as "user0" file "/myChunkedFile.txt" should not exist
+
   Scenario: A small file without a virus can be uploaded via public upload
     Given as user "user0"
     And user "user0" has created a public link share of folder "FOLDER" with change permissions

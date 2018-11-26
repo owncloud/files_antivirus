@@ -42,6 +42,23 @@ Feature: Antivirus file size
       | old              |
       | new              |
 
+  Scenario: Files smaller than the upload threshold are checked for viruses when using chunking (use async move to upload)
+    Given parameter "av_max_file_size" of app "files_antivirus" has been set to "100"
+    And using new DAV path
+    And the administrator has enabled async operations
+    When user "user0" uploads the following chunks asynchronously to "/myChunkedFile.txt" with new chunking and using the WebDAV API
+      | 1 | X5O!P%@AP[4\PZX54(P^)7C |
+      | 2 | C)7}$EICAR-STANDARD-ANT |
+      | 3 | IVIRUS-TEST-FILE!$H+H*  |
+    Then the HTTP status code should be "202"
+    And the oc job status values of last request for user "user0" should match these regular expressions
+      | status | /^error$/      |
+    And the last lines of the log file should contain log-entries containing these attributes:
+      | user  | app               | message               |
+      | user0 | files_antivirus   | Infected file deleted |
+      | user0 | no app in context | Exception             |
+    And as "user0" file "/myChunkedFile.txt" should not exist
+
   Scenario Outline: Files bigger than the upload threshold are not checked for viruses when using chunking
     Given parameter "av_max_file_size" of app "files_antivirus" has been set to "20"
     And using <dav-path-version> DAV path
@@ -55,6 +72,19 @@ Feature: Antivirus file size
       | dav-path-version |
       | old              |
       | new              |
+
+  Scenario: Files bigger than the upload threshold are not checked for viruses when using chunking (use async move to upload)
+    Given parameter "av_max_file_size" of app "files_antivirus" has been set to "20"
+    And using new DAV path
+    And the administrator has enabled async operations
+    When user "user0" uploads the following chunks asynchronously to "/myChunkedFile.txt" with new chunking and using the WebDAV API
+      | 1 | X5O!P%@AP[4\PZX54(P^)7C |
+      | 2 | C)7}$EICAR-STANDARD-ANT |
+      | 3 | IVIRUS-TEST-FILE!$H+H*  |
+    Then the HTTP status code should be "202"
+    And the oc job status values of last request for user "user0" should match these regular expressions
+      | status | /^finished$/      |
+    And as "user0" file "/myChunkedFile.txt" should exist
 
   Scenario: Files smaller than the upload threshold are checked for viruses when uploaded via public upload
     Given as user "user0"
