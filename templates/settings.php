@@ -1,4 +1,4 @@
-<?php	
+<?php
 style('files_antivirus', 'settings');
 script('files_antivirus', 'settings');
 ?>

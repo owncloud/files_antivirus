@@ -5,7 +5,7 @@ workspace:
 branches: [master, release*, release/*]
 
 pipeline:
-  install-server:
+  install-core:
     image: owncloudci/core
     pull: true
     version: ${OC_VERSION}
@@ -15,6 +15,9 @@ pipeline:
     db_username: ${DB_USERNAME}
     db_password: ${DB_PASSWORD}
     db_timeout: 120
+    when:
+      matrix:
+        NEED_CORE: true
 
   prepare-objectstore:
     image: owncloudci/php:${PHP_VERSION}
@@ -45,55 +48,11 @@ pipeline:
       - php occ app:enable files_antivirus
       - php occ app:enable testing
       - php occ app:list
-      - php occ config:system:set trusted_domains 1 --value=server
+      - php occ config:system:set trusted_domains 1 --value=owncloud
       - php occ log:manage --level 0
-
-  owncloud-log:
-    image: owncloud/ubuntu:16.04
-    detach: true
-    pull: true
-    commands:
-    - tail -f /var/www/owncloud/data/owncloud.log
-
-  code-compliance-check:
-    image: owncloudci/php:${PHP_VERSION}
-    pull: true
-    commands:
-      # currently failing
-      #- make test-php-codecheck
-      - make test-php-lint
-      - make test-php-style
     when:
       matrix:
-        TEST_SUITE: phpunit
-
-  phpunit:
-    image: owncloudci/php:${PHP_VERSION}
-    pull: true
-    commands:
-      # dummy clamav required for unit tests
-      - php /var/www/owncloud/apps/files_antivirus/tests/util/avirserver.php&
-      # wait shortly for the server to be available
-      - wait-for-it 127.0.0.1:5555
-      # required to pass the executable tests
-      - ln -s /var/www/owncloud/apps/files_antivirus/tests/util/avir.sh /usr/bin/clamscan
-      - cd /var/www/owncloud/apps/files_antivirus/tests/unit
-      - phpdbg -d memory_limit=4096M -rr ../../../../lib/composer/bin/phpunit --configuration phpunit.xml
-    when:
-      matrix:
-        TEST_SUITE: phpunit
-
-  codecov:
-    image: plugins/codecov:2
-    secrets: [codecov_token]
-    pull: true
-    files:
-     - 'tests/unit/clover.xml'
-    when:
-      local: false
-      matrix:
-        TEST_SUITE: phpunit
-        PHP_VERSION: 7.0
+        NEED_INSTALL_APP: true
 
   configure-app:
     image: owncloudci/php:${PHP_VERSION}
@@ -111,41 +70,88 @@ pipeline:
     image: owncloudci/php:${PHP_VERSION}
     pull: true
     commands:
-      - cd /var/www/owncloud/
-      - chown www-data * -R
+      - chown www-data /var/www/owncloud -R
+      - chmod 777 /var/www/owncloud/tests/acceptance/filesForUpload -R
+      - chmod +x /var/www/owncloud/tests/acceptance/run.sh
     when:
       matrix:
-        TEST_SUITE: api-acceptance
+        NEED_SERVER: true
+
+  owncloud-log:
+    image: owncloud/ubuntu:16.04
+    detach: true
+    pull: true
+    commands:
+    - tail -f /var/www/owncloud/data/owncloud.log
+    when:
+      matrix:
+        NEED_SERVER: true
+
+  owncloud-coding-standard:
+    image: owncloudci/php:${PHP_VERSION}
+    pull: true
+    commands:
+      - make test-php-style
+    when:
+      matrix:
+        TEST_SUITE: owncloud-coding-standard
+
+  phpunit-tests:
+    image: owncloudci/php:${PHP_VERSION}
+    pull: true
+    environment:
+      - COVERAGE=${COVERAGE}
+    commands:
+      # dummy clamav required for unit tests
+      - php /var/www/owncloud/apps/files_antivirus/tests/util/avirserver.php&
+      # wait shortly for the server to be available
+      - wait-for-it 127.0.0.1:5555
+      # required to pass the executable tests
+      - ln -s /var/www/owncloud/apps/files_antivirus/tests/util/avir.sh /usr/bin/clamscan
+      - cd /var/www/owncloud/apps/files_antivirus
+      - if [ -z "${COVERAGE}" ]; then make test-php-unit; fi
+      - if [ "${COVERAGE}" = "true" ]; then make test-php-unit-dbg; fi
+    when:
+      matrix:
+        TEST_SUITE: phpunit
 
   api-acceptance-tests:
     image: owncloudci/php:${PHP_VERSION}
     pull: true
     environment:
-      - TEST_SERVER_URL=http://server
+      - TEST_SERVER_URL=http://owncloud
       - BEHAT_SUITE=${BEHAT_SUITE}
     commands:
-      - cd /var/www/owncloud/tests/acceptance
-      - chmod +x run.sh
-      - ./run.sh --config /var/www/owncloud/apps/files_antivirus/tests/acceptance/config/behat.yml
+      - make test-acceptance-api
     when:
       matrix:
         TEST_SUITE: api-acceptance
 
+  codecov:
+    image: plugins/codecov:2
+    secrets: [codecov_token]
+    pull: true
+    paths:
+      - tests/output/*.xml
+    when:
+      matrix:
+        COVERAGE: true
+
   notify:
     image: plugins/slack:1
     pull: true
-    secrets: [ slack_webhook ]
+    secrets: [slack_webhook]
     channel: builds
     when:
-      status: [ failure, changed ]
-      event: [ push, tag ]
+      status: [failure, changed]
+      event: [push, tag]
 
 services:
   oci:
     image: deepdiver/docker-oracle-xe-11g
     environment:
-       - ORACLE_USER=autotest
-       - ORACLE_DB=XE
+      - ORACLE_USER=autotest
+      - ORACLE_DB=XE
     when:
       matrix:
         DB_TYPE: oci
@@ -200,18 +206,24 @@ services:
       matrix:
         TEST_SUITE: api-acceptance
 
-  server:
+  owncloud:
     image: owncloudci/php:${PHP_VERSION}
     pull: true
     environment:
-    - APACHE_WEBROOT=/var/www/owncloud
-    command: [ "/usr/local/bin/apachectl", "-e", "debug" , "-D", "FOREGROUND" ]
+      - APACHE_WEBROOT=/var/www/owncloud/
+    command: ["/usr/local/bin/apachectl", "-e", "debug", "-D", "FOREGROUND"]
     when:
       matrix:
-        USE_SERVER: true
+        NEED_SERVER: true
 
 matrix:
   include:
+    # owncloud-coding-standard
+    - PHP_VERSION: 7.2
+      TEST_SUITE: owncloud-coding-standard
+
+    - PHP_VERSION: 5.6
+      TEST_SUITE: owncloud-coding-standard
 
     #UNIT TESTS
     #PHP 5.6
@@ -223,6 +235,8 @@ matrix:
       DB_NAME: oc_db
       DB_USERNAME: admin
       DB_PASSWORD: secret
+      NEED_CORE: true
+      NEED_INSTALL_APP: true
 
     - PHP_VERSION: 5.6
       OC_VERSION: daily-stable10-qa
@@ -232,6 +246,8 @@ matrix:
       DB_NAME: oc_db
       DB_USERNAME: admin
       DB_PASSWORD: secret
+      NEED_CORE: true
+      NEED_INSTALL_APP: true
 
     - PHP_VERSION: 5.6
       OC_VERSION: daily-stable10-qa
@@ -240,6 +256,8 @@ matrix:
       DB_HOST: oci
       DB_NAME: XE
       DB_USERNAME: autotest
+      NEED_CORE: true
+      NEED_INSTALL_APP: true
 
     #PHP 7.0
 
@@ -251,6 +269,8 @@ matrix:
       DB_NAME: oc_db
       DB_USERNAME: admin
       DB_PASSWORD: secret
+      NEED_CORE: true
+      NEED_INSTALL_APP: true
 
     #PHP 7.1
 
@@ -262,11 +282,15 @@ matrix:
       DB_NAME: oc_db
       DB_USERNAME: admin
       DB_PASSWORD: secret
+      NEED_CORE: true
+      NEED_INSTALL_APP: true
 
     - PHP_VERSION: 7.1
       OC_VERSION: daily-stable10-qa
       TEST_SUITE: phpunit
       DB_TYPE: sqlite
+      NEED_CORE: true
+      NEED_INSTALL_APP: true
 
     - PHP_VERSION: 7.1
       OC_VERSION: daily-stable10-qa
@@ -276,6 +300,8 @@ matrix:
       DB_NAME: oc_db
       DB_USERNAME: admin
       DB_PASSWORD: secret
+      NEED_CORE: true
+      NEED_INSTALL_APP: true
 
     - PHP_VERSION: 7.1
       OC_VERSION: daily-stable10-qa
@@ -284,6 +310,8 @@ matrix:
       DB_HOST: oci
       DB_NAME: XE
       DB_USERNAME: autotest
+      NEED_CORE: true
+      NEED_INSTALL_APP: true
 
     - PHP_VERSION: 7.1
       OC_VERSION: daily-stable10-qa
@@ -293,6 +321,8 @@ matrix:
       DB_NAME: oc_db
       DB_USERNAME: admin
       DB_PASSWORD: secret
+      NEED_CORE: true
+      NEED_INSTALL_APP: true
 
     - PHP_VERSION: 7.1
       OC_VERSION: daily-master-qa
@@ -302,11 +332,16 @@ matrix:
       DB_NAME: oc_db
       DB_USERNAME: admin
       DB_PASSWORD: secret
+      COVERAGE: true
+      NEED_CORE: true
+      NEED_INSTALL_APP: true
 
     - PHP_VERSION: 7.1
       OC_VERSION: daily-master-qa
       TEST_SUITE: phpunit
       DB_TYPE: sqlite
+      NEED_CORE: true
+      NEED_INSTALL_APP: true
 
     - PHP_VERSION: 7.1
       OC_VERSION: daily-master-qa
@@ -316,6 +351,8 @@ matrix:
       DB_NAME: oc_db
       DB_USERNAME: admin
       DB_PASSWORD: secret
+      NEED_CORE: true
+      NEED_INSTALL_APP: true
 
     - PHP_VERSION: 7.1
       OC_VERSION: daily-master-qa
@@ -325,6 +362,8 @@ matrix:
       DB_NAME: oc_db
       DB_USERNAME: admin
       DB_PASSWORD: secret
+      NEED_CORE: true
+      NEED_INSTALL_APP: true
 
     - PHP_VERSION: 7.1
       OC_VERSION: daily-master-qa
@@ -333,6 +372,8 @@ matrix:
       DB_HOST: oci
       DB_NAME: XE
       DB_USERNAME: autotest
+      NEED_CORE: true
+      NEED_INSTALL_APP: true
 
     #PHP 7.2
 
@@ -344,6 +385,8 @@ matrix:
       DB_NAME: oc_db
       DB_USERNAME: admin
       DB_PASSWORD: secret
+      NEED_CORE: true
+      NEED_INSTALL_APP: true
 
     - PHP_VERSION: 7.2
       OC_VERSION: daily-stable10-qa
@@ -353,20 +396,26 @@ matrix:
       DB_NAME: oc_db
       DB_USERNAME: admin
       DB_PASSWORD: secret
+      NEED_CORE: true
+      NEED_INSTALL_APP: true
 
     #Acceptance tests
     - PHP_VERSION: 5.6
       OC_VERSION: daily-stable10-qa
       TEST_SUITE: api-acceptance
       BEHAT_SUITE: apiAntivirus
-      USE_SERVER: true
+      NEED_CORE: true
+      NEED_SERVER: true
+      NEED_INSTALL_APP: true
       DB_TYPE: sqlite
 
     - PHP_VERSION: 5.6
       OC_VERSION: daily-stable10-qa
       TEST_SUITE: api-acceptance
       BEHAT_SUITE: apiAntivirus
-      USE_SERVER: true
+      NEED_CORE: true
+      NEED_SERVER: true
+      NEED_INSTALL_APP: true
       DB_TYPE: mysql
       DB_HOST: mysql
       DB_NAME: oc_db
@@ -377,7 +426,9 @@ matrix:
       OC_VERSION: daily-stable10-qa
       TEST_SUITE: api-acceptance
       BEHAT_SUITE: apiAntivirus
-      USE_SERVER: true
+      NEED_CORE: true
+      NEED_SERVER: true
+      NEED_INSTALL_APP: true
       DB_TYPE: pgsql
       DB_HOST: pgsql
       DB_NAME: oc_db
@@ -388,7 +439,9 @@ matrix:
       OC_VERSION: daily-stable10-qa
       TEST_SUITE: api-acceptance
       BEHAT_SUITE: apiAntivirus
-      USE_SERVER: true
+      NEED_CORE: true
+      NEED_SERVER: true
+      NEED_INSTALL_APP: true
       DB_TYPE: oci
       DB_HOST: oci
       DB_NAME: XE
@@ -398,7 +451,9 @@ matrix:
       OC_VERSION: daily-stable10-qa
       TEST_SUITE: api-acceptance
       BEHAT_SUITE: apiAntivirus
-      USE_SERVER: true
+      NEED_CORE: true
+      NEED_SERVER: true
+      NEED_INSTALL_APP: true
       DB_TYPE: mysql
       DB_HOST: mysql
       DB_NAME: oc_db
@@ -409,7 +464,9 @@ matrix:
       OC_VERSION: daily-stable10-qa
       TEST_SUITE: api-acceptance
       BEHAT_SUITE: apiAntivirus
-      USE_SERVER: true
+      NEED_CORE: true
+      NEED_SERVER: true
+      NEED_INSTALL_APP: true
       DB_TYPE: mysql
       DB_HOST: mysql
       DB_NAME: oc_db
@@ -420,14 +477,18 @@ matrix:
       OC_VERSION: daily-master-qa
       TEST_SUITE: api-acceptance
       BEHAT_SUITE: apiAntivirus
-      USE_SERVER: true
+      NEED_CORE: true
+      NEED_SERVER: true
+      NEED_INSTALL_APP: true
       DB_TYPE: sqlite
 
     - PHP_VERSION: 7.1
       OC_VERSION: daily-master-qa
       TEST_SUITE: api-acceptance
       BEHAT_SUITE: apiAntivirus
-      USE_SERVER: true
+      NEED_CORE: true
+      NEED_SERVER: true
+      NEED_INSTALL_APP: true
       DB_TYPE: mysql
       DB_HOST: mysql
       DB_NAME: oc_db
@@ -438,7 +499,9 @@ matrix:
       OC_VERSION: daily-master-qa
       TEST_SUITE: api-acceptance
       BEHAT_SUITE: apiAntivirus
-      USE_SERVER: true
+      NEED_CORE: true
+      NEED_SERVER: true
+      NEED_INSTALL_APP: true
       DB_TYPE: pgsql
       DB_HOST: pgsql
       DB_NAME: oc_db
@@ -449,7 +512,9 @@ matrix:
       OC_VERSION: daily-master-qa
       TEST_SUITE: api-acceptance
       BEHAT_SUITE: apiAntivirus
-      USE_SERVER: true
+      NEED_CORE: true
+      NEED_SERVER: true
+      NEED_INSTALL_APP: true
       DB_TYPE: oci
       DB_HOST: oci
       DB_NAME: XE
@@ -459,7 +524,9 @@ matrix:
       OC_VERSION: daily-stable10-qa
       TEST_SUITE: api-acceptance
       BEHAT_SUITE: apiAntivirus
-      USE_SERVER: true
+      NEED_CORE: true
+      NEED_SERVER: true
+      NEED_INSTALL_APP: true
       DB_TYPE: mysql
       DB_HOST: mysql
       DB_NAME: oc_db
@@ -470,7 +537,9 @@ matrix:
       OC_VERSION: daily-master-qa
       TEST_SUITE: api-acceptance
       BEHAT_SUITE: apiAntivirus
-      USE_SERVER: true
+      NEED_CORE: true
+      NEED_SERVER: true
+      NEED_INSTALL_APP: true
       DB_TYPE: mysql
       DB_HOST: mysql
       DB_NAME: oc_db
@@ -483,7 +552,9 @@ matrix:
       OC_VERSION: daily-stable10-qa
       TEST_SUITE: api-acceptance
       BEHAT_SUITE: apiAntivirus
-      USE_SERVER: true
+      NEED_CORE: true
+      NEED_SERVER: true
+      NEED_INSTALL_APP: true
       DB_TYPE: mysql
       DB_HOST: mysql
       DB_NAME: oc_db
@@ -495,7 +566,9 @@ matrix:
       OC_VERSION: daily-master-qa
       TEST_SUITE: api-acceptance
       BEHAT_SUITE: apiAntivirus
-      USE_SERVER: true
+      NEED_CORE: true
+      NEED_SERVER: true
+      NEED_INSTALL_APP: true
       DB_TYPE: mysql
       DB_HOST: mysql
       DB_NAME: oc_db
