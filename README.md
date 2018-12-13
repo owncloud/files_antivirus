@@ -9,7 +9,7 @@ remove the file if it's infected.
 
 ## QA metrics on master branch:
 
-[![Build Status](https://travis-ci.org/owncloud/files_antivirus.svg?branch=master)](https://travis-ci.org/owncloud/files_antivirus/branches)
+[![Build Status](https://drone.owncloud.com/api/badges/owncloud/files_antivirus/status.svg?branch=master)](https://drone.owncloud.com/owncloud/files_antivirus)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/owncloud/files_antivirus/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/owncloud/files_antivirus/?branch=master)
 [![Code Coverage](https://scrutinizer-ci.com/g/owncloud/files_antivirus/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/owncloud/files_antivirus/?branch=master)
 
