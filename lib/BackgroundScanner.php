@@ -189,6 +189,10 @@ class BackgroundScanner {
 		$this->initFilesystemForUser($owner);
 		$view = Filesystem::getView();
 		$path = $view->getPath($fileId);
+		\OC::$server->getLogger()->debug(
+			"About to scan file of user {$owner} with id {$fileId} and path {$path}",
+			['app' => 'files_antivirus']
+		);
 		if ($path !== null) {
 			$item = new Item($this->l10n, $view, $path, $fileId);
 			$scanner = $this->scannerFactory->getScanner();
