@@ -151,10 +151,6 @@ test-php-codecheck:
 	$(occ) app:check-code $(app_name) -c private -c strong-comparison
 	$(occ) app:check-code $(app_name) -c deprecation
 
-.PHONY: test-php-lint
-test-php-lint:
-	../../lib/composer/bin/parallel-lint . --exclude 3rdparty --exclude build .
-
 #
 # Dependency management
 #--------------------------------------
