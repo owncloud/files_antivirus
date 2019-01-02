@@ -39,6 +39,11 @@ class AntivirusContext implements Context {
 	private $featureContext;
 
 	/**
+	 * @var PublicWebDavContext
+	 */
+	private $publicWebDavContext;
+
+	/**
 	 * The relative path from the core tests/acceptance folder to the test data
 	 * folder.
 	 *
@@ -90,7 +95,7 @@ class AntivirusContext implements Context {
 	 */
 	public function publicUploadsFileFromAntivirusDataFolder($source) {
 		$source = $this->relativePathToTestDataFolder . $source;
-		$this->featureContext->publiclyUploadingFile($source);
+		$this->publicWebDavContext->publiclyUploadingFile($source);
 	}
 
 	/**
@@ -105,6 +110,7 @@ class AntivirusContext implements Context {
 		$environment = $scope->getEnvironment();
 		// Get all the contexts you need in this context
 		$this->featureContext = $environment->getContext('FeatureContext');
+		$this->publicWebDavContext = $environment->getContext('PublicWebDavContext');
 		SetupHelper::init(
 			$this->featureContext->getAdminUsername(),
 			$this->featureContext->getAdminPassword(),
