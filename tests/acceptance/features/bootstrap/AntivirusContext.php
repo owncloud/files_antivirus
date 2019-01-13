@@ -62,9 +62,9 @@ class AntivirusContext implements Context {
 	 */
 	public function theAdministratorEnablesTheAntivirusApp($enableDisable) {
 		if (($enableDisable === "enables") || ($enableDisable === "has enabled")) {
-			$this->featureContext->invokingTheCommand("app:enable files_antivirus");
+			$this->featureContext->runOcc(["app:enable files_antivirus"]);
 		} else {
-			$this->featureContext->invokingTheCommand("app:disable files_antivirus");
+			$this->featureContext->runOcc(["app:disable files_antivirus"]);
 		}
 	}
 
