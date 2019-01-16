@@ -190,23 +190,37 @@ class Item implements IScannable {
 	 * @param boolean $isBackground
 	 */
 	public function processClean(Status $status, $isBackground) {
-		if (!$isBackground) {
+		if (!$isBackground || $this->id === null) {
 			return;
 		}
 		try {
-			$stmt = \OCP\DB::prepare('DELETE FROM `*PREFIX*files_antivirus` WHERE `fileid` = ?');
-			$result = $stmt->execute([$this->id]);
-			if (\OCP\DB::isError($result)) {
-				//TODO: Use logger
-				$this->logError(__METHOD__. ', DB error: ' . \OCP\DB::getErrorMessage());
-			}
-			$stmt = \OCP\DB::prepare(
-				'INSERT INTO `*PREFIX*files_antivirus` (`fileid`, `check_time`) VALUES (?, ?)'
+			$dbConnection = \OC::$server->getDatabaseConnection();
+			$delete = $dbConnection->getQueryBuilder();
+			$delete->delete('files_antivirus')
+				->where(
+					$delete->expr()->eq(
+						'fileid',
+						$delete->expr()->literal($this->id)
+					)
+				);
+			$delete->execute();
+
+			$insert = $dbConnection->getQueryBuilder();
+			$insert->insert('files_antivirus');
+			$insert->setValue(
+				'fileid',
+				$insert->createNamedParameter($this->id)
 			);
-			$result = $stmt->execute([$this->id, \time()]);
-			if (\OCP\DB::isError($result)) {
-				$this->logError(__METHOD__. ', DB error: ' . \OCP\DB::getErrorMessage());
-			}
+			$insert->setValue(
+				'check_time',
+				$insert->createNamedParameter(\time())
+			);
+			// TODO: pass etag here
+			$insert->setValue(
+				'etag',
+				$insert->createNamedParameter('')
+			);
+			$insert->execute();
 		} catch (\Exception $e) {
 			\OCP\Util::writeLog(
 				'files_antivirus',
