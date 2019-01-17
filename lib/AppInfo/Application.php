@@ -74,7 +74,8 @@ class Application extends App {
 			'FileCollection',
 			function ($c) {
 				return new FileCollection(
-					$c->query('ServerContainer')->getDatabaseConnection()
+					$c->query('ServerContainer')->getDatabaseConnection(),
+					$c->query('ServerContainer')->getMimeTypeLoader()
 				);
 			}
 		);

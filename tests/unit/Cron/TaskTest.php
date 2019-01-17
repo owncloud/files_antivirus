@@ -43,7 +43,8 @@ class TaskTest extends TestBase {
 			$this->container->query('AppConfig'),
 			$this->container->getServer()->getRootFolder(),
 			$this->container->getServer()->getUserSession(),
-			$this->container->query('FileCollection')
+			$this->container->query('FileCollection'),
+			$this->container->getServer()->getLogger()
 		);
 
 		$class = new \ReflectionClass($cronMock);
@@ -66,7 +67,8 @@ class TaskTest extends TestBase {
 				$this->config,
 				\OC::$server->getRootFolder(),
 				\OC::$server->getUserSession(),
-				$this->container->query('FileCollection')
+				$this->container->query('FileCollection'),
+				$this->container->getServer()->getLogger()
 			])
 			->getMock();
 
@@ -75,36 +77,5 @@ class TaskTest extends TestBase {
 		$method->setAccessible(true);
 		$result = $method->invokeArgs($cronMock, []);
 		$this->assertInstanceOf(Statement::class, $result);
-	}
-
-	public function testGetUserFolder() {
-		$userFolder = $this->createMock(IRootFolder::class);
-		$userFolder->method('getUserFolder')
-			->willReturn('userfolder');
-
-		$user = $this->createMock(IUser::class);
-		$user->method('getUID')
-			->willReturn('user');
-
-		$scannerFactory = new ScannerMock(
-			new ConfigMock($this->container->query('CoreConfig')),
-			$this->container->query('Logger')
-		);
-		$cronMock = $this->getMockBuilder(Task::class)
-			->setConstructorArgs([
-				$scannerFactory,
-				$this->l10n,
-				$this->config,
-				$userFolder,
-				\OC::$server->getUserSession(),
-				$this->container->query('FileCollection')
-			])
-			->getMock();
-
-		$class = new \ReflectionClass($cronMock);
-		$method = $class->getMethod('getUserFolder');
-		$method->setAccessible(true);
-		$result = $method->invokeArgs($cronMock, [$user]);
-		$this->assertEquals('userfolder', $result);
 	}
 }

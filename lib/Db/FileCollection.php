@@ -15,18 +15,24 @@ namespace OCA\Files_Antivirus\Db;
 
 use Doctrine\DBAL\Platforms\MySqlPlatform;
 use OCP\IDBConnection;
+use OCP\Files\IMimeTypeLoader;
 
 class FileCollection {
 	/** @var IDBConnection */
 	private $dbConnection;
 
+	/** @var IMimeTypeLoader */
+	private $mimeTypeLoader;
+
 	/**
 	 * FileCollection constructor.
 	 *
 	 * @param IDBConnection $dbConnection
+	 * @param IMimeTypeLoader $mimeTypeLoader
 	 */
-	public function __construct(IDBConnection $dbConnection) {
+	public function __construct(IDBConnection $dbConnection, IMimeTypeLoader $mimeTypeLoader) {
 		$this->dbConnection = $dbConnection;
+		$this->mimeTypeLoader = $mimeTypeLoader;
 	}
 
 	/**
@@ -35,7 +41,9 @@ class FileCollection {
 	 * @return \Doctrine\DBAL\Driver\Statement|int
 	 */
 	public function getCollection($fileSizeLimit) {
-		$dirMimeTypeId = $this->getDirectoryMimeTypeId();
+		$dirMimeTypeId = $this->mimeTypeLoader->getId(
+			'httpd/unix-directory'
+		);
 		$qb = $this->dbConnection->getQueryBuilder();
 		if ($this->dbConnection->getDatabasePlatform() instanceof MySqlPlatform) {
 			$concatFunction = $qb->createFunction(
@@ -78,24 +86,16 @@ class FileCollection {
 			)
 			->andWhere(
 				$qb->expr()->orX(
-					$qb->expr()->isNull('fa.fileid'),
-					$qb->expr()->gt('fc.mtime', 'fa.check_time')
+					$qb->expr()->isNull('fa.etag'),
+					$qb->expr()->neq('fc.etag', 'fa.etag')
 				)
 			)
 			->andWhere(
 				$qb->expr()->like('fc.path', $qb->expr()->literal('files/%'))
 			)
-			->andWhere($sizeLimitExpr);
-
+			->andWhere($sizeLimitExpr)
+			->orderBy('fa.check_time', 'ASC')
+			->orderBy('fc.storage', 'ASC');
 		return $qb->execute();
-	}
-
-	/**
-	 * @return int
-	 */
-	protected function getDirectoryMimeTypeId() {
-		return \OC::$server->getMimeTypeLoader()->getId(
-			'httpd/unix-directory'
-		);
 	}
 }
