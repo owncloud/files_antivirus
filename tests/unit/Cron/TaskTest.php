@@ -38,13 +38,13 @@ class TaskTest extends TestBase {
 	
 	public function testRun() {
 		$cronMock = new Task(
-			$this->scannerFactory,
-			$this->l10n,
-			$this->container->query('AppConfig'),
-			$this->container->getServer()->getRootFolder(),
 			$this->container->getServer()->getUserSession(),
-			$this->container->query('FileCollection'),
-			$this->container->getServer()->getLogger()
+			$this->container->getServer()->getLogger(),
+			$this->container->getServer()->getRootFolder(),
+			$this->l10n,
+			$this->scannerFactory,
+			$this->container->query('AppConfig'),
+			$this->container->query('FileCollection')
 		);
 
 		$class = new \ReflectionClass($cronMock);
@@ -62,13 +62,13 @@ class TaskTest extends TestBase {
 
 		$cronMock = $this->getMockBuilder(Task::class)
 			->setConstructorArgs([
-				$scannerFactory,
-				$this->l10n,
-				$this->config,
-				\OC::$server->getRootFolder(),
 				\OC::$server->getUserSession(),
-				$this->container->query('FileCollection'),
-				$this->container->getServer()->getLogger()
+				$this->container->getServer()->getLogger(),
+				\OC::$server->getRootFolder(),
+				$this->l10n,
+				$scannerFactory,
+				$this->config,
+				$this->container->query('FileCollection')
 			])
 			->getMock();
 

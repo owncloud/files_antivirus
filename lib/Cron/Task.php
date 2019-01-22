@@ -29,44 +29,9 @@ class Task extends TimedJob {
 	const BATCH_SIZE = 10;
 
 	/**
-	 * @var IRootFolder
-	 */
-	protected $rootFolder;
-
-	/**
-	 * @var \OCP\Files\Folder[]
-	 */
-	protected $userFolders;
-
-	/**
-	 * @var ScannerFactory
-	 */
-	private $scannerFactory;
-
-	/**
-	 * @var IL10N
-	 */
-	private $l10n;
-
-	/**
-	 * @var  AppConfig
-	 */
-	private $appConfig;
-
-	/**
-	 * @var string
-	 */
-	protected $currentFilesystemUser;
-
-	/**
 	 * @var \OCP\IUserSession
 	 */
 	protected $userSession;
-
-	/**
-	 * @var FileCollection
-	 */
-	protected $fileCollection;
 
 	/**
 	 * @var ILogger
@@ -74,32 +39,68 @@ class Task extends TimedJob {
 	protected $logger;
 
 	/**
+	 * @var IRootFolder
+	 */
+	protected $rootFolder;
+
+	/**
+	 * @var IL10N
+	 */
+	private $l10n;
+
+	/**
+	 * @var ScannerFactory
+	 */
+	private $scannerFactory;
+
+	/**
+	 * @var  AppConfig
+	 */
+	private $appConfig;
+
+	/**
+	 * @var FileCollection
+	 */
+	protected $fileCollection;
+
+	/**
+	 * @var string
+	 */
+	protected $currentFilesystemUser;
+
+	/**
+	 * @var \OCP\Files\Folder[]
+	 */
+	protected $userFolders;
+
+	/**
 	 * A constructor
 	 *
-	 * @param ScannerFactory $scannerFactory
-	 * @param IL10N $l10n
-	 * @param AppConfig $appConfig
-	 * @param IRootFolder $rootFolder
 	 * @param IUserSession $userSession
-	 * @param FileCollection $fileCollection
 	 * @param ILogger $logger
+	 * @param IRootFolder $rootFolder
+	 * @param IL10N $l10n
+	 * @param ScannerFactory $scannerFactory
+	 * @param AppConfig $appConfig
+	 * @param FileCollection $fileCollection
 	 */
-	public function __construct(ScannerFactory $scannerFactory,
-								IL10N $l10n,
-								AppConfig $appConfig,
-								IRootFolder $rootFolder,
-								IUserSession $userSession,
-								FileCollection $fileCollection,
-								ILogger $logger
+	public function __construct(
+		IUserSession $userSession,
+		ILogger $logger,
+		IRootFolder $rootFolder,
+		IL10N $l10n,
+		ScannerFactory $scannerFactory,
+		AppConfig $appConfig,
+		FileCollection $fileCollection
 	) {
-		$this->rootFolder = $rootFolder;
-		$this->scannerFactory = $scannerFactory;
-		$this->l10n = $l10n;
-		$this->appConfig = $appConfig;
 		$this->userSession = $userSession;
-		$this->fileCollection = $fileCollection;
 		$this->logger = $logger;
-
+		$this->rootFolder = $rootFolder;
+		$this->l10n = $l10n;
+		$this->scannerFactory = $scannerFactory;
+		$this->appConfig = $appConfig;
+		$this->fileCollection = $fileCollection;
+		
 		// Run once per 15 minutes
 		$this->setInterval(60 * 15);
 	}

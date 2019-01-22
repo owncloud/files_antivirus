@@ -17,6 +17,7 @@ use OCA\Files_Antivirus\AppConfig;
 use OCA\Files_Antivirus\AvirWrapper;
 use OCA\Files_Antivirus\Controller\RuleController;
 use OCA\Files_Antivirus\Controller\SettingsController;
+use OCA\Files_Antivirus\Cron\Task;
 use OCA\Files_Antivirus\Db\RuleMapper;
 use OCA\Files_Antivirus\Db\FileCollection;
 use OCA\Files_Antivirus\RequestHelper;
@@ -56,6 +57,21 @@ class Application extends App {
 			function ($c) {
 				return new AppConfig(
 					$c->query('CoreConfig')
+				);
+			}
+		);
+
+		$container->registerService(
+			'OCA\Files_Antivirus\Cron\Task',
+			function ($c) {
+				return new Task(
+					$c->query('ServerContainer')->getUserSession(),
+					$c->query('ServerContainer')->getLogger(),
+					$c->query('ServerContainer')->getRootFolder(),
+					$c->query('L10N'),
+					$c->query('ScannerFactory'),
+					$c->query('AppConfig'),
+					$c->query('FileCollection')
 				);
 			}
 		);
