@@ -7,7 +7,7 @@
  *
  * @author Viktar Dubiniuk <dubiniuk@owncloud.com>
  *
- * @copyright Viktar Dubiniuk 2015-2018
+ * @copyright Viktar Dubiniuk 2015-2019
  * @license AGPL-3.0
  */
 
@@ -19,11 +19,9 @@ use OCA\Files_Antivirus\Activity;
 
 class Item implements IScannable {
 	/**
-	 * Scanned fileid (optional)
-	 *
-	 * @var int
+	 * @var IL10N
 	 */
-	protected $id;
+	private $l10n;
 	
 	/**
 	 * File view
@@ -38,6 +36,20 @@ class Item implements IScannable {
 	 * @var string
 	 */
 	protected $path;
+
+	/**
+	 * Scanned fileid (optional)
+	 *
+	 * @var int
+	 */
+	protected $id;
+
+	/**
+	 * Scanned file etag (optional)
+	 *
+	 * @var string
+	 */
+	protected $etag;
 	
 	/**
 	 * file handle, user to read from the file
@@ -60,12 +72,7 @@ class Item implements IScannable {
 	 */
 	protected $isValidSize;
 	
-	/**
-	 * @var IL10N
-	 */
-	private $l10n;
-	
-	public function __construct(IL10N $l10n, $view, $path, $id = null) {
+	public function __construct(IL10N $l10n, $view, $path, $id = null, $etag = null) {
 		$this->l10n = $l10n;
 		
 		if (!\is_object($view)) {
@@ -86,6 +93,7 @@ class Item implements IScannable {
 		
 		$this->view = $view;
 		$this->path = $path;
+		$this->etag = $etag;
 		
 		$this->isValidSize = $view->filesize($path) > 0;
 		
@@ -190,23 +198,20 @@ class Item implements IScannable {
 	 * @param boolean $isBackground
 	 */
 	public function processClean(Status $status, $isBackground) {
-		if (!$isBackground) {
+		if (!$isBackground || $this->id === null) {
 			return;
 		}
 		try {
-			$stmt = \OCP\DB::prepare('DELETE FROM `*PREFIX*files_antivirus` WHERE `fileid` = ?');
-			$result = $stmt->execute([$this->id]);
-			if (\OCP\DB::isError($result)) {
-				//TODO: Use logger
-				$this->logError(__METHOD__. ', DB error: ' . \OCP\DB::getErrorMessage());
-			}
-			$stmt = \OCP\DB::prepare(
-				'INSERT INTO `*PREFIX*files_antivirus` (`fileid`, `check_time`) VALUES (?, ?)'
+			$dbConnection = \OC::$server->getDatabaseConnection();
+			$dbConnection->upsert(
+				'files_antivirus',
+				[
+					'fileid' => $this->id,
+					'check_time' => \time(),
+					'etag' => $this->etag
+				],
+				['fileid']
 			);
-			$result = $stmt->execute([$this->id, \time()]);
-			if (\OCP\DB::isError($result)) {
-				$this->logError(__METHOD__. ', DB error: ' . \OCP\DB::getErrorMessage());
-			}
 		} catch (\Exception $e) {
 			\OCP\Util::writeLog(
 				'files_antivirus',

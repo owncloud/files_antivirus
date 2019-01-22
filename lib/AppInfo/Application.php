@@ -17,8 +17,9 @@ use OCA\Files_Antivirus\AppConfig;
 use OCA\Files_Antivirus\AvirWrapper;
 use OCA\Files_Antivirus\Controller\RuleController;
 use OCA\Files_Antivirus\Controller\SettingsController;
+use OCA\Files_Antivirus\Cron\Task;
 use OCA\Files_Antivirus\Db\RuleMapper;
-use OCA\Files_Antivirus\BackgroundScanner;
+use OCA\Files_Antivirus\Db\FileCollection;
 use OCA\Files_Antivirus\RequestHelper;
 use OCA\Files_Antivirus\ScannerFactory;
 use OCP\AppFramework\App;
@@ -61,6 +62,21 @@ class Application extends App {
 		);
 
 		$container->registerService(
+			'OCA\Files_Antivirus\Cron\Task',
+			function ($c) {
+				return new Task(
+					$c->query('ServerContainer')->getUserSession(),
+					$c->query('ServerContainer')->getLogger(),
+					$c->query('ServerContainer')->getRootFolder(),
+					$c->query('L10N'),
+					$c->query('ScannerFactory'),
+					$c->query('AppConfig'),
+					$c->query('FileCollection')
+				);
+			}
+		);
+
+		$container->registerService(
 			'ScannerFactory',
 			function ($c) {
 				return new ScannerFactory(
@@ -69,16 +85,13 @@ class Application extends App {
 				);
 			}
 		);
-		
+
 		$container->registerService(
-			'BackgroundScanner',
+			'FileCollection',
 			function ($c) {
-				return new BackgroundScanner(
-					$c->query('ScannerFactory'),
-					$c->query('L10N'),
-					$c->query('AppConfig'),
-					$c->getServer()->getRootFolder(),
-					$c->getServer()->getUserSession()
+				return new FileCollection(
+					$c->query('ServerContainer')->getDatabaseConnection(),
+					$c->query('ServerContainer')->getMimeTypeLoader()
 				);
 			}
 		);
