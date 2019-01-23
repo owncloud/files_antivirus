@@ -1,11 +1,11 @@
 default:
   autoload:
-     '': %paths.base%/../features/bootstrap
+     '': '%paths.base%/../features/bootstrap'
 
   suites:
     apiAntivirus:
       paths:
-        - %paths.base%/../features/apiAntivirus
+        - '%paths.base%/../features/apiAntivirus'
       contexts:
         - AntivirusContext:
         - FeatureContext: &common_feature_context_params
@@ -19,4 +19,4 @@ default:
   extensions:
       jarnaiz\JUnitFormatter\JUnitFormatterExtension:
           filename: report.xml
-          outputDir: %paths.base%/../output/
+          outputDir: '%paths.base%/../output/'
