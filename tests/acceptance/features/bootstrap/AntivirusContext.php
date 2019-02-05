@@ -44,13 +44,13 @@ class AntivirusContext implements Context {
 	private $publicWebDavContext;
 
 	/**
-	 * The relative path from the core tests/acceptance folder to the test data
-	 * folder.
-	 *
-	 * @var string
+	 * @return string
 	 */
-	private $relativePathToTestDataFolder
-		= '../../apps/files_antivirus/tests/acceptance/data/';
+	private function getRelativePathToTestDataFolder() {
+		$relativePath
+			= $this->featureContext->getPathFromCoreToAppAcceptanceTests(__DIR__);
+		return "$relativePath/data/";
+	}
 
 	/**
 	 * @When /^the administrator (enables|disables) the files_antivirus app$/
@@ -81,7 +81,7 @@ class AntivirusContext implements Context {
 	public function userUploadsFileFromAntivirusDataFolderTo(
 		$user, $source, $destination
 	) {
-		$source = $this->relativePathToTestDataFolder . $source;
+		$source = $this->getRelativePathToTestDataFolder() . $source;
 		$this->featureContext->userUploadsAFileTo($user, $source, $destination);
 	}
 
@@ -94,7 +94,7 @@ class AntivirusContext implements Context {
 	 * @return void
 	 */
 	public function publicUploadsFileFromAntivirusDataFolder($source) {
-		$source = $this->relativePathToTestDataFolder . $source;
+		$source = $this->getRelativePathToTestDataFolder() . $source;
 		$this->publicWebDavContext->publiclyUploadingFile($source);
 	}
 
