@@ -1,5 +1,10 @@
 # Makefile for building the project
 
+COMPOSER_BIN := $(shell command -v composer 2> /dev/null)
+ifndef COMPOSER_BIN
+    $(error composer is not available on your system, please install composer)
+endif
+
 app_name=files_antivirus
 build_dir=$(CURDIR)/build
 project_directory=$(CURDIR)/../$(app_name)
@@ -13,7 +18,6 @@ appstore_package_name=$(appstore_build_directory)/$(app_name)
 composer_deps=vendor
 composer_dev_deps=vendor/php-cs-fixer
 acceptance_test_deps=vendor-bin/behat/vendor
-COMPOSER_BIN=$(build_dir)/composer.phar
 
 # signing
 occ=$(CURDIR)/../../occ
@@ -47,13 +51,6 @@ clean: clean-composer-deps
 .PHONY: clean-composer-deps
 clean-composer-deps:
 	rm -Rf vendor-bin/**/vendor vendor-bin/**/composer.lock
-
-#
-# Basic required tools
-#
-$(COMPOSER_BIN):
-	mkdir -p $(build_dir)
-	cd $(build_dir) && curl -sS https://getcomposer.org/installer | php
 
 #
 # ownCloud core PHP dependencies
