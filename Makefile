@@ -15,8 +15,6 @@ appstore_build_directory=$(CURDIR)/build/artifacts/appstore
 appstore_package_name=$(appstore_build_directory)/$(app_name)
 
 # composer
-composer_deps=vendor
-composer_dev_deps=vendor/php-cs-fixer
 acceptance_test_deps=vendor-bin/behat/vendor
 
 # signing
@@ -51,15 +49,6 @@ clean: clean-composer-deps
 .PHONY: clean-composer-deps
 clean-composer-deps:
 	rm -Rf vendor-bin/**/vendor vendor-bin/**/composer.lock
-
-#
-# ownCloud core PHP dependencies
-#
-$(composer_deps): $(COMPOSER_BIN) composer.json composer.lock
-	php $(COMPOSER_BIN) install --no-dev
-
-$(composer_dev_deps): $(COMPOSER_BIN) composer.json composer.lock
-	php $(COMPOSER_BIN) install --dev
 
 # Builds the source and appstore package
 .PHONY: dist
