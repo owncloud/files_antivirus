@@ -57,6 +57,7 @@ Feature: Antivirus file size
       | user  | app               | message               |
       | user0 | files_antivirus   | Infected file deleted |
       | user0 | no app in context | Exception             |
+      | user0 | no app in context | Exception             |
     And as "user0" file "/myChunkedFile.txt" should not exist
 
   Scenario Outline: Files bigger than the upload threshold are not checked for viruses when using chunking
