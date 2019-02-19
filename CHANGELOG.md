@@ -4,7 +4,15 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
-## [Unreleased]
+## [0.15.0]
+
+### Added
+
+- Add a message to background job to help debugging issues - [#260](https://github.com/owncloud/files_antivirus/issues/260)
+
+### Fixed
+
+- Do not scan files if etag hasn't changed - [#288](https://github.com/owncloud/files_antivirus/issues/288)
 
 ## [0.14.0] - 2018-11-30
 
