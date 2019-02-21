@@ -27,4 +27,12 @@ $classLoader->addPsr4(
 	"", __DIR__ . "/../../../../../../tests/acceptance/features/bootstrap", true
 );
 
+// Some tests require Activity app
+$classLoader->addPsr4(
+	"", __DIR__ . "/../../../../../../apps/activity/tests/acceptance/features/bootstrap", true
+);
+$classLoader->addPsr4(
+	"Page\\", __DIR__ . "/../../../../../../apps/activity/tests/acceptance/features/lib", true
+);
+
 $classLoader->register();
