@@ -16,6 +16,18 @@ default:
             ocPath: apps/testing/api/v1/occ
         - PublicWebDavContext:
 
+    webUIActivityList:
+      paths:
+        - '%paths.base%/../features/webUIActivityList'
+      contexts:
+        - AntivirusContext:
+        - FeatureContext: *common_feature_context_params
+        - PublicWebDavContext:
+        - WebUIGeneralContext:
+        - WebUILoginContext:
+        - WebUIFilesContext:
+        - WebUIActivityContext:
+
   extensions:
       jarnaiz\JUnitFormatter\JUnitFormatterExtension:
           filename: report.xml

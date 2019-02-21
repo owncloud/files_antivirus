@@ -54,6 +54,19 @@ pipeline:
       matrix:
         NEED_INSTALL_APP: true
 
+  install-activity-app:
+    image: owncloudci/php:${PHP_VERSION}
+    pull: true
+    commands:
+      - git clone https://github.com/owncloud/activity.git /var/www/owncloud/apps/activity
+      - cd /var/www/owncloud/
+      - php occ a:l
+      - php occ a:e activity
+      - php occ a:l
+    when:
+      matrix:
+        NEED_ACTIVITY_APP: true
+
   configure-app:
     image: owncloudci/php:${PHP_VERSION}
     pull: true
@@ -64,7 +77,7 @@ pipeline:
       - php occ config:app:set --value "3310" files_antivirus av_port
     when:
       matrix:
-        TEST_SUITE: api-acceptance
+        NEED_CLAMAV: true
 
   fix-permissions:
     image: owncloudci/php:${PHP_VERSION}
@@ -126,6 +139,22 @@ pipeline:
     when:
       matrix:
         TEST_SUITE: api-acceptance
+
+  webui-acceptance-tests:
+    image: owncloudci/php:${PHP_VERSION}
+    pull: true
+    environment:
+      - BROWSER=chrome
+      - SELENIUM_HOST=selenium
+      - SELENIUM_PORT=4444
+      - TEST_SERVER_URL=http://owncloud
+      - PLATFORM=Linux
+      - BEHAT_SUITE=${BEHAT_SUITE}
+    commands:
+      - make test-acceptance-webui
+    when:
+      matrix:
+        TEST_SUITE: web-acceptance
 
   codecov:
     image: plugins/codecov:2
@@ -204,7 +233,7 @@ services:
     pull: true
     when:
       matrix:
-        TEST_SUITE: api-acceptance
+        NEED_CLAMAV: true
 
   owncloud:
     image: owncloudci/php:${PHP_VERSION}
@@ -215,6 +244,13 @@ services:
     when:
       matrix:
         NEED_SERVER: true
+
+  selenium:
+    image: selenium/standalone-chrome-debug:latest
+    pull: true
+    when:
+      matrix:
+        TEST_SUITE: web-acceptance
 
 matrix:
   include:
@@ -407,6 +443,7 @@ matrix:
       NEED_CORE: true
       NEED_SERVER: true
       NEED_INSTALL_APP: true
+      NEED_CLAMAV: true
       DB_TYPE: sqlite
 
     - PHP_VERSION: 5.6
@@ -416,6 +453,7 @@ matrix:
       NEED_CORE: true
       NEED_SERVER: true
       NEED_INSTALL_APP: true
+      NEED_CLAMAV: true
       DB_TYPE: mysql
       DB_HOST: mysql
       DB_NAME: oc_db
@@ -429,6 +467,7 @@ matrix:
       NEED_CORE: true
       NEED_SERVER: true
       NEED_INSTALL_APP: true
+      NEED_CLAMAV: true
       DB_TYPE: pgsql
       DB_HOST: pgsql
       DB_NAME: oc_db
@@ -442,6 +481,7 @@ matrix:
       NEED_CORE: true
       NEED_SERVER: true
       NEED_INSTALL_APP: true
+      NEED_CLAMAV: true
       DB_TYPE: oci
       DB_HOST: oci
       DB_NAME: XE
@@ -454,6 +494,7 @@ matrix:
       NEED_CORE: true
       NEED_SERVER: true
       NEED_INSTALL_APP: true
+      NEED_CLAMAV: true
       DB_TYPE: mysql
       DB_HOST: mysql
       DB_NAME: oc_db
@@ -467,6 +508,7 @@ matrix:
       NEED_CORE: true
       NEED_SERVER: true
       NEED_INSTALL_APP: true
+      NEED_CLAMAV: true
       DB_TYPE: mysql
       DB_HOST: mysql
       DB_NAME: oc_db
@@ -480,6 +522,7 @@ matrix:
       NEED_CORE: true
       NEED_SERVER: true
       NEED_INSTALL_APP: true
+      NEED_CLAMAV: true
       DB_TYPE: sqlite
 
     - PHP_VERSION: 7.1
@@ -489,6 +532,7 @@ matrix:
       NEED_CORE: true
       NEED_SERVER: true
       NEED_INSTALL_APP: true
+      NEED_CLAMAV: true
       DB_TYPE: mysql
       DB_HOST: mysql
       DB_NAME: oc_db
@@ -502,6 +546,7 @@ matrix:
       NEED_CORE: true
       NEED_SERVER: true
       NEED_INSTALL_APP: true
+      NEED_CLAMAV: true
       DB_TYPE: pgsql
       DB_HOST: pgsql
       DB_NAME: oc_db
@@ -515,6 +560,7 @@ matrix:
       NEED_CORE: true
       NEED_SERVER: true
       NEED_INSTALL_APP: true
+      NEED_CLAMAV: true
       DB_TYPE: oci
       DB_HOST: oci
       DB_NAME: XE
@@ -527,6 +573,7 @@ matrix:
       NEED_CORE: true
       NEED_SERVER: true
       NEED_INSTALL_APP: true
+      NEED_CLAMAV: true
       DB_TYPE: mysql
       DB_HOST: mysql
       DB_NAME: oc_db
@@ -540,6 +587,7 @@ matrix:
       NEED_CORE: true
       NEED_SERVER: true
       NEED_INSTALL_APP: true
+      NEED_CLAMAV: true
       DB_TYPE: mysql
       DB_HOST: mysql
       DB_NAME: oc_db
@@ -555,6 +603,7 @@ matrix:
       NEED_CORE: true
       NEED_SERVER: true
       NEED_INSTALL_APP: true
+      NEED_CLAMAV: true
       DB_TYPE: mysql
       DB_HOST: mysql
       DB_NAME: oc_db
@@ -569,9 +618,42 @@ matrix:
       NEED_CORE: true
       NEED_SERVER: true
       NEED_INSTALL_APP: true
+      NEED_CLAMAV: true
       DB_TYPE: mysql
       DB_HOST: mysql
       DB_NAME: oc_db
       DB_USERNAME: admin
       DB_PASSWORD: secret
       TEST_OBJECTSTORAGE: true
+
+  # activity app related
+
+    - PHP_VERSION: 7.1
+      OC_VERSION: daily-stable10-qa
+      TEST_SUITE: web-acceptance
+      BEHAT_SUITE: webUIActivityList
+      NEED_CORE: true
+      NEED_SERVER: true
+      NEED_INSTALL_APP: true
+      NEED_ACTIVITY_APP: true
+      NEED_CLAMAV: true
+      DB_TYPE: mysql
+      DB_HOST: mysql
+      DB_NAME: oc_db
+      DB_USERNAME: admin
+      DB_PASSWORD: secret
+
+    - PHP_VERSION: 7.1
+      OC_VERSION: daily-master-qa
+      TEST_SUITE: web-acceptance
+      BEHAT_SUITE: webUIActivityList
+      NEED_CORE: true
+      NEED_SERVER: true
+      NEED_INSTALL_APP: true
+      NEED_ACTIVITY_APP: true
+      NEED_CLAMAV: true
+      DB_TYPE: mysql
+      DB_HOST: mysql
+      DB_NAME: oc_db
+      DB_USERNAME: admin
+      DB_PASSWORD: secret
