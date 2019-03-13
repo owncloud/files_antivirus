@@ -258,12 +258,12 @@ matrix:
     - PHP_VERSION: 7.2
       TEST_SUITE: owncloud-coding-standard
 
-    - PHP_VERSION: 5.6
+    - PHP_VERSION: 7.0
       TEST_SUITE: owncloud-coding-standard
 
     #UNIT TESTS
-    #PHP 5.6
-    - PHP_VERSION: 5.6
+    #PHP 7.0
+    - PHP_VERSION: 7.0
       OC_VERSION: daily-stable10-qa
       TEST_SUITE: phpunit
       DB_TYPE: mysql
@@ -274,7 +274,7 @@ matrix:
       NEED_CORE: true
       NEED_INSTALL_APP: true
 
-    - PHP_VERSION: 5.6
+    - PHP_VERSION: 7.0
       OC_VERSION: daily-stable10-qa
       TEST_SUITE: phpunit
       DB_TYPE: pgsql
@@ -285,26 +285,13 @@ matrix:
       NEED_CORE: true
       NEED_INSTALL_APP: true
 
-    - PHP_VERSION: 5.6
+    - PHP_VERSION: 7.0
       OC_VERSION: daily-stable10-qa
       TEST_SUITE: phpunit
       DB_TYPE: oci
       DB_HOST: oci
       DB_NAME: XE
       DB_USERNAME: autotest
-      NEED_CORE: true
-      NEED_INSTALL_APP: true
-
-    #PHP 7.0
-
-    - PHP_VERSION: 7.0
-      OC_VERSION: daily-stable10-qa
-      TEST_SUITE: phpunit
-      DB_TYPE: mysql
-      DB_HOST: mysql
-      DB_NAME: oc_db
-      DB_USERNAME: admin
-      DB_PASSWORD: secret
       NEED_CORE: true
       NEED_INSTALL_APP: true
 
@@ -436,7 +423,7 @@ matrix:
       NEED_INSTALL_APP: true
 
     #Acceptance tests
-    - PHP_VERSION: 5.6
+    - PHP_VERSION: 7.0
       OC_VERSION: daily-stable10-qa
       TEST_SUITE: api-acceptance
       BEHAT_SUITE: apiAntivirus
@@ -445,47 +432,6 @@ matrix:
       NEED_INSTALL_APP: true
       NEED_CLAMAV: true
       DB_TYPE: sqlite
-
-    - PHP_VERSION: 5.6
-      OC_VERSION: daily-stable10-qa
-      TEST_SUITE: api-acceptance
-      BEHAT_SUITE: apiAntivirus
-      NEED_CORE: true
-      NEED_SERVER: true
-      NEED_INSTALL_APP: true
-      NEED_CLAMAV: true
-      DB_TYPE: mysql
-      DB_HOST: mysql
-      DB_NAME: oc_db
-      DB_USERNAME: admin
-      DB_PASSWORD: secret
-
-    - PHP_VERSION: 5.6
-      OC_VERSION: daily-stable10-qa
-      TEST_SUITE: api-acceptance
-      BEHAT_SUITE: apiAntivirus
-      NEED_CORE: true
-      NEED_SERVER: true
-      NEED_INSTALL_APP: true
-      NEED_CLAMAV: true
-      DB_TYPE: pgsql
-      DB_HOST: pgsql
-      DB_NAME: oc_db
-      DB_USERNAME: admin
-      DB_PASSWORD: secret
-
-    - PHP_VERSION: 5.6
-      OC_VERSION: daily-stable10-qa
-      TEST_SUITE: api-acceptance
-      BEHAT_SUITE: apiAntivirus
-      NEED_CORE: true
-      NEED_SERVER: true
-      NEED_INSTALL_APP: true
-      NEED_CLAMAV: true
-      DB_TYPE: oci
-      DB_HOST: oci
-      DB_NAME: XE
-      DB_USERNAME: autotest
 
     - PHP_VERSION: 7.0
       OC_VERSION: daily-stable10-qa
@@ -500,6 +446,33 @@ matrix:
       DB_NAME: oc_db
       DB_USERNAME: admin
       DB_PASSWORD: secret
+
+    - PHP_VERSION: 7.0
+      OC_VERSION: daily-stable10-qa
+      TEST_SUITE: api-acceptance
+      BEHAT_SUITE: apiAntivirus
+      NEED_CORE: true
+      NEED_SERVER: true
+      NEED_INSTALL_APP: true
+      NEED_CLAMAV: true
+      DB_TYPE: pgsql
+      DB_HOST: pgsql
+      DB_NAME: oc_db
+      DB_USERNAME: admin
+      DB_PASSWORD: secret
+
+    - PHP_VERSION: 7.0
+      OC_VERSION: daily-stable10-qa
+      TEST_SUITE: api-acceptance
+      BEHAT_SUITE: apiAntivirus
+      NEED_CORE: true
+      NEED_SERVER: true
+      NEED_INSTALL_APP: true
+      NEED_CLAMAV: true
+      DB_TYPE: oci
+      DB_HOST: oci
+      DB_NAME: XE
+      DB_USERNAME: autotest
 
     - PHP_VERSION: 7.1
       OC_VERSION: daily-stable10-qa
