@@ -71,23 +71,24 @@ appstore:
 	rm -rf $(appstore_build_directory)
 	mkdir -p $(appstore_package_name)
 	cp --parents -r \
-	appinfo \
-	css \
-	img \
-	js \
-	l10n \
-	lib \
-	templates \
-	COPYING \
-	CHANGELOG.md \
-	$(appstore_package_name)
+		appinfo \
+		css \
+		img \
+		js \
+		l10n \
+		lib \
+		templates \
+		COPYING \
+		CHANGELOG.md \
+		$(appstore_package_name)
+	rm -Rf $(appstore_package_name)/l10n/.tx
 
 ifdef CAN_SIGN
 	$(sign) --path="$(appstore_package_name)"
 else
 	@echo $(sign_skip_msg)
 endif
-	tar -czf $(appstore_package_name).tar.gz -C $(appstore_package_name)/../ $(app_name)
+	tar --format=gnu -czf $(appstore_package_name).tar.gz -C $(appstore_package_name)/../ $(app_name)
 
 ##
 ## Tests
