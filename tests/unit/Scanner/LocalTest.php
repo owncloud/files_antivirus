@@ -99,7 +99,7 @@ class LocalTest extends TestBase {
 	}
 	
 	public function testNotExisting() {
-		$this->setExpectedException('RuntimeException');
+		$this->expectException('RuntimeException');
 		
 		$fileView = new \OC\Files\View('');
 		$nonExistingItem = new Item($this->l10n, $fileView, 'non-existing.file', 42);

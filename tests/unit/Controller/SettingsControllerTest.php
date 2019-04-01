@@ -18,16 +18,16 @@ use OCP\IL10N;
 
 class AvirWrapperTest extends TestBase {
 
-	/** @var IRequest | \PHPUnit_Framework_MockObject_MockObject */
+	/** @var IRequest | \PHPUnit\Framework\MockObject\MockObject */
 	protected $request;
 
-	/** @var IL10N | \PHPUnit_Framework_MockObject_MockObject */
+	/** @var IL10N | \PHPUnit\Framework\MockObject\MockObject */
 	protected $l10n;
 
-	/** @var AppConfig | \PHPUnit_Framework_MockObject_MockObject */
+	/** @var AppConfig | \PHPUnit\Framework\MockObject\MockObject */
 	protected $config;
 
-	/** @var ScannerFactory | \PHPUnit_Framework_MockObject_MockObject */
+	/** @var ScannerFactory | \PHPUnit\Framework\MockObject\MockObject */
 	protected $scannerFactory;
 
 	public function setUp() {

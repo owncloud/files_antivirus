@@ -18,12 +18,12 @@ use Sabre\DAV\Tree;
 
 class RequestHelperTest extends TestBase {
 	/**
-	 * @var IRequest | \PHPUnit_Framework_MockObject_MockObject
+	 * @var IRequest | \PHPUnit\Framework\MockObject\MockObject
 	 */
 	private $request;
 
 	/**
-	 * @var \OC\Files\Storage\Storage | \PHPUnit_Framework_MockObject_MockObject
+	 * @var \OC\Files\Storage\Storage | \PHPUnit\Framework\MockObject\MockObject
 	 */
 	private $storage;
 
