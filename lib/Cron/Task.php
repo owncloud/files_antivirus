@@ -174,8 +174,9 @@ class Task extends TimedJob {
 		$this->initFilesystemForUser($owner);
 		$view = Filesystem::getView();
 		$path = $view->getPath($fileId);
+		$ownerUid = $owner->getUID();
 		$this->logger->debug(
-			"About to scan file of user {$owner} with id {$fileId} and path {$path}",
+			"About to scan file of user {$ownerUid} with id {$fileId} and path {$path}",
 			['app' => 'files_antivirus']
 		);
 		if ($path !== null) {
