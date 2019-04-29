@@ -4,7 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
-## [Unreleased]
+## [0.15.1] - (final release date unknown)
+
+### Fixed
+
+- correct logging of actions performed by cron job - [#306](https://github.com/owncloud/files_antivirus/issues/306)
+
 
 ## [0.15.0] - 2019-03-14
 
