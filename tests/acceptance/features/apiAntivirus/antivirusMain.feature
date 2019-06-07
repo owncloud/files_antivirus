@@ -8,7 +8,7 @@ Feature: Antivirus basic
     Given the administrator has enabled the files_antivirus app
     And the owncloud log level has been set to warning
     And the owncloud log has been cleared
-    And user "user0" has been created with default attributes
+    And user "user0" has been created with default attributes and skeleton files
 
   Scenario Outline: A small file without a virus can be uploaded
     Given using <dav-path-version> DAV path
