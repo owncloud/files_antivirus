@@ -8,7 +8,7 @@ Feature: Antivirus file size
     Given the administrator has enabled the files_antivirus app
     And the owncloud log level has been set to warning
     And the owncloud log has been cleared
-    And user "user0" has been created with default attributes
+    And user "user0" has been created with default attributes and skeleton files
 
   Scenario: Files smaller than the upload threshold are checked for viruses
     Given parameter "av_max_file_size" of app "files_antivirus" has been set to "100"
