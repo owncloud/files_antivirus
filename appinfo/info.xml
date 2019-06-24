@@ -32,7 +32,7 @@ More information is available in the Anti-Virus documentation.
 	<use-migrations>true</use-migrations>
 	<namespace>Files_Antivirus</namespace>
 	<dependencies>
-		<owncloud min-version="10.2" max-version="10" />
+		<owncloud min-version="10.0.9" max-version="10" />
 	</dependencies>
 	<settings>
 		<admin>OCA\Files_Antivirus\AdminPanel</admin>
