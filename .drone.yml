@@ -1,12 +1,13 @@
 workspace:
-  base: /var/www/owncloud
-  path: apps/files_antivirus
+  base: /var/www
+  path: owncloud/apps/files_antivirus
 
 
 pipeline:
   install-core:
     image: owncloudci/core
     pull: true
+    core_path: /var/www/owncloud
     version: ${OC_VERSION}
     db_type: ${DB_TYPE}
     db_name: ${DB_NAME}
@@ -17,6 +18,18 @@ pipeline:
     when:
       matrix:
         NEED_CORE: true
+
+  install-testrunner:
+    image: owncloudci/php:${PHP_VERSION}
+    pull: true
+    commands:
+      - git clone -b stable10 --depth=1 https://github.com/owncloud/core.git /var/www/testrunner
+      - cp -r /var/www/owncloud/apps/files_antivirus /var/www/testrunner/apps/
+      - cd /var/www/testrunner
+      - make install-composer-deps
+    when:
+      matrix:
+        USE_RELEASE_TARBALL: true
 
   prepare-objectstore:
     image: owncloudci/php:${PHP_VERSION}
@@ -65,6 +78,21 @@ pipeline:
     when:
       matrix:
         NEED_ACTIVITY_APP: true
+        USE_RELEASE_TARBALL: ${USE_RELEASE_TARBALL:-false}
+
+  install-activity-app-release:
+    image: owncloudci/php:${PHP_VERSION}
+    pull: true
+    commands:
+      - git clone https://github.com/owncloud/activity.git /var/www/testrunner/apps/activity
+      - cd /var/www/testrunner/
+      - php occ a:l
+      - php occ a:e activity
+      - php occ a:l
+    when:
+      matrix:
+        NEED_ACTIVITY_APP: true
+        USE_RELEASE_TARBALL: true
 
   configure-app:
     image: owncloudci/php:${PHP_VERSION}
@@ -83,8 +111,15 @@ pipeline:
     pull: true
     commands:
       - chown www-data /var/www/owncloud -R
-      - chmod 777 /var/www/owncloud/tests/acceptance/filesForUpload -R
-      - chmod +x /var/www/owncloud/tests/acceptance/run.sh
+      - if [ "${USE_RELEASE_TARBALL}" = "true" ];
+        then
+        chown www-data /var/www/testrunner -R
+        chmod 777 /var/www/testrunner/tests/acceptance/filesForUpload -R;
+        chmod +x /var/www/testrunner/tests/acceptance/run.sh;
+        else
+        chmod 777 /var/www/owncloud/tests/acceptance/filesForUpload -R;
+        chmod +x /var/www/owncloud/tests/acceptance/run.sh;
+        fi
     when:
       matrix:
         NEED_SERVER: true
@@ -103,6 +138,8 @@ pipeline:
     image: owncloudci/php:${PHP_VERSION}
     pull: true
     commands:
+      - echo $PWD
+      - ls /var/www/**/**
       - make test-php-style
     when:
       matrix:
@@ -138,6 +175,20 @@ pipeline:
     when:
       matrix:
         TEST_SUITE: api-acceptance
+        USE_RELEASE_TARBALL: ${USE_RELEASE_TARBALL:-false}
+
+  api-acceptance-tests-release:
+    image: owncloudci/php:${PHP_VERSION}
+    pull: true
+    environment:
+      - TEST_SERVER_URL=http://owncloud
+      - BEHAT_SUITE=${BEHAT_SUITE}
+    commands:
+      - cd /var/www/testrunner/apps/notifications && make test-acceptance-api
+    when:
+      matrix:
+        TEST_SUITE: api-acceptance
+        USE_RELEASE_TARBALL: true
 
   webui-acceptance-tests:
     image: owncloudci/php:${PHP_VERSION}
@@ -154,6 +205,24 @@ pipeline:
     when:
       matrix:
         TEST_SUITE: web-acceptance
+        USE_RELEASE_TARBALL: ${USE_RELEASE_TARBALL:-false}
+
+  webui-acceptance-tests-release:
+    image: owncloudci/php:${PHP_VERSION}
+    pull: true
+    environment:
+      - BROWSER=chrome
+      - SELENIUM_HOST=selenium
+      - SELENIUM_PORT=4444
+      - TEST_SERVER_URL=http://owncloud
+      - PLATFORM=Linux
+      - BEHAT_SUITE=${BEHAT_SUITE}
+    commands:
+      - cd /var/www/testrunner/apps/notifications && make test-acceptance-webui
+    when:
+      matrix:
+        TEST_SUITE: web-acceptance
+        USE_RELEASE_TARBALL: true
 
   codecov:
     image: plugins/codecov:2
@@ -533,6 +602,20 @@ matrix:
       NEED_SERVER: true
       NEED_INSTALL_APP: true
       NEED_CLAMAV: true
+      DB_TYPE: pgsql
+      DB_HOST: pgsql
+      DB_NAME: oc_db
+      DB_USERNAME: admin
+      DB_PASSWORD: secret
+
+    - PHP_VERSION: 7.1
+      OC_VERSION: daily-master-qa
+      TEST_SUITE: api-acceptance
+      BEHAT_SUITE: apiAntivirus
+      NEED_CORE: true
+      NEED_SERVER: true
+      NEED_INSTALL_APP: true
+      NEED_CLAMAV: true
       DB_TYPE: oci
       DB_HOST: oci
       DB_NAME: XE
@@ -562,6 +645,20 @@ matrix:
       NEED_CLAMAV: true
       DB_TYPE: mysql
       DB_HOST: mysql
+      DB_NAME: oc_db
+      DB_USERNAME: admin
+      DB_PASSWORD: secret
+
+    - PHP_VERSION: 7.1
+      OC_VERSION: 10.2.1
+      TEST_SUITE: api-acceptance
+      BEHAT_SUITE: apiAntivirus
+      NEED_SERVER: true
+      NEED_INSTALL_APP: true
+      NEED_CLAMAV: true
+      USE_RELEASE_TARBALL: true
+      DB_TYPE: pgsql
+      DB_HOST: pgsql
       DB_NAME: oc_db
       DB_USERNAME: admin
       DB_PASSWORD: secret
@@ -623,6 +720,22 @@ matrix:
       NEED_SERVER: true
       NEED_INSTALL_APP: true
       NEED_ACTIVITY_APP: true
+      NEED_CLAMAV: true
+      DB_TYPE: mysql
+      DB_HOST: mysql
+      DB_NAME: oc_db
+      DB_USERNAME: admin
+      DB_PASSWORD: secret
+
+    - PHP_VERSION: 7.1
+      OC_VERSION: 10.2.1
+      TEST_SUITE: web-acceptance
+      BEHAT_SUITE: webUIActivityList
+      NEED_CORE: true
+      NEED_SERVER: true
+      NEED_INSTALL_APP: true
+      NEED_ACTIVITY_APP: true
+      USE_RELEASE_TARBALL: true
       NEED_CLAMAV: true
       DB_TYPE: mysql
       DB_HOST: mysql
