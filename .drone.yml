@@ -18,6 +18,19 @@ pipeline:
       matrix:
         NEED_CORE: true
 
+  install-testrunner:
+    image: owncloudci/php:${PHP_VERSION}
+    pull: true
+    commands:
+      - git clone -b stable10 --depth=1 https://github.com/owncloud/core.git /var/www/owncloud/testrunner
+      - cp -r /var/www/owncloud/apps/files_antivirus /var/www/owncloud/testrunner/apps/
+      - cd /var/www/owncloud/testrunner
+      - make install-composer-deps
+      - make vendor-bin-deps
+    when:
+      matrix:
+        USE_RELEASE_TARBALL: true
+
   prepare-objectstore:
     image: owncloudci/php:${PHP_VERSION}
     pull: true
@@ -58,6 +71,10 @@ pipeline:
     pull: true
     commands:
       - git clone https://github.com/owncloud/activity.git /var/www/owncloud/apps/activity
+      - if [ "${USE_RELEASE_TARBALL}" = "true" ];
+        then
+        cp -r /var/www/owncloud/apps/activity /var/www/owncloud/testrunner/apps;
+        fi
       - cd /var/www/owncloud/
       - php occ a:l
       - php occ a:e activity
@@ -83,8 +100,14 @@ pipeline:
     pull: true
     commands:
       - chown www-data /var/www/owncloud -R
-      - chmod 777 /var/www/owncloud/tests/acceptance/filesForUpload -R
-      - chmod +x /var/www/owncloud/tests/acceptance/run.sh
+      - if [ "${USE_RELEASE_TARBALL}" = "true" ];
+        then
+        chmod 777 /var/www/owncloud/testrunner/tests/acceptance/filesForUpload -R;
+        chmod +x /var/www/owncloud/testrunner/tests/acceptance/run.sh;
+        else
+        chmod 777 /var/www/owncloud/tests/acceptance/filesForUpload -R;
+        chmod +x /var/www/owncloud/tests/acceptance/run.sh;
+        fi
     when:
       matrix:
         NEED_SERVER: true
@@ -134,6 +157,7 @@ pipeline:
       - TEST_SERVER_URL=http://owncloud
       - BEHAT_SUITE=${BEHAT_SUITE}
     commands:
+      - if [ "${USE_RELEASE_TARBALL}" = "true" ]; then cd /var/www/owncloud/testrunner/apps/files_antivirus; fi
       - make test-acceptance-api
     when:
       matrix:
@@ -150,6 +174,7 @@ pipeline:
       - PLATFORM=Linux
       - BEHAT_SUITE=${BEHAT_SUITE}
     commands:
+      - if [ "${USE_RELEASE_TARBALL}" = "true" ]; then cd /var/www/owncloud/testrunner/apps/files_antivirus; fi
       - make test-acceptance-webui
     when:
       matrix:
@@ -566,6 +591,21 @@ matrix:
       DB_USERNAME: admin
       DB_PASSWORD: secret
 
+    - PHP_VERSION: 7.1
+      OC_VERSION: 10.2.1
+      TEST_SUITE: api-acceptance
+      BEHAT_SUITE: apiAntivirus
+      NEED_CORE: true
+      NEED_SERVER: true
+      NEED_INSTALL_APP: true
+      NEED_CLAMAV: true
+      USE_RELEASE_TARBALL: true
+      DB_TYPE: pgsql
+      DB_HOST: pgsql
+      DB_NAME: oc_db
+      DB_USERNAME: admin
+      DB_PASSWORD: secret
+
   # objectstore related
 
     - PHP_VERSION: 7.1
@@ -623,6 +663,22 @@ matrix:
       NEED_SERVER: true
       NEED_INSTALL_APP: true
       NEED_ACTIVITY_APP: true
+      NEED_CLAMAV: true
+      DB_TYPE: mysql
+      DB_HOST: mysql
+      DB_NAME: oc_db
+      DB_USERNAME: admin
+      DB_PASSWORD: secret
+
+    - PHP_VERSION: 7.1
+      OC_VERSION: 10.2.1
+      TEST_SUITE: web-acceptance
+      BEHAT_SUITE: webUIActivityList
+      NEED_CORE: true
+      NEED_SERVER: true
+      NEED_INSTALL_APP: true
+      NEED_ACTIVITY_APP: true
+      USE_RELEASE_TARBALL: true
       NEED_CLAMAV: true
       DB_TYPE: mysql
       DB_HOST: mysql
