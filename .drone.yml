@@ -478,6 +478,23 @@ matrix:
       DB_USERNAME: admin
       DB_PASSWORD: secret
 
+  # objectstore related
+
+    - PHP_VERSION: 7.1
+      OC_VERSION: daily-master-qa
+      TEST_SUITE: api-acceptance
+      BEHAT_SUITE: apiAntivirus
+      NEED_CORE: true
+      NEED_SERVER: true
+      NEED_INSTALL_APP: true
+      NEED_CLAMAV: true
+      DB_TYPE: mysql
+      DB_HOST: mysql
+      DB_NAME: oc_db
+      DB_USERNAME: admin
+      DB_PASSWORD: secret
+      TEST_OBJECTSTORAGE: true
+
   # activity app related
 
     - PHP_VERSION: 7.1
