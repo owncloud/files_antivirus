@@ -383,6 +383,19 @@ matrix:
       NEED_CORE: true
       NEED_INSTALL_APP: true
 
+    #PHP 7.3
+
+    - PHP_VERSION: 7.3
+      OC_VERSION: daily-master-qa
+      TEST_SUITE: phpunit
+      DB_TYPE: mysql
+      DB_HOST: mysql
+      DB_NAME: oc_db
+      DB_USERNAME: admin
+      DB_PASSWORD: secret
+      NEED_CORE: true
+      NEED_INSTALL_APP: true
+
     #Acceptance tests
     - PHP_VERSION: 7.0
       OC_VERSION: daily-master-qa
