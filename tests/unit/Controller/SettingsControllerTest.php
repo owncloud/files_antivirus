@@ -98,12 +98,16 @@ class AvirWrapperTest extends TestBase {
 	}
 
 	public function testSaveDaemon() {
+		$avirHost = \getenv('AVIR_HOST');
+		if ($avirHost === false) {
+			$avirHost = '127.0.0.1';
+		}
 		$this->config->expects($this->atLeast(1))
 			->method('setter')
 			->withConsecutive(
 				['av_mode', ['daemon']],
 				['av_port', ['90']],
-				['av_host', ['127.0.0.1']]
+				['av_host', [$avirHost]]
 			);
 
 		$settings = new SettingsController($this->request, $this->config, $this->scannerFactory, $this->l10n);
@@ -111,7 +115,7 @@ class AvirWrapperTest extends TestBase {
 		$settings->save(
 			'daemon',
 			null,
-			'127.0.0.1',
+			$avirHost,
 			'90',
 			null,
 			null,

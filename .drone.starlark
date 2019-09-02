@@ -48,10 +48,13 @@ config = {
 				'chrome',
 				'firefox'
 			],
+			'extraApps': [
+				'activity'
+			],
 		},
 		'api': {
 			'suites': [
-				'apiAntiVirus'
+				'apiAntivirus'
 			],
 			'databases': [
 				'mariadb:10.2',
@@ -64,6 +67,34 @@ config = {
 	},
 
 	'defaults': {
+		'phpunit': {
+			'extraServices': [
+				{
+					'name': 'dummy-clamav',
+					'image': 'owncloudci/php:7.0',
+					'pull': 'always',
+					'commands': [
+						# dummy clamav required for unit tests
+						'php tests/util/avirserver.php',
+					]
+				}
+			],
+			'extraEnvironment': {
+				'AVIR_HOST': 'dummy-clamav'
+			},
+			'extraSetup': {
+				'name': 'wait-for-service',
+				'image': 'owncloudci/php:7.0',
+				'pull': 'always',
+				'commands': [
+					'wait-for-it dummy-clamav:5555',
+				]
+			},
+			'extraCommandsBeforeMake': [
+				# required to pass the executable tests
+				'ln -s /var/www/owncloud/server/apps/files_antivirus/tests/util/avir.sh /usr/bin/clamscan',
+			],
+		},
 		'acceptance': {
 			'extraSetup': {
 				'name': 'configure-app',
@@ -340,7 +371,10 @@ def javascript():
 	default = {
 		'coverage': False,
 		'logLevel': '2',
+		'extraSetup': None,
 		'extraServices': [],
+		'extraEnvironment': {},
+		'extraCommandsBeforeMake': [],
 	}
 
 	if 'defaults' in config:
@@ -349,8 +383,14 @@ def javascript():
 				default['coverage'] = config['defaults']['javascript']['coverage']
 			if 'logLevel' in config['defaults']['javascript']:
 				default['logLevel'] = config['defaults']['javascript']['logLevel']
+			if 'extraSetup' in config['defaults']['javascript']:
+				default['extraSetup'] = config['defaults']['javascript']['extraSetup']
 			if 'extraServices' in config['defaults']['javascript']:
 				default['extraServices'] = config['defaults']['javascript']['extraServices']
+			if 'extraEnvironment' in config['defaults']['javascript']:
+				default['extraEnvironment'] = config['defaults']['javascript']['extraEnvironment']
+			if 'extraCommandsBeforeMake' in config['defaults']['javascript']:
+				default['extraCommandsBeforeMake'] = config['defaults']['javascript']['extraCommandsBeforeMake']
 
 	javascriptConfig = config['javascript']
 
@@ -363,7 +403,10 @@ def javascript():
 
 	coverage = javascriptConfig['coverage'] if 'coverage' in javascriptConfig else default['coverage']
 	logLevel = javascriptConfig['logLevel'] if 'logLevel' in javascriptConfig else default['logLevel']
+	extraSetup = javascriptConfig['extraSetup'] if 'extraSetup' in javascriptConfig else default['extraSetup']
 	extraServices = javascriptConfig['extraServices'] if 'extraServices' in javascriptConfig else default['extraServices']
+	extraEnvironment = javascriptConfig['extraEnvironment'] if 'extraEnvironment' in javascriptConfig else default['extraEnvironment']
+	extraCommandsBeforeMake = javascriptConfig['extraCommandsBeforeMake'] if 'extraServices' in javascriptConfig else default['extraCommandsBeforeMake']
 
 	result = {
 		'kind': 'pipeline',
@@ -376,11 +419,13 @@ def javascript():
 		'steps': [
 			installCore('daily-master-qa', 'sqlite', False),
 			setupServerAndApp('7.0', logLevel),
+			extraSetup,
 			{
 				'name': 'js-tests',
 				'image': 'owncloudci/php:7.0',
 				'pull': 'always',
-				'commands': [
+				'environment': extraEnvironment,
+				'commands': extraCommandsBeforeMake + [
 					'make test-js'
 				]
 			}
@@ -428,6 +473,10 @@ def phptests(testType):
 		],
 		'coverage': True,
 		'logLevel': '2',
+		'extraSetup': None,
+		'extraServices': [],
+		'extraEnvironment': {},
+		'extraCommandsBeforeMake': [],
 	}
 
 	if 'defaults' in config:
@@ -438,6 +487,14 @@ def phptests(testType):
 				default['coverage'] = config['defaults'][testType]['coverage']
 			if 'logLevel' in config['defaults'][testType]:
 				default['logLevel'] = config['defaults'][testType]['logLevel']
+			if 'extraSetup' in config['defaults'][testType]:
+				default['extraSetup'] = config['defaults'][testType]['extraSetup']
+			if 'extraServices' in config['defaults'][testType]:
+				default['extraServices'] = config['defaults'][testType]['extraServices']
+			if 'extraEnvironment' in config['defaults'][testType]:
+				default['extraEnvironment'] = config['defaults'][testType]['extraEnvironment']
+			if 'extraCommandsBeforeMake' in config['defaults'][testType]:
+				default['extraCommandsBeforeMake'] = config['defaults'][testType]['extraCommandsBeforeMake']
 
 	phptestConfig = config[testType]
 
@@ -456,6 +513,10 @@ def phptests(testType):
 		databases = matrix['databases'] if 'databases' in matrix else default['databases']
 		coverage = matrix['coverage'] if 'coverage' in matrix else default['coverage']
 		logLevel = matrix['logLevel'] if 'logLevel' in matrix else default['logLevel']
+		extraSetup = matrix['extraSetup'] if 'extraSetup' in matrix else default['extraSetup']
+		extraServices = matrix['extraServices'] if 'extraServices' in matrix else default['extraServices']
+		extraEnvironment = matrix['extraEnvironment'] if 'extraEnvironment' in matrix else default['extraEnvironment']
+		extraCommandsBeforeMake = matrix['extraCommandsBeforeMake'] if 'extraServices' in matrix else default['extraCommandsBeforeMake']
 		phpVersions = matrix['phpVersions'] if 'phpVersions' in matrix else default['phpVersions']
 
 		for phpVersion in phpVersions:
@@ -483,16 +544,18 @@ def phptests(testType):
 					'steps': [
 						installCore('daily-master-qa', db, False),
 						setupServerAndApp(phpVersion, logLevel),
+						extraSetup,
 						{
 							'name': '%s-tests' % testType,
 							'image': 'owncloudci/php:%s' % phpVersion,
 							'pull': 'always',
-							'commands': [
+							'environment': extraEnvironment,
+							'commands': extraCommandsBeforeMake + [
 								command
 							]
 						}
 					],
-					'services': databaseService(db),
+					'services': databaseService(db) + extraServices,
 					'depends_on': [],
 					'trigger': {
 						'ref': [
@@ -543,6 +606,8 @@ def acceptance():
 		'emailNeeded': False,
 		'extraSetup': None,
 		'extraServices': [],
+		'extraEnvironment': {},
+		'extraCommandsBeforeMake': [],
 		'extraApps': [],
 		'useBundledApp': False,
 	}
@@ -569,6 +634,10 @@ def acceptance():
 				default['extraSetup'] = config['defaults']['acceptance']['extraSetup']
 			if 'extraServices' in config['defaults']['acceptance']:
 				default['extraServices'] = config['defaults']['acceptance']['extraServices']
+			if 'extraEnvironment' in config['defaults']['acceptance']:
+				default['extraEnvironment'] = config['defaults']['acceptance']['extraEnvironment']
+			if 'extraCommandsBeforeMake' in config['defaults']['acceptance']:
+				default['extraCommandsBeforeMake'] = config['defaults']['acceptance']['extraCommandsBeforeMake']
 			if 'extraApps' in config['defaults']['acceptance']:
 				default['extraApps'] = config['defaults']['acceptance']['extraApps']
 			if 'useBundledApp' in config['defaults']['acceptance']:
@@ -600,6 +669,8 @@ def acceptance():
 			emailNeeded = matrix['emailNeeded'] if 'emailNeeded' in matrix else default['emailNeeded']
 			extraSetup = matrix['extraSetup'] if 'extraSetup' in matrix else default['extraSetup']
 			extraServices = matrix['extraServices'] if 'extraServices' in matrix else default['extraServices']
+			extraEnvironment = matrix['extraEnvironment'] if 'extraEnvironment' in matrix else default['extraEnvironment']
+			extraCommandsBeforeMake = matrix['extraCommandsBeforeMake'] if 'extraServices' in matrix else default['extraCommandsBeforeMake']
 			extraApps = matrix['extraApps'] if 'extraApps' in matrix else default['extraApps']
 			useBundledApp = matrix['useBundledApp'] if 'useBundledApp' in matrix else default['useBundledApp']
 
@@ -618,11 +689,13 @@ def acceptance():
 									print("Error: generated stage name of length", nameLength, "is not supported. The maximum length is " + str(maxLength) + ".", name)
 									errorFound = True
 
-							environment = {
-								'TEST_SERVER_URL': 'http://server',
-								'BEHAT_FILTER_TAGS': filterTags,
-								'BEHAT_SUITE': suite,
-							}
+							environment = {}
+							for env in extraEnvironment:
+								environment[env] = extraEnvironment[env]
+
+							environment['TEST_SERVER_URL'] = 'http://server'
+							environment['BEHAT_FILTER_TAGS'] = filterTags
+							environment['BEHAT_SUITE'] = suite
 
 							if isWebUI:
 								environment['SELENIUM_HOST'] = 'selenium'
@@ -688,7 +761,7 @@ def acceptance():
 										'image': 'owncloudci/php:%s' % phpVersion,
 										'pull': 'always',
 										'environment': environment,
-										'commands': [
+										'commands': extraCommandsBeforeMake + [
 											'touch /var/www/owncloud/saved-settings.sh',
 											'. /var/www/owncloud/saved-settings.sh',
 											'make %s' % makeParameter
