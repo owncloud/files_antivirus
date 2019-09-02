@@ -1,542 +1,2762 @@
+---
+kind: pipeline
+type: docker
+name: coding-standard-php7.0
+
+platform:
+  os: linux
+  arch: amd64
+
 workspace:
   base: /var/www/owncloud
-  path: apps/files_antivirus
+  path: server/apps/files_antivirus
 
+steps:
+- name: coding-standard
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
+  - make test-php-style
 
-pipeline:
-  install-core:
-    image: owncloudci/core
-    pull: true
-    version: ${OC_VERSION}
-    db_type: ${DB_TYPE}
-    db_name: ${DB_NAME}
-    db_host: ${DB_HOST}
-    db_username: ${DB_USERNAME}
-    db_password: ${DB_PASSWORD}
-    db_timeout: 120
-    when:
-      matrix:
-        NEED_CORE: true
+trigger:
+  ref:
+  - refs/pull/**
+  - refs/tags/**
+  - refs/heads/master
 
-  install-testrunner:
-    image: owncloudci/php:${PHP_VERSION}
-    pull: true
-    commands:
-      - git clone -b master --depth=1 https://github.com/owncloud/core.git /var/www/owncloud/testrunner
-      - cp -r /var/www/owncloud/apps/files_antivirus /var/www/owncloud/testrunner/apps/
-      - cd /var/www/owncloud/testrunner
-      - make install-composer-deps
-      - make vendor-bin-deps
-    when:
-      matrix:
-        USE_RELEASE_TARBALL: true
+---
+kind: pipeline
+type: docker
+name: coding-standard-php7.1
 
-  prepare-objectstore:
-    image: owncloudci/php:${PHP_VERSION}
-    pull: true
-    commands:
-      - cd /var/www/owncloud/apps
-      - git clone https://github.com/owncloud/files_primary_s3.git
-      - cd files_primary_s3
-      - composer install
-      - cp tests/drone/scality.config.php /var/www/owncloud/config
-      - cd /var/www/owncloud
-      - php occ a:l
-      - php occ a:e files_primary_s3
-      - php occ a:l
-      - php occ s3:create-bucket owncloud --accept-warning
-    when:
-      matrix:
-        TEST_OBJECTSTORAGE: true
+platform:
+  os: linux
+  arch: amd64
 
-  install-app:
-    image: owncloudci/php:${PHP_VERSION}
-    pull: true
-    commands:
-      - cd /var/www/owncloud/apps/files_antivirus
-      - make
-      - cd /var/www/owncloud/
-      - php occ app:list
-      - php occ app:enable files_antivirus
-      - php occ app:enable testing
-      - php occ app:list
-      - php occ config:system:set trusted_domains 1 --value=owncloud
-      - php occ log:manage --level 0
-    when:
-      matrix:
-        NEED_INSTALL_APP: true
+workspace:
+  base: /var/www/owncloud
+  path: server/apps/files_antivirus
 
-  install-activity-app:
-    image: owncloudci/php:${PHP_VERSION}
-    pull: true
-    commands:
-      - git clone https://github.com/owncloud/activity.git /var/www/owncloud/apps/activity
-      - if [ "${USE_RELEASE_TARBALL}" = "true" ];
-        then
-        cp -r /var/www/owncloud/apps/activity /var/www/owncloud/testrunner/apps;
-        fi
-      - cd /var/www/owncloud/
-      - php occ a:l
-      - php occ a:e activity
-      - php occ a:l
-    when:
-      matrix:
-        NEED_ACTIVITY_APP: true
+steps:
+- name: coding-standard
+  pull: always
+  image: owncloudci/php:7.1
+  commands:
+  - make test-php-style
 
-  configure-app:
-    image: owncloudci/php:${PHP_VERSION}
-    pull: true
-    commands:
-      - cd /var/www/owncloud/
-      - php occ config:app:set --value "clamav" files_antivirus av_host
-      - php occ config:app:set --value "daemon" files_antivirus av_mode
-      - php occ config:app:set --value "3310" files_antivirus av_port
-    when:
-      matrix:
-        NEED_CLAMAV: true
+trigger:
+  ref:
+  - refs/pull/**
+  - refs/tags/**
+  - refs/heads/master
 
-  fix-permissions:
-    image: owncloudci/php:${PHP_VERSION}
-    pull: true
-    commands:
-      - chown www-data /var/www/owncloud -R
-      - if [ "${USE_RELEASE_TARBALL}" = "true" ];
-        then
-        chmod 777 /var/www/owncloud/testrunner/tests/acceptance/filesForUpload -R;
-        chmod +x /var/www/owncloud/testrunner/tests/acceptance/run.sh;
-        else
-        chmod 777 /var/www/owncloud/tests/acceptance/filesForUpload -R;
-        chmod +x /var/www/owncloud/tests/acceptance/run.sh;
-        fi
-    when:
-      matrix:
-        NEED_SERVER: true
+---
+kind: pipeline
+type: docker
+name: coding-standard-php7.2
 
-  owncloud-log:
-    image: owncloud/ubuntu:16.04
-    detach: true
-    pull: true
-    commands:
-    - tail -f /var/www/owncloud/data/owncloud.log
-    when:
-      matrix:
-        NEED_SERVER: true
+platform:
+  os: linux
+  arch: amd64
 
-  owncloud-coding-standard:
-    image: owncloudci/php:${PHP_VERSION}
-    pull: true
-    commands:
-      - make test-php-style
-    when:
-      matrix:
-        TEST_SUITE: owncloud-coding-standard
+workspace:
+  base: /var/www/owncloud
+  path: server/apps/files_antivirus
 
-  phpunit-tests:
-    image: owncloudci/php:${PHP_VERSION}
-    pull: true
-    environment:
-      - COVERAGE=${COVERAGE}
-    commands:
-      # dummy clamav required for unit tests
-      - php /var/www/owncloud/apps/files_antivirus/tests/util/avirserver.php&
-      # wait shortly for the server to be available
-      - wait-for-it 127.0.0.1:5555
-      # required to pass the executable tests
-      - ln -s /var/www/owncloud/apps/files_antivirus/tests/util/avir.sh /usr/bin/clamscan
-      - cd /var/www/owncloud/apps/files_antivirus
-      - if [ -z "${COVERAGE}" ]; then make test-php-unit; fi
-      - if [ "${COVERAGE}" = "true" ]; then make test-php-unit-dbg; fi
-    when:
-      matrix:
-        TEST_SUITE: phpunit
+steps:
+- name: coding-standard
+  pull: always
+  image: owncloudci/php:7.2
+  commands:
+  - make test-php-style
 
-  api-acceptance-tests:
-    image: owncloudci/php:${PHP_VERSION}
-    pull: true
-    environment:
-      - TEST_SERVER_URL=http://owncloud
-      - BEHAT_SUITE=${BEHAT_SUITE}
-    commands:
-      - if [ "${USE_RELEASE_TARBALL}" = "true" ]; then cd /var/www/owncloud/testrunner/apps/files_antivirus; fi
-      - make test-acceptance-api
-    when:
-      matrix:
-        TEST_SUITE: api-acceptance
+trigger:
+  ref:
+  - refs/pull/**
+  - refs/tags/**
+  - refs/heads/master
 
-  webui-acceptance-tests:
-    image: owncloudci/php:${PHP_VERSION}
-    pull: true
-    environment:
-      - BROWSER=chrome
-      - SELENIUM_HOST=selenium
-      - SELENIUM_PORT=4444
-      - TEST_SERVER_URL=http://owncloud
-      - PLATFORM=Linux
-      - BEHAT_SUITE=${BEHAT_SUITE}
-    commands:
-      - if [ "${USE_RELEASE_TARBALL}" = "true" ]; then cd /var/www/owncloud/testrunner/apps/files_antivirus; fi
-      - make test-acceptance-webui
-    when:
-      matrix:
-        TEST_SUITE: web-acceptance
+---
+kind: pipeline
+type: docker
+name: coding-standard-php7.3
 
-  codecov:
-    image: plugins/codecov:2
-    secrets: [codecov_token]
-    pull: true
+platform:
+  os: linux
+  arch: amd64
+
+workspace:
+  base: /var/www/owncloud
+  path: server/apps/files_antivirus
+
+steps:
+- name: coding-standard
+  pull: always
+  image: owncloudci/php:7.3
+  commands:
+  - make test-php-style
+
+trigger:
+  ref:
+  - refs/pull/**
+  - refs/tags/**
+  - refs/heads/master
+
+---
+kind: pipeline
+type: docker
+name: phpunit-php7.0-sqlite
+
+platform:
+  os: linux
+  arch: amd64
+
+workspace:
+  base: /var/www/owncloud
+  path: server/apps/files_antivirus
+
+steps:
+- name: install-core
+  pull: always
+  image: owncloudci/core
+  settings:
+    core_path: /var/www/owncloud/server
+    db_host: sqlite
+    db_name: owncloud
+    db_password: owncloud
+    db_type: sqlite
+    db_username: owncloud
+    exclude: apps/files_antivirus
+    version: daily-master-qa
+
+- name: setup-server-files_antivirus
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
+  - cd /var/www/owncloud/server/apps/files_antivirus
+  - make
+  - cd /var/www/owncloud/server
+  - php occ a:l
+  - php occ a:e files_antivirus
+  - php occ a:e testing
+  - php occ a:l
+  - php occ config:system:set trusted_domains 1 --value=server
+  - php occ log:manage --level 2
+
+- name: phpunit-tests
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
+  - make test-php-unit-dbg
+
+- name: codecov-upload
+  pull: always
+  image: plugins/codecov:2
+  settings:
     paths:
-      - tests/output/*.xml
-    when:
-      matrix:
-        COVERAGE: true
+    - tests/output/clover.xml
+    token:
+      from_secret: codecov_token
 
-  notify:
-    image: plugins/slack:1
-    pull: true
-    secrets: [slack_webhook]
-    channel: builds
-    when:
-      status: [failure, changed]
-      event: [push, tag]
+trigger:
+  ref:
+  - refs/pull/**
+  - refs/tags/**
+  - refs/heads/master
+
+depends_on:
+- coding-standard-php7.0
+- coding-standard-php7.1
+- coding-standard-php7.2
+- coding-standard-php7.3
+
+---
+kind: pipeline
+type: docker
+name: phpunit-php7.0-mariadb10.2
+
+platform:
+  os: linux
+  arch: amd64
+
+workspace:
+  base: /var/www/owncloud
+  path: server/apps/files_antivirus
+
+steps:
+- name: install-core
+  pull: always
+  image: owncloudci/core
+  settings:
+    core_path: /var/www/owncloud/server
+    db_host: mariadb
+    db_name: owncloud
+    db_password: owncloud
+    db_type: mysql
+    db_username: owncloud
+    exclude: apps/files_antivirus
+    version: daily-master-qa
+
+- name: setup-server-files_antivirus
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
+  - cd /var/www/owncloud/server/apps/files_antivirus
+  - make
+  - cd /var/www/owncloud/server
+  - php occ a:l
+  - php occ a:e files_antivirus
+  - php occ a:e testing
+  - php occ a:l
+  - php occ config:system:set trusted_domains 1 --value=server
+  - php occ log:manage --level 2
+
+- name: phpunit-tests
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
+  - make test-php-unit-dbg
+
+- name: codecov-upload
+  pull: always
+  image: plugins/codecov:2
+  settings:
+    paths:
+    - tests/output/clover.xml
+    token:
+      from_secret: codecov_token
 
 services:
-  oci:
-    image: deepdiver/docker-oracle-xe-11g
-    environment:
-      - ORACLE_USER=autotest
-      - ORACLE_DB=XE
-    when:
-      matrix:
-        DB_TYPE: oci
+- name: mariadb
+  pull: always
+  image: mariadb:10.2
+  environment:
+    MYSQL_DATABASE: owncloud
+    MYSQL_PASSWORD: owncloud
+    MYSQL_ROOT_PASSWORD: owncloud
+    MYSQL_USER: owncloud
 
-  mysql:
-    image: mysql:5.5
-    environment:
-      - MYSQL_USER=admin
-      - MYSQL_PASSWORD=secret
-      - MYSQL_DATABASE=oc_db
-      - MYSQL_ROOT_PASSWORD=secret
-    when:
-      matrix:
-        DB_HOST: mysql
+trigger:
+  ref:
+  - refs/pull/**
+  - refs/tags/**
+  - refs/heads/master
 
-  mysqlmb4:
-    image: mysql:5.7
-    environment:
-      - MYSQL_USER=admin
-      - MYSQL_PASSWORD=secret
-      - MYSQL_DATABASE=oc_db
-      - MYSQL_ROOT_PASSWORD=secret
-    when:
-      matrix:
-        DB_HOST: mysqlmb4
+depends_on:
+- coding-standard-php7.0
+- coding-standard-php7.1
+- coding-standard-php7.2
+- coding-standard-php7.3
 
-  pgsql:
-    image: postgres:9.4
-    environment:
-      - POSTGRES_USER=admin
-      - POSTGRES_PASSWORD=secret
-      - POSTGRES_DB=oc_db
-    when:
-      matrix:
-        DB_TYPE: pgsql
+---
+kind: pipeline
+type: docker
+name: phpunit-php7.0-mysql5.5
 
-  scality:
-    image: owncloudci/scality-s3server
-    pull: true
-    environment:
-      - HOST_NAME=scality
-    when:
-      matrix:
-        TEST_OBJECTSTORAGE: true
+platform:
+  os: linux
+  arch: amd64
 
-  clamav:
-    image: dinkel/clamavd
-    pull: true
-    when:
-      matrix:
-        NEED_CLAMAV: true
+workspace:
+  base: /var/www/owncloud
+  path: server/apps/files_antivirus
 
-  owncloud:
-    image: owncloudci/php:${PHP_VERSION}
-    pull: true
-    environment:
-      - APACHE_WEBROOT=/var/www/owncloud/
-    command: ["/usr/local/bin/apachectl", "-e", "debug", "-D", "FOREGROUND"]
-    when:
-      matrix:
-        NEED_SERVER: true
+steps:
+- name: install-core
+  pull: always
+  image: owncloudci/core
+  settings:
+    core_path: /var/www/owncloud/server
+    db_host: mysql
+    db_name: owncloud
+    db_password: owncloud
+    db_type: mysql
+    db_username: owncloud
+    exclude: apps/files_antivirus
+    version: daily-master-qa
 
-  selenium:
-    image: selenium/standalone-chrome-debug:3.141.59-oxygen
-    pull: true
-    when:
-      matrix:
-        TEST_SUITE: web-acceptance
+- name: setup-server-files_antivirus
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
+  - cd /var/www/owncloud/server/apps/files_antivirus
+  - make
+  - cd /var/www/owncloud/server
+  - php occ a:l
+  - php occ a:e files_antivirus
+  - php occ a:e testing
+  - php occ a:l
+  - php occ config:system:set trusted_domains 1 --value=server
+  - php occ log:manage --level 2
 
-matrix:
-  include:
-    # owncloud-coding-standard
-    - PHP_VERSION: 7.2
-      TEST_SUITE: owncloud-coding-standard
+- name: phpunit-tests
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
+  - make test-php-unit-dbg
 
-    - PHP_VERSION: 7.0
-      TEST_SUITE: owncloud-coding-standard
+- name: codecov-upload
+  pull: always
+  image: plugins/codecov:2
+  settings:
+    paths:
+    - tests/output/clover.xml
+    token:
+      from_secret: codecov_token
 
-    #UNIT TESTS
-    #PHP 7.0
-    - PHP_VERSION: 7.0
-      OC_VERSION: daily-master-qa
-      TEST_SUITE: phpunit
-      DB_TYPE: mysql
-      DB_HOST: mysql
-      DB_NAME: oc_db
-      DB_USERNAME: admin
-      DB_PASSWORD: secret
-      NEED_CORE: true
-      NEED_INSTALL_APP: true
+services:
+- name: mysql
+  pull: always
+  image: mysql:5.5
+  environment:
+    MYSQL_DATABASE: owncloud
+    MYSQL_PASSWORD: owncloud
+    MYSQL_ROOT_PASSWORD: owncloud
+    MYSQL_USER: owncloud
 
-    - PHP_VERSION: 7.0
-      OC_VERSION: daily-master-qa
-      TEST_SUITE: phpunit
-      DB_TYPE: pgsql
-      DB_HOST: pgsql
-      DB_NAME: oc_db
-      DB_USERNAME: admin
-      DB_PASSWORD: secret
-      NEED_CORE: true
-      NEED_INSTALL_APP: true
+trigger:
+  ref:
+  - refs/pull/**
+  - refs/tags/**
+  - refs/heads/master
 
-    - PHP_VERSION: 7.0
-      OC_VERSION: daily-master-qa
-      TEST_SUITE: phpunit
-      DB_TYPE: oci
-      DB_HOST: oci
-      DB_NAME: XE
-      DB_USERNAME: autotest
-      NEED_CORE: true
-      NEED_INSTALL_APP: true
+depends_on:
+- coding-standard-php7.0
+- coding-standard-php7.1
+- coding-standard-php7.2
+- coding-standard-php7.3
 
-    #PHP 7.1
+---
+kind: pipeline
+type: docker
+name: phpunit-php7.0-mysql5.7
 
-    - PHP_VERSION: 7.1
-      OC_VERSION: daily-master-qa
-      TEST_SUITE: phpunit
-      DB_TYPE: mysql
-      DB_HOST: mysql
-      DB_NAME: oc_db
-      DB_USERNAME: admin
-      DB_PASSWORD: secret
-      COVERAGE: true
-      NEED_CORE: true
-      NEED_INSTALL_APP: true
+platform:
+  os: linux
+  arch: amd64
 
-    - PHP_VERSION: 7.1
-      OC_VERSION: daily-master-qa
-      TEST_SUITE: phpunit
-      DB_TYPE: sqlite
-      NEED_CORE: true
-      NEED_INSTALL_APP: true
+workspace:
+  base: /var/www/owncloud
+  path: server/apps/files_antivirus
 
-    - PHP_VERSION: 7.1
-      OC_VERSION: daily-master-qa
-      TEST_SUITE: phpunit
-      DB_TYPE: pgsql
-      DB_HOST: pgsql
-      DB_NAME: oc_db
-      DB_USERNAME: admin
-      DB_PASSWORD: secret
-      NEED_CORE: true
-      NEED_INSTALL_APP: true
+steps:
+- name: install-core
+  pull: always
+  image: owncloudci/core
+  settings:
+    core_path: /var/www/owncloud/server
+    db_host: mysql
+    db_name: owncloud
+    db_password: owncloud
+    db_type: mysql
+    db_username: owncloud
+    exclude: apps/files_antivirus
+    version: daily-master-qa
 
-    - PHP_VERSION: 7.1
-      OC_VERSION: daily-master-qa
-      TEST_SUITE: phpunit
-      DB_TYPE: mysql
-      DB_HOST: mysqlmb4
-      DB_NAME: oc_db
-      DB_USERNAME: admin
-      DB_PASSWORD: secret
-      NEED_CORE: true
-      NEED_INSTALL_APP: true
+- name: setup-server-files_antivirus
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
+  - cd /var/www/owncloud/server/apps/files_antivirus
+  - make
+  - cd /var/www/owncloud/server
+  - php occ a:l
+  - php occ a:e files_antivirus
+  - php occ a:e testing
+  - php occ a:l
+  - php occ config:system:set trusted_domains 1 --value=server
+  - php occ log:manage --level 2
 
-    - PHP_VERSION: 7.1
-      OC_VERSION: daily-master-qa
-      TEST_SUITE: phpunit
-      DB_TYPE: oci
-      DB_HOST: oci
-      DB_NAME: XE
-      DB_USERNAME: autotest
-      NEED_CORE: true
-      NEED_INSTALL_APP: true
+- name: phpunit-tests
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
+  - make test-php-unit-dbg
 
-    #PHP 7.2
+- name: codecov-upload
+  pull: always
+  image: plugins/codecov:2
+  settings:
+    paths:
+    - tests/output/clover.xml
+    token:
+      from_secret: codecov_token
 
-    - PHP_VERSION: 7.2
-      OC_VERSION: daily-master-qa
-      TEST_SUITE: phpunit
-      DB_TYPE: mysql
-      DB_HOST: mysql
-      DB_NAME: oc_db
-      DB_USERNAME: admin
-      DB_PASSWORD: secret
-      NEED_CORE: true
-      NEED_INSTALL_APP: true
+services:
+- name: mysql
+  pull: always
+  image: mysql:5.7
+  environment:
+    MYSQL_DATABASE: owncloud
+    MYSQL_PASSWORD: owncloud
+    MYSQL_ROOT_PASSWORD: owncloud
+    MYSQL_USER: owncloud
 
-    #PHP 7.3
+trigger:
+  ref:
+  - refs/pull/**
+  - refs/tags/**
+  - refs/heads/master
 
-    - PHP_VERSION: 7.3
-      OC_VERSION: daily-master-qa
-      TEST_SUITE: phpunit
-      DB_TYPE: mysql
-      DB_HOST: mysql
-      DB_NAME: oc_db
-      DB_USERNAME: admin
-      DB_PASSWORD: secret
-      NEED_CORE: true
-      NEED_INSTALL_APP: true
+depends_on:
+- coding-standard-php7.0
+- coding-standard-php7.1
+- coding-standard-php7.2
+- coding-standard-php7.3
 
-    #Acceptance tests
-    - PHP_VERSION: 7.0
-      OC_VERSION: daily-master-qa
-      TEST_SUITE: api-acceptance
-      BEHAT_SUITE: apiAntivirus
-      NEED_CORE: true
-      NEED_SERVER: true
-      NEED_INSTALL_APP: true
-      NEED_CLAMAV: true
-      DB_TYPE: mysql
-      DB_HOST: mysql
-      DB_NAME: oc_db
-      DB_USERNAME: admin
-      DB_PASSWORD: secret
+---
+kind: pipeline
+type: docker
+name: phpunit-php7.0-postgres9.4
 
-    - PHP_VERSION: 7.1
-      OC_VERSION: daily-master-qa
-      TEST_SUITE: api-acceptance
-      BEHAT_SUITE: apiAntivirus
-      NEED_CORE: true
-      NEED_SERVER: true
-      NEED_INSTALL_APP: true
-      NEED_CLAMAV: true
-      DB_TYPE: sqlite
+platform:
+  os: linux
+  arch: amd64
 
-    - PHP_VERSION: 7.1
-      OC_VERSION: daily-master-qa
-      TEST_SUITE: api-acceptance
-      BEHAT_SUITE: apiAntivirus
-      NEED_CORE: true
-      NEED_SERVER: true
-      NEED_INSTALL_APP: true
-      NEED_CLAMAV: true
-      DB_TYPE: mysql
-      DB_HOST: mysql
-      DB_NAME: oc_db
-      DB_USERNAME: admin
-      DB_PASSWORD: secret
+workspace:
+  base: /var/www/owncloud
+  path: server/apps/files_antivirus
 
-    - PHP_VERSION: 7.1
-      OC_VERSION: daily-master-qa
-      TEST_SUITE: api-acceptance
-      BEHAT_SUITE: apiAntivirus
-      NEED_CORE: true
-      NEED_SERVER: true
-      NEED_INSTALL_APP: true
-      NEED_CLAMAV: true
-      DB_TYPE: pgsql
-      DB_HOST: pgsql
-      DB_NAME: oc_db
-      DB_USERNAME: admin
-      DB_PASSWORD: secret
+steps:
+- name: install-core
+  pull: always
+  image: owncloudci/core
+  settings:
+    core_path: /var/www/owncloud/server
+    db_host: postgres
+    db_name: owncloud
+    db_password: owncloud
+    db_type: pgsql
+    db_username: owncloud
+    exclude: apps/files_antivirus
+    version: daily-master-qa
 
-    - PHP_VERSION: 7.1
-      OC_VERSION: daily-master-qa
-      TEST_SUITE: api-acceptance
-      BEHAT_SUITE: apiAntivirus
-      NEED_CORE: true
-      NEED_SERVER: true
-      NEED_INSTALL_APP: true
-      NEED_CLAMAV: true
-      DB_TYPE: oci
-      DB_HOST: oci
-      DB_NAME: XE
-      DB_USERNAME: autotest
+- name: setup-server-files_antivirus
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
+  - cd /var/www/owncloud/server/apps/files_antivirus
+  - make
+  - cd /var/www/owncloud/server
+  - php occ a:l
+  - php occ a:e files_antivirus
+  - php occ a:e testing
+  - php occ a:l
+  - php occ config:system:set trusted_domains 1 --value=server
+  - php occ log:manage --level 2
 
-    - PHP_VERSION: 7.2
-      OC_VERSION: daily-master-qa
-      TEST_SUITE: api-acceptance
-      BEHAT_SUITE: apiAntivirus
-      NEED_CORE: true
-      NEED_SERVER: true
-      NEED_INSTALL_APP: true
-      NEED_CLAMAV: true
-      DB_TYPE: mysql
-      DB_HOST: mysql
-      DB_NAME: oc_db
-      DB_USERNAME: admin
-      DB_PASSWORD: secret
+- name: phpunit-tests
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
+  - make test-php-unit-dbg
 
-    - PHP_VERSION: 7.1
-      OC_VERSION: 10.2.1
-      TEST_SUITE: api-acceptance
-      BEHAT_SUITE: apiAntivirus
-      NEED_CORE: true
-      NEED_SERVER: true
-      NEED_INSTALL_APP: true
-      NEED_CLAMAV: true
-      USE_RELEASE_TARBALL: true
-      DB_TYPE: pgsql
-      DB_HOST: pgsql
-      DB_NAME: oc_db
-      DB_USERNAME: admin
-      DB_PASSWORD: secret
+- name: codecov-upload
+  pull: always
+  image: plugins/codecov:2
+  settings:
+    paths:
+    - tests/output/clover.xml
+    token:
+      from_secret: codecov_token
 
-  # objectstore related
+services:
+- name: postgres
+  pull: always
+  image: postgres:9.4
+  environment:
+    POSTGRES_DB: owncloud
+    POSTGRES_PASSWORD: owncloud
+    POSTGRES_USER: owncloud
 
-    - PHP_VERSION: 7.1
-      OC_VERSION: daily-master-qa
-      TEST_SUITE: api-acceptance
-      BEHAT_SUITE: apiAntivirus
-      NEED_CORE: true
-      NEED_SERVER: true
-      NEED_INSTALL_APP: true
-      NEED_CLAMAV: true
-      DB_TYPE: mysql
-      DB_HOST: mysql
-      DB_NAME: oc_db
-      DB_USERNAME: admin
-      DB_PASSWORD: secret
-      TEST_OBJECTSTORAGE: true
+trigger:
+  ref:
+  - refs/pull/**
+  - refs/tags/**
+  - refs/heads/master
 
-  # activity app related
+depends_on:
+- coding-standard-php7.0
+- coding-standard-php7.1
+- coding-standard-php7.2
+- coding-standard-php7.3
 
-    - PHP_VERSION: 7.1
-      OC_VERSION: daily-master-qa
-      TEST_SUITE: web-acceptance
-      BEHAT_SUITE: webUIActivityList
-      NEED_CORE: true
-      NEED_SERVER: true
-      NEED_INSTALL_APP: true
-      NEED_ACTIVITY_APP: true
-      NEED_CLAMAV: true
-      DB_TYPE: mysql
-      DB_HOST: mysql
-      DB_NAME: oc_db
-      DB_USERNAME: admin
-      DB_PASSWORD: secret
+---
+kind: pipeline
+type: docker
+name: phpunit-php7.0-oracle
 
-    - PHP_VERSION: 7.1
-      OC_VERSION: 10.2.1
-      TEST_SUITE: web-acceptance
-      BEHAT_SUITE: webUIActivityList
-      NEED_CORE: true
-      NEED_SERVER: true
-      NEED_INSTALL_APP: true
-      NEED_ACTIVITY_APP: true
-      USE_RELEASE_TARBALL: true
-      NEED_CLAMAV: true
-      DB_TYPE: mysql
-      DB_HOST: mysql
-      DB_NAME: oc_db
-      DB_USERNAME: admin
-      DB_PASSWORD: secret
+platform:
+  os: linux
+  arch: amd64
+
+workspace:
+  base: /var/www/owncloud
+  path: server/apps/files_antivirus
+
+steps:
+- name: install-core
+  pull: always
+  image: owncloudci/core
+  settings:
+    core_path: /var/www/owncloud/server
+    db_host: oracle
+    db_name: XE
+    db_password: oracle
+    db_type: oci
+    db_username: system
+    exclude: apps/files_antivirus
+    version: daily-master-qa
+
+- name: setup-server-files_antivirus
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
+  - cd /var/www/owncloud/server/apps/files_antivirus
+  - make
+  - cd /var/www/owncloud/server
+  - php occ a:l
+  - php occ a:e files_antivirus
+  - php occ a:e testing
+  - php occ a:l
+  - php occ config:system:set trusted_domains 1 --value=server
+  - php occ log:manage --level 2
+
+- name: phpunit-tests
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
+  - make test-php-unit-dbg
+
+- name: codecov-upload
+  pull: always
+  image: plugins/codecov:2
+  settings:
+    paths:
+    - tests/output/clover.xml
+    token:
+      from_secret: codecov_token
+
+services:
+- name: oracle
+  pull: always
+  image: deepdiver/docker-oracle-xe-11g:latest
+  environment:
+    ORACLE_DB: XE
+    ORACLE_DISABLE_ASYNCH_IO: true
+    ORACLE_PASSWORD: oracle
+    ORACLE_USER: system
+
+trigger:
+  ref:
+  - refs/pull/**
+  - refs/tags/**
+  - refs/heads/master
+
+depends_on:
+- coding-standard-php7.0
+- coding-standard-php7.1
+- coding-standard-php7.2
+- coding-standard-php7.3
+
+---
+kind: pipeline
+type: docker
+name: phpunit-php7.1-sqlite
+
+platform:
+  os: linux
+  arch: amd64
+
+workspace:
+  base: /var/www/owncloud
+  path: server/apps/files_antivirus
+
+steps:
+- name: install-core
+  pull: always
+  image: owncloudci/core
+  settings:
+    core_path: /var/www/owncloud/server
+    db_host: sqlite
+    db_name: owncloud
+    db_password: owncloud
+    db_type: sqlite
+    db_username: owncloud
+    exclude: apps/files_antivirus
+    version: daily-master-qa
+
+- name: setup-server-files_antivirus
+  pull: always
+  image: owncloudci/php:7.1
+  commands:
+  - cd /var/www/owncloud/server/apps/files_antivirus
+  - make
+  - cd /var/www/owncloud/server
+  - php occ a:l
+  - php occ a:e files_antivirus
+  - php occ a:e testing
+  - php occ a:l
+  - php occ config:system:set trusted_domains 1 --value=server
+  - php occ log:manage --level 2
+
+- name: phpunit-tests
+  pull: always
+  image: owncloudci/php:7.1
+  commands:
+  - make test-php-unit
+
+trigger:
+  ref:
+  - refs/pull/**
+  - refs/tags/**
+  - refs/heads/master
+
+depends_on:
+- coding-standard-php7.0
+- coding-standard-php7.1
+- coding-standard-php7.2
+- coding-standard-php7.3
+
+---
+kind: pipeline
+type: docker
+name: phpunit-php7.1-mariadb10.2
+
+platform:
+  os: linux
+  arch: amd64
+
+workspace:
+  base: /var/www/owncloud
+  path: server/apps/files_antivirus
+
+steps:
+- name: install-core
+  pull: always
+  image: owncloudci/core
+  settings:
+    core_path: /var/www/owncloud/server
+    db_host: mariadb
+    db_name: owncloud
+    db_password: owncloud
+    db_type: mysql
+    db_username: owncloud
+    exclude: apps/files_antivirus
+    version: daily-master-qa
+
+- name: setup-server-files_antivirus
+  pull: always
+  image: owncloudci/php:7.1
+  commands:
+  - cd /var/www/owncloud/server/apps/files_antivirus
+  - make
+  - cd /var/www/owncloud/server
+  - php occ a:l
+  - php occ a:e files_antivirus
+  - php occ a:e testing
+  - php occ a:l
+  - php occ config:system:set trusted_domains 1 --value=server
+  - php occ log:manage --level 2
+
+- name: phpunit-tests
+  pull: always
+  image: owncloudci/php:7.1
+  commands:
+  - make test-php-unit
+
+services:
+- name: mariadb
+  pull: always
+  image: mariadb:10.2
+  environment:
+    MYSQL_DATABASE: owncloud
+    MYSQL_PASSWORD: owncloud
+    MYSQL_ROOT_PASSWORD: owncloud
+    MYSQL_USER: owncloud
+
+trigger:
+  ref:
+  - refs/pull/**
+  - refs/tags/**
+  - refs/heads/master
+
+depends_on:
+- coding-standard-php7.0
+- coding-standard-php7.1
+- coding-standard-php7.2
+- coding-standard-php7.3
+
+---
+kind: pipeline
+type: docker
+name: phpunit-php7.2-sqlite
+
+platform:
+  os: linux
+  arch: amd64
+
+workspace:
+  base: /var/www/owncloud
+  path: server/apps/files_antivirus
+
+steps:
+- name: install-core
+  pull: always
+  image: owncloudci/core
+  settings:
+    core_path: /var/www/owncloud/server
+    db_host: sqlite
+    db_name: owncloud
+    db_password: owncloud
+    db_type: sqlite
+    db_username: owncloud
+    exclude: apps/files_antivirus
+    version: daily-master-qa
+
+- name: setup-server-files_antivirus
+  pull: always
+  image: owncloudci/php:7.2
+  commands:
+  - cd /var/www/owncloud/server/apps/files_antivirus
+  - make
+  - cd /var/www/owncloud/server
+  - php occ a:l
+  - php occ a:e files_antivirus
+  - php occ a:e testing
+  - php occ a:l
+  - php occ config:system:set trusted_domains 1 --value=server
+  - php occ log:manage --level 2
+
+- name: phpunit-tests
+  pull: always
+  image: owncloudci/php:7.2
+  commands:
+  - make test-php-unit
+
+trigger:
+  ref:
+  - refs/pull/**
+  - refs/tags/**
+  - refs/heads/master
+
+depends_on:
+- coding-standard-php7.0
+- coding-standard-php7.1
+- coding-standard-php7.2
+- coding-standard-php7.3
+
+---
+kind: pipeline
+type: docker
+name: phpunit-php7.2-mariadb10.2
+
+platform:
+  os: linux
+  arch: amd64
+
+workspace:
+  base: /var/www/owncloud
+  path: server/apps/files_antivirus
+
+steps:
+- name: install-core
+  pull: always
+  image: owncloudci/core
+  settings:
+    core_path: /var/www/owncloud/server
+    db_host: mariadb
+    db_name: owncloud
+    db_password: owncloud
+    db_type: mysql
+    db_username: owncloud
+    exclude: apps/files_antivirus
+    version: daily-master-qa
+
+- name: setup-server-files_antivirus
+  pull: always
+  image: owncloudci/php:7.2
+  commands:
+  - cd /var/www/owncloud/server/apps/files_antivirus
+  - make
+  - cd /var/www/owncloud/server
+  - php occ a:l
+  - php occ a:e files_antivirus
+  - php occ a:e testing
+  - php occ a:l
+  - php occ config:system:set trusted_domains 1 --value=server
+  - php occ log:manage --level 2
+
+- name: phpunit-tests
+  pull: always
+  image: owncloudci/php:7.2
+  commands:
+  - make test-php-unit
+
+services:
+- name: mariadb
+  pull: always
+  image: mariadb:10.2
+  environment:
+    MYSQL_DATABASE: owncloud
+    MYSQL_PASSWORD: owncloud
+    MYSQL_ROOT_PASSWORD: owncloud
+    MYSQL_USER: owncloud
+
+trigger:
+  ref:
+  - refs/pull/**
+  - refs/tags/**
+  - refs/heads/master
+
+depends_on:
+- coding-standard-php7.0
+- coding-standard-php7.1
+- coding-standard-php7.2
+- coding-standard-php7.3
+
+---
+kind: pipeline
+type: docker
+name: phpunit-php7.3-sqlite
+
+platform:
+  os: linux
+  arch: amd64
+
+workspace:
+  base: /var/www/owncloud
+  path: server/apps/files_antivirus
+
+steps:
+- name: install-core
+  pull: always
+  image: owncloudci/core
+  settings:
+    core_path: /var/www/owncloud/server
+    db_host: sqlite
+    db_name: owncloud
+    db_password: owncloud
+    db_type: sqlite
+    db_username: owncloud
+    exclude: apps/files_antivirus
+    version: daily-master-qa
+
+- name: setup-server-files_antivirus
+  pull: always
+  image: owncloudci/php:7.3
+  commands:
+  - cd /var/www/owncloud/server/apps/files_antivirus
+  - make
+  - cd /var/www/owncloud/server
+  - php occ a:l
+  - php occ a:e files_antivirus
+  - php occ a:e testing
+  - php occ a:l
+  - php occ config:system:set trusted_domains 1 --value=server
+  - php occ log:manage --level 2
+
+- name: phpunit-tests
+  pull: always
+  image: owncloudci/php:7.3
+  commands:
+  - make test-php-unit
+
+trigger:
+  ref:
+  - refs/pull/**
+  - refs/tags/**
+  - refs/heads/master
+
+depends_on:
+- coding-standard-php7.0
+- coding-standard-php7.1
+- coding-standard-php7.2
+- coding-standard-php7.3
+
+---
+kind: pipeline
+type: docker
+name: phpunit-php7.3-mariadb10.2
+
+platform:
+  os: linux
+  arch: amd64
+
+workspace:
+  base: /var/www/owncloud
+  path: server/apps/files_antivirus
+
+steps:
+- name: install-core
+  pull: always
+  image: owncloudci/core
+  settings:
+    core_path: /var/www/owncloud/server
+    db_host: mariadb
+    db_name: owncloud
+    db_password: owncloud
+    db_type: mysql
+    db_username: owncloud
+    exclude: apps/files_antivirus
+    version: daily-master-qa
+
+- name: setup-server-files_antivirus
+  pull: always
+  image: owncloudci/php:7.3
+  commands:
+  - cd /var/www/owncloud/server/apps/files_antivirus
+  - make
+  - cd /var/www/owncloud/server
+  - php occ a:l
+  - php occ a:e files_antivirus
+  - php occ a:e testing
+  - php occ a:l
+  - php occ config:system:set trusted_domains 1 --value=server
+  - php occ log:manage --level 2
+
+- name: phpunit-tests
+  pull: always
+  image: owncloudci/php:7.3
+  commands:
+  - make test-php-unit
+
+services:
+- name: mariadb
+  pull: always
+  image: mariadb:10.2
+  environment:
+    MYSQL_DATABASE: owncloud
+    MYSQL_PASSWORD: owncloud
+    MYSQL_ROOT_PASSWORD: owncloud
+    MYSQL_USER: owncloud
+
+trigger:
+  ref:
+  - refs/pull/**
+  - refs/tags/**
+  - refs/heads/master
+
+depends_on:
+- coding-standard-php7.0
+- coding-standard-php7.1
+- coding-standard-php7.2
+- coding-standard-php7.3
+
+---
+kind: pipeline
+type: docker
+name: webUIActList-master-chrome-mariadb10.2-php7.0
+
+platform:
+  os: linux
+  arch: amd64
+
+workspace:
+  base: /var/www/owncloud
+  path: testrunner/apps/files_antivirus
+
+steps:
+- name: install-core
+  pull: always
+  image: owncloudci/core
+  settings:
+    core_path: /var/www/owncloud/server
+    db_host: mariadb
+    db_name: owncloud
+    db_password: owncloud
+    db_type: mysql
+    db_username: owncloud
+    exclude: apps/files_antivirus
+    version: daily-master-qa
+
+- name: install-testrunner
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
+  - mkdir /tmp/testrunner
+  - git clone -b master --depth=1 https://github.com/owncloud/core.git /tmp/testrunner
+  - rsync -aIX /tmp/testrunner /var/www/owncloud
+  - cp -r /var/www/owncloud/testrunner/apps/files_antivirus /var/www/owncloud/server/apps/
+  - cd /var/www/owncloud/testrunner
+  - make install-composer-deps vendor-bin-deps
+
+- name: setup-server-files_antivirus
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
+  - cd /var/www/owncloud/server/apps/files_antivirus
+  - make
+  - cd /var/www/owncloud/server
+  - php occ a:l
+  - php occ a:e files_antivirus
+  - php occ a:e testing
+  - php occ a:l
+  - php occ config:system:set trusted_domains 1 --value=server
+  - php occ log:manage --level 2
+
+- name: owncloud-log-server
+  pull: always
+  image: owncloud/ubuntu:18.04
+  detach: true
+  commands:
+  - tail -f /var/www/owncloud/server/data/owncloud.log
+
+- name: configure-app
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
+  - cd /var/www/owncloud/server
+  - php occ config:app:set --value "clamav" files_antivirus av_host
+  - php occ config:app:set --value "daemon" files_antivirus av_mode
+  - php occ config:app:set --value "3310" files_antivirus av_port
+
+- name: fix-permissions
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
+  - chown -R www-data /var/www/owncloud/server
+
+- name: acceptance-tests
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
+  - touch /var/www/owncloud/saved-settings.sh
+  - . /var/www/owncloud/saved-settings.sh
+  - make test-acceptance-webui
+  environment:
+    BEHAT_SUITE: webUIActivityList
+    BROWSER: chrome
+    PLATFORM: Linux
+    SELENIUM_HOST: selenium
+    SELENIUM_PORT: 4444
+    TEST_SERVER_URL: http://server
+
+services:
+- name: mariadb
+  pull: always
+  image: mariadb:10.2
+  environment:
+    MYSQL_DATABASE: owncloud
+    MYSQL_PASSWORD: owncloud
+    MYSQL_ROOT_PASSWORD: owncloud
+    MYSQL_USER: owncloud
+
+- name: selenium
+  pull: always
+  image: selenium/standalone-chrome-debug:3.141.59-oxygen
+  environment:
+    JAVA_OPTS: -Dselenium.LOGGER.level=WARNING
+
+- name: clamav
+  pull: always
+  image: dinkel/clamavd
+
+- name: server
+  pull: always
+  image: owncloudci/php:7.0
+  command:
+  - /usr/local/bin/apachectl
+  - -e
+  - debug
+  - -D
+  - FOREGROUND
+  environment:
+    APACHE_WEBROOT: /var/www/owncloud/server
+
+trigger:
+  ref:
+  - refs/pull/**
+  - refs/tags/**
+  - refs/heads/master
+
+depends_on:
+- coding-standard-php7.0
+- coding-standard-php7.1
+- coding-standard-php7.2
+- coding-standard-php7.3
+
+---
+kind: pipeline
+type: docker
+name: webUIActList-master-firefox-mariadb10.2-php7.0
+
+platform:
+  os: linux
+  arch: amd64
+
+workspace:
+  base: /var/www/owncloud
+  path: testrunner/apps/files_antivirus
+
+steps:
+- name: install-core
+  pull: always
+  image: owncloudci/core
+  settings:
+    core_path: /var/www/owncloud/server
+    db_host: mariadb
+    db_name: owncloud
+    db_password: owncloud
+    db_type: mysql
+    db_username: owncloud
+    exclude: apps/files_antivirus
+    version: daily-master-qa
+
+- name: install-testrunner
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
+  - mkdir /tmp/testrunner
+  - git clone -b master --depth=1 https://github.com/owncloud/core.git /tmp/testrunner
+  - rsync -aIX /tmp/testrunner /var/www/owncloud
+  - cp -r /var/www/owncloud/testrunner/apps/files_antivirus /var/www/owncloud/server/apps/
+  - cd /var/www/owncloud/testrunner
+  - make install-composer-deps vendor-bin-deps
+
+- name: setup-server-files_antivirus
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
+  - cd /var/www/owncloud/server/apps/files_antivirus
+  - make
+  - cd /var/www/owncloud/server
+  - php occ a:l
+  - php occ a:e files_antivirus
+  - php occ a:e testing
+  - php occ a:l
+  - php occ config:system:set trusted_domains 1 --value=server
+  - php occ log:manage --level 2
+
+- name: owncloud-log-server
+  pull: always
+  image: owncloud/ubuntu:18.04
+  detach: true
+  commands:
+  - tail -f /var/www/owncloud/server/data/owncloud.log
+
+- name: configure-app
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
+  - cd /var/www/owncloud/server
+  - php occ config:app:set --value "clamav" files_antivirus av_host
+  - php occ config:app:set --value "daemon" files_antivirus av_mode
+  - php occ config:app:set --value "3310" files_antivirus av_port
+
+- name: fix-permissions
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
+  - chown -R www-data /var/www/owncloud/server
+
+- name: acceptance-tests
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
+  - touch /var/www/owncloud/saved-settings.sh
+  - . /var/www/owncloud/saved-settings.sh
+  - make test-acceptance-webui
+  environment:
+    BEHAT_SUITE: webUIActivityList
+    BROWSER: firefox
+    PLATFORM: Linux
+    SELENIUM_HOST: selenium
+    SELENIUM_PORT: 4444
+    TEST_SERVER_URL: http://server
+
+services:
+- name: mariadb
+  pull: always
+  image: mariadb:10.2
+  environment:
+    MYSQL_DATABASE: owncloud
+    MYSQL_PASSWORD: owncloud
+    MYSQL_ROOT_PASSWORD: owncloud
+    MYSQL_USER: owncloud
+
+- name: selenium
+  pull: always
+  image: selenium/standalone-firefox-debug:3.8.1
+  environment:
+    JAVA_OPTS: -Dselenium.LOGGER.level=WARNING
+    SE_OPTS: -enablePassThrough false
+
+- name: clamav
+  pull: always
+  image: dinkel/clamavd
+
+- name: server
+  pull: always
+  image: owncloudci/php:7.0
+  command:
+  - /usr/local/bin/apachectl
+  - -e
+  - debug
+  - -D
+  - FOREGROUND
+  environment:
+    APACHE_WEBROOT: /var/www/owncloud/server
+
+trigger:
+  ref:
+  - refs/pull/**
+  - refs/tags/**
+  - refs/heads/master
+
+depends_on:
+- coding-standard-php7.0
+- coding-standard-php7.1
+- coding-standard-php7.2
+- coding-standard-php7.3
+
+---
+kind: pipeline
+type: docker
+name: webUIActList-10.2.1-chrome-mariadb10.2-php7.0
+
+platform:
+  os: linux
+  arch: amd64
+
+workspace:
+  base: /var/www/owncloud
+  path: testrunner/apps/files_antivirus
+
+steps:
+- name: install-core
+  pull: always
+  image: owncloudci/core
+  settings:
+    core_path: /var/www/owncloud/server
+    db_host: mariadb
+    db_name: owncloud
+    db_password: owncloud
+    db_type: mysql
+    db_username: owncloud
+    exclude: apps/files_antivirus
+    version: 10.2.1
+
+- name: install-testrunner
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
+  - mkdir /tmp/testrunner
+  - git clone -b master --depth=1 https://github.com/owncloud/core.git /tmp/testrunner
+  - rsync -aIX /tmp/testrunner /var/www/owncloud
+  - cp -r /var/www/owncloud/testrunner/apps/files_antivirus /var/www/owncloud/server/apps/
+  - cd /var/www/owncloud/testrunner
+  - make install-composer-deps vendor-bin-deps
+
+- name: setup-server-files_antivirus
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
+  - cd /var/www/owncloud/server/apps/files_antivirus
+  - make
+  - cd /var/www/owncloud/server
+  - php occ a:l
+  - php occ a:e files_antivirus
+  - php occ a:e testing
+  - php occ a:l
+  - php occ config:system:set trusted_domains 1 --value=server
+  - php occ log:manage --level 2
+
+- name: owncloud-log-server
+  pull: always
+  image: owncloud/ubuntu:18.04
+  detach: true
+  commands:
+  - tail -f /var/www/owncloud/server/data/owncloud.log
+
+- name: configure-app
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
+  - cd /var/www/owncloud/server
+  - php occ config:app:set --value "clamav" files_antivirus av_host
+  - php occ config:app:set --value "daemon" files_antivirus av_mode
+  - php occ config:app:set --value "3310" files_antivirus av_port
+
+- name: fix-permissions
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
+  - chown -R www-data /var/www/owncloud/server
+
+- name: acceptance-tests
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
+  - touch /var/www/owncloud/saved-settings.sh
+  - . /var/www/owncloud/saved-settings.sh
+  - make test-acceptance-webui
+  environment:
+    BEHAT_SUITE: webUIActivityList
+    BROWSER: chrome
+    PLATFORM: Linux
+    SELENIUM_HOST: selenium
+    SELENIUM_PORT: 4444
+    TEST_SERVER_URL: http://server
+
+services:
+- name: mariadb
+  pull: always
+  image: mariadb:10.2
+  environment:
+    MYSQL_DATABASE: owncloud
+    MYSQL_PASSWORD: owncloud
+    MYSQL_ROOT_PASSWORD: owncloud
+    MYSQL_USER: owncloud
+
+- name: selenium
+  pull: always
+  image: selenium/standalone-chrome-debug:3.141.59-oxygen
+  environment:
+    JAVA_OPTS: -Dselenium.LOGGER.level=WARNING
+
+- name: clamav
+  pull: always
+  image: dinkel/clamavd
+
+- name: server
+  pull: always
+  image: owncloudci/php:7.0
+  command:
+  - /usr/local/bin/apachectl
+  - -e
+  - debug
+  - -D
+  - FOREGROUND
+  environment:
+    APACHE_WEBROOT: /var/www/owncloud/server
+
+trigger:
+  ref:
+  - refs/pull/**
+  - refs/tags/**
+  - refs/heads/master
+
+depends_on:
+- coding-standard-php7.0
+- coding-standard-php7.1
+- coding-standard-php7.2
+- coding-standard-php7.3
+
+---
+kind: pipeline
+type: docker
+name: webUIActList-10.2.1-firefox-mariadb10.2-php7.0
+
+platform:
+  os: linux
+  arch: amd64
+
+workspace:
+  base: /var/www/owncloud
+  path: testrunner/apps/files_antivirus
+
+steps:
+- name: install-core
+  pull: always
+  image: owncloudci/core
+  settings:
+    core_path: /var/www/owncloud/server
+    db_host: mariadb
+    db_name: owncloud
+    db_password: owncloud
+    db_type: mysql
+    db_username: owncloud
+    exclude: apps/files_antivirus
+    version: 10.2.1
+
+- name: install-testrunner
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
+  - mkdir /tmp/testrunner
+  - git clone -b master --depth=1 https://github.com/owncloud/core.git /tmp/testrunner
+  - rsync -aIX /tmp/testrunner /var/www/owncloud
+  - cp -r /var/www/owncloud/testrunner/apps/files_antivirus /var/www/owncloud/server/apps/
+  - cd /var/www/owncloud/testrunner
+  - make install-composer-deps vendor-bin-deps
+
+- name: setup-server-files_antivirus
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
+  - cd /var/www/owncloud/server/apps/files_antivirus
+  - make
+  - cd /var/www/owncloud/server
+  - php occ a:l
+  - php occ a:e files_antivirus
+  - php occ a:e testing
+  - php occ a:l
+  - php occ config:system:set trusted_domains 1 --value=server
+  - php occ log:manage --level 2
+
+- name: owncloud-log-server
+  pull: always
+  image: owncloud/ubuntu:18.04
+  detach: true
+  commands:
+  - tail -f /var/www/owncloud/server/data/owncloud.log
+
+- name: configure-app
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
+  - cd /var/www/owncloud/server
+  - php occ config:app:set --value "clamav" files_antivirus av_host
+  - php occ config:app:set --value "daemon" files_antivirus av_mode
+  - php occ config:app:set --value "3310" files_antivirus av_port
+
+- name: fix-permissions
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
+  - chown -R www-data /var/www/owncloud/server
+
+- name: acceptance-tests
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
+  - touch /var/www/owncloud/saved-settings.sh
+  - . /var/www/owncloud/saved-settings.sh
+  - make test-acceptance-webui
+  environment:
+    BEHAT_SUITE: webUIActivityList
+    BROWSER: firefox
+    PLATFORM: Linux
+    SELENIUM_HOST: selenium
+    SELENIUM_PORT: 4444
+    TEST_SERVER_URL: http://server
+
+services:
+- name: mariadb
+  pull: always
+  image: mariadb:10.2
+  environment:
+    MYSQL_DATABASE: owncloud
+    MYSQL_PASSWORD: owncloud
+    MYSQL_ROOT_PASSWORD: owncloud
+    MYSQL_USER: owncloud
+
+- name: selenium
+  pull: always
+  image: selenium/standalone-firefox-debug:3.8.1
+  environment:
+    JAVA_OPTS: -Dselenium.LOGGER.level=WARNING
+    SE_OPTS: -enablePassThrough false
+
+- name: clamav
+  pull: always
+  image: dinkel/clamavd
+
+- name: server
+  pull: always
+  image: owncloudci/php:7.0
+  command:
+  - /usr/local/bin/apachectl
+  - -e
+  - debug
+  - -D
+  - FOREGROUND
+  environment:
+    APACHE_WEBROOT: /var/www/owncloud/server
+
+trigger:
+  ref:
+  - refs/pull/**
+  - refs/tags/**
+  - refs/heads/master
+
+depends_on:
+- coding-standard-php7.0
+- coding-standard-php7.1
+- coding-standard-php7.2
+- coding-standard-php7.3
+
+---
+kind: pipeline
+type: docker
+name: apiAntiVirus-master-mariadb10.2-php7.0
+
+platform:
+  os: linux
+  arch: amd64
+
+workspace:
+  base: /var/www/owncloud
+  path: testrunner/apps/files_antivirus
+
+steps:
+- name: install-core
+  pull: always
+  image: owncloudci/core
+  settings:
+    core_path: /var/www/owncloud/server
+    db_host: mariadb
+    db_name: owncloud
+    db_password: owncloud
+    db_type: mysql
+    db_username: owncloud
+    exclude: apps/files_antivirus
+    version: daily-master-qa
+
+- name: install-testrunner
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
+  - mkdir /tmp/testrunner
+  - git clone -b master --depth=1 https://github.com/owncloud/core.git /tmp/testrunner
+  - rsync -aIX /tmp/testrunner /var/www/owncloud
+  - cp -r /var/www/owncloud/testrunner/apps/files_antivirus /var/www/owncloud/server/apps/
+  - cd /var/www/owncloud/testrunner
+  - make install-composer-deps vendor-bin-deps
+
+- name: setup-server-files_antivirus
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
+  - cd /var/www/owncloud/server/apps/files_antivirus
+  - make
+  - cd /var/www/owncloud/server
+  - php occ a:l
+  - php occ a:e files_antivirus
+  - php occ a:e testing
+  - php occ a:l
+  - php occ config:system:set trusted_domains 1 --value=server
+  - php occ log:manage --level 2
+
+- name: owncloud-log-server
+  pull: always
+  image: owncloud/ubuntu:18.04
+  detach: true
+  commands:
+  - tail -f /var/www/owncloud/server/data/owncloud.log
+
+- name: configure-app
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
+  - cd /var/www/owncloud/server
+  - php occ config:app:set --value "clamav" files_antivirus av_host
+  - php occ config:app:set --value "daemon" files_antivirus av_mode
+  - php occ config:app:set --value "3310" files_antivirus av_port
+
+- name: fix-permissions
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
+  - chown -R www-data /var/www/owncloud/server
+
+- name: acceptance-tests
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
+  - touch /var/www/owncloud/saved-settings.sh
+  - . /var/www/owncloud/saved-settings.sh
+  - make test-acceptance-api
+  environment:
+    BEHAT_SUITE: apiAntiVirus
+    TEST_SERVER_URL: http://server
+
+services:
+- name: mariadb
+  pull: always
+  image: mariadb:10.2
+  environment:
+    MYSQL_DATABASE: owncloud
+    MYSQL_PASSWORD: owncloud
+    MYSQL_ROOT_PASSWORD: owncloud
+    MYSQL_USER: owncloud
+
+- name: clamav
+  pull: always
+  image: dinkel/clamavd
+
+- name: server
+  pull: always
+  image: owncloudci/php:7.0
+  command:
+  - /usr/local/bin/apachectl
+  - -e
+  - debug
+  - -D
+  - FOREGROUND
+  environment:
+    APACHE_WEBROOT: /var/www/owncloud/server
+
+trigger:
+  ref:
+  - refs/pull/**
+  - refs/tags/**
+  - refs/heads/master
+
+depends_on:
+- coding-standard-php7.0
+- coding-standard-php7.1
+- coding-standard-php7.2
+- coding-standard-php7.3
+
+---
+kind: pipeline
+type: docker
+name: apiAntiVirus-master-mysql5.5-php7.0
+
+platform:
+  os: linux
+  arch: amd64
+
+workspace:
+  base: /var/www/owncloud
+  path: testrunner/apps/files_antivirus
+
+steps:
+- name: install-core
+  pull: always
+  image: owncloudci/core
+  settings:
+    core_path: /var/www/owncloud/server
+    db_host: mysql
+    db_name: owncloud
+    db_password: owncloud
+    db_type: mysql
+    db_username: owncloud
+    exclude: apps/files_antivirus
+    version: daily-master-qa
+
+- name: install-testrunner
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
+  - mkdir /tmp/testrunner
+  - git clone -b master --depth=1 https://github.com/owncloud/core.git /tmp/testrunner
+  - rsync -aIX /tmp/testrunner /var/www/owncloud
+  - cp -r /var/www/owncloud/testrunner/apps/files_antivirus /var/www/owncloud/server/apps/
+  - cd /var/www/owncloud/testrunner
+  - make install-composer-deps vendor-bin-deps
+
+- name: setup-server-files_antivirus
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
+  - cd /var/www/owncloud/server/apps/files_antivirus
+  - make
+  - cd /var/www/owncloud/server
+  - php occ a:l
+  - php occ a:e files_antivirus
+  - php occ a:e testing
+  - php occ a:l
+  - php occ config:system:set trusted_domains 1 --value=server
+  - php occ log:manage --level 2
+
+- name: owncloud-log-server
+  pull: always
+  image: owncloud/ubuntu:18.04
+  detach: true
+  commands:
+  - tail -f /var/www/owncloud/server/data/owncloud.log
+
+- name: configure-app
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
+  - cd /var/www/owncloud/server
+  - php occ config:app:set --value "clamav" files_antivirus av_host
+  - php occ config:app:set --value "daemon" files_antivirus av_mode
+  - php occ config:app:set --value "3310" files_antivirus av_port
+
+- name: fix-permissions
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
+  - chown -R www-data /var/www/owncloud/server
+
+- name: acceptance-tests
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
+  - touch /var/www/owncloud/saved-settings.sh
+  - . /var/www/owncloud/saved-settings.sh
+  - make test-acceptance-api
+  environment:
+    BEHAT_SUITE: apiAntiVirus
+    TEST_SERVER_URL: http://server
+
+services:
+- name: mysql
+  pull: always
+  image: mysql:5.5
+  environment:
+    MYSQL_DATABASE: owncloud
+    MYSQL_PASSWORD: owncloud
+    MYSQL_ROOT_PASSWORD: owncloud
+    MYSQL_USER: owncloud
+
+- name: clamav
+  pull: always
+  image: dinkel/clamavd
+
+- name: server
+  pull: always
+  image: owncloudci/php:7.0
+  command:
+  - /usr/local/bin/apachectl
+  - -e
+  - debug
+  - -D
+  - FOREGROUND
+  environment:
+    APACHE_WEBROOT: /var/www/owncloud/server
+
+trigger:
+  ref:
+  - refs/pull/**
+  - refs/tags/**
+  - refs/heads/master
+
+depends_on:
+- coding-standard-php7.0
+- coding-standard-php7.1
+- coding-standard-php7.2
+- coding-standard-php7.3
+
+---
+kind: pipeline
+type: docker
+name: apiAntiVirus-master-mysql5.7-php7.0
+
+platform:
+  os: linux
+  arch: amd64
+
+workspace:
+  base: /var/www/owncloud
+  path: testrunner/apps/files_antivirus
+
+steps:
+- name: install-core
+  pull: always
+  image: owncloudci/core
+  settings:
+    core_path: /var/www/owncloud/server
+    db_host: mysql
+    db_name: owncloud
+    db_password: owncloud
+    db_type: mysql
+    db_username: owncloud
+    exclude: apps/files_antivirus
+    version: daily-master-qa
+
+- name: install-testrunner
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
+  - mkdir /tmp/testrunner
+  - git clone -b master --depth=1 https://github.com/owncloud/core.git /tmp/testrunner
+  - rsync -aIX /tmp/testrunner /var/www/owncloud
+  - cp -r /var/www/owncloud/testrunner/apps/files_antivirus /var/www/owncloud/server/apps/
+  - cd /var/www/owncloud/testrunner
+  - make install-composer-deps vendor-bin-deps
+
+- name: setup-server-files_antivirus
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
+  - cd /var/www/owncloud/server/apps/files_antivirus
+  - make
+  - cd /var/www/owncloud/server
+  - php occ a:l
+  - php occ a:e files_antivirus
+  - php occ a:e testing
+  - php occ a:l
+  - php occ config:system:set trusted_domains 1 --value=server
+  - php occ log:manage --level 2
+
+- name: owncloud-log-server
+  pull: always
+  image: owncloud/ubuntu:18.04
+  detach: true
+  commands:
+  - tail -f /var/www/owncloud/server/data/owncloud.log
+
+- name: configure-app
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
+  - cd /var/www/owncloud/server
+  - php occ config:app:set --value "clamav" files_antivirus av_host
+  - php occ config:app:set --value "daemon" files_antivirus av_mode
+  - php occ config:app:set --value "3310" files_antivirus av_port
+
+- name: fix-permissions
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
+  - chown -R www-data /var/www/owncloud/server
+
+- name: acceptance-tests
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
+  - touch /var/www/owncloud/saved-settings.sh
+  - . /var/www/owncloud/saved-settings.sh
+  - make test-acceptance-api
+  environment:
+    BEHAT_SUITE: apiAntiVirus
+    TEST_SERVER_URL: http://server
+
+services:
+- name: mysql
+  pull: always
+  image: mysql:5.7
+  environment:
+    MYSQL_DATABASE: owncloud
+    MYSQL_PASSWORD: owncloud
+    MYSQL_ROOT_PASSWORD: owncloud
+    MYSQL_USER: owncloud
+
+- name: clamav
+  pull: always
+  image: dinkel/clamavd
+
+- name: server
+  pull: always
+  image: owncloudci/php:7.0
+  command:
+  - /usr/local/bin/apachectl
+  - -e
+  - debug
+  - -D
+  - FOREGROUND
+  environment:
+    APACHE_WEBROOT: /var/www/owncloud/server
+
+trigger:
+  ref:
+  - refs/pull/**
+  - refs/tags/**
+  - refs/heads/master
+
+depends_on:
+- coding-standard-php7.0
+- coding-standard-php7.1
+- coding-standard-php7.2
+- coding-standard-php7.3
+
+---
+kind: pipeline
+type: docker
+name: apiAntiVirus-master-postgres9.4-php7.0
+
+platform:
+  os: linux
+  arch: amd64
+
+workspace:
+  base: /var/www/owncloud
+  path: testrunner/apps/files_antivirus
+
+steps:
+- name: install-core
+  pull: always
+  image: owncloudci/core
+  settings:
+    core_path: /var/www/owncloud/server
+    db_host: postgres
+    db_name: owncloud
+    db_password: owncloud
+    db_type: pgsql
+    db_username: owncloud
+    exclude: apps/files_antivirus
+    version: daily-master-qa
+
+- name: install-testrunner
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
+  - mkdir /tmp/testrunner
+  - git clone -b master --depth=1 https://github.com/owncloud/core.git /tmp/testrunner
+  - rsync -aIX /tmp/testrunner /var/www/owncloud
+  - cp -r /var/www/owncloud/testrunner/apps/files_antivirus /var/www/owncloud/server/apps/
+  - cd /var/www/owncloud/testrunner
+  - make install-composer-deps vendor-bin-deps
+
+- name: setup-server-files_antivirus
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
+  - cd /var/www/owncloud/server/apps/files_antivirus
+  - make
+  - cd /var/www/owncloud/server
+  - php occ a:l
+  - php occ a:e files_antivirus
+  - php occ a:e testing
+  - php occ a:l
+  - php occ config:system:set trusted_domains 1 --value=server
+  - php occ log:manage --level 2
+
+- name: owncloud-log-server
+  pull: always
+  image: owncloud/ubuntu:18.04
+  detach: true
+  commands:
+  - tail -f /var/www/owncloud/server/data/owncloud.log
+
+- name: configure-app
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
+  - cd /var/www/owncloud/server
+  - php occ config:app:set --value "clamav" files_antivirus av_host
+  - php occ config:app:set --value "daemon" files_antivirus av_mode
+  - php occ config:app:set --value "3310" files_antivirus av_port
+
+- name: fix-permissions
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
+  - chown -R www-data /var/www/owncloud/server
+
+- name: acceptance-tests
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
+  - touch /var/www/owncloud/saved-settings.sh
+  - . /var/www/owncloud/saved-settings.sh
+  - make test-acceptance-api
+  environment:
+    BEHAT_SUITE: apiAntiVirus
+    TEST_SERVER_URL: http://server
+
+services:
+- name: postgres
+  pull: always
+  image: postgres:9.4
+  environment:
+    POSTGRES_DB: owncloud
+    POSTGRES_PASSWORD: owncloud
+    POSTGRES_USER: owncloud
+
+- name: clamav
+  pull: always
+  image: dinkel/clamavd
+
+- name: server
+  pull: always
+  image: owncloudci/php:7.0
+  command:
+  - /usr/local/bin/apachectl
+  - -e
+  - debug
+  - -D
+  - FOREGROUND
+  environment:
+    APACHE_WEBROOT: /var/www/owncloud/server
+
+trigger:
+  ref:
+  - refs/pull/**
+  - refs/tags/**
+  - refs/heads/master
+
+depends_on:
+- coding-standard-php7.0
+- coding-standard-php7.1
+- coding-standard-php7.2
+- coding-standard-php7.3
+
+---
+kind: pipeline
+type: docker
+name: apiAntiVirus-master-oracle-php7.0
+
+platform:
+  os: linux
+  arch: amd64
+
+workspace:
+  base: /var/www/owncloud
+  path: testrunner/apps/files_antivirus
+
+steps:
+- name: install-core
+  pull: always
+  image: owncloudci/core
+  settings:
+    core_path: /var/www/owncloud/server
+    db_host: oracle
+    db_name: XE
+    db_password: oracle
+    db_type: oci
+    db_username: system
+    exclude: apps/files_antivirus
+    version: daily-master-qa
+
+- name: install-testrunner
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
+  - mkdir /tmp/testrunner
+  - git clone -b master --depth=1 https://github.com/owncloud/core.git /tmp/testrunner
+  - rsync -aIX /tmp/testrunner /var/www/owncloud
+  - cp -r /var/www/owncloud/testrunner/apps/files_antivirus /var/www/owncloud/server/apps/
+  - cd /var/www/owncloud/testrunner
+  - make install-composer-deps vendor-bin-deps
+
+- name: setup-server-files_antivirus
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
+  - cd /var/www/owncloud/server/apps/files_antivirus
+  - make
+  - cd /var/www/owncloud/server
+  - php occ a:l
+  - php occ a:e files_antivirus
+  - php occ a:e testing
+  - php occ a:l
+  - php occ config:system:set trusted_domains 1 --value=server
+  - php occ log:manage --level 2
+
+- name: owncloud-log-server
+  pull: always
+  image: owncloud/ubuntu:18.04
+  detach: true
+  commands:
+  - tail -f /var/www/owncloud/server/data/owncloud.log
+
+- name: configure-app
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
+  - cd /var/www/owncloud/server
+  - php occ config:app:set --value "clamav" files_antivirus av_host
+  - php occ config:app:set --value "daemon" files_antivirus av_mode
+  - php occ config:app:set --value "3310" files_antivirus av_port
+
+- name: fix-permissions
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
+  - chown -R www-data /var/www/owncloud/server
+
+- name: acceptance-tests
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
+  - touch /var/www/owncloud/saved-settings.sh
+  - . /var/www/owncloud/saved-settings.sh
+  - make test-acceptance-api
+  environment:
+    BEHAT_SUITE: apiAntiVirus
+    TEST_SERVER_URL: http://server
+
+services:
+- name: oracle
+  pull: always
+  image: deepdiver/docker-oracle-xe-11g:latest
+  environment:
+    ORACLE_DB: XE
+    ORACLE_DISABLE_ASYNCH_IO: true
+    ORACLE_PASSWORD: oracle
+    ORACLE_USER: system
+
+- name: clamav
+  pull: always
+  image: dinkel/clamavd
+
+- name: server
+  pull: always
+  image: owncloudci/php:7.0
+  command:
+  - /usr/local/bin/apachectl
+  - -e
+  - debug
+  - -D
+  - FOREGROUND
+  environment:
+    APACHE_WEBROOT: /var/www/owncloud/server
+
+trigger:
+  ref:
+  - refs/pull/**
+  - refs/tags/**
+  - refs/heads/master
+
+depends_on:
+- coding-standard-php7.0
+- coding-standard-php7.1
+- coding-standard-php7.2
+- coding-standard-php7.3
+
+---
+kind: pipeline
+type: docker
+name: apiAntiVirus-10.2.1-mariadb10.2-php7.0
+
+platform:
+  os: linux
+  arch: amd64
+
+workspace:
+  base: /var/www/owncloud
+  path: testrunner/apps/files_antivirus
+
+steps:
+- name: install-core
+  pull: always
+  image: owncloudci/core
+  settings:
+    core_path: /var/www/owncloud/server
+    db_host: mariadb
+    db_name: owncloud
+    db_password: owncloud
+    db_type: mysql
+    db_username: owncloud
+    exclude: apps/files_antivirus
+    version: 10.2.1
+
+- name: install-testrunner
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
+  - mkdir /tmp/testrunner
+  - git clone -b master --depth=1 https://github.com/owncloud/core.git /tmp/testrunner
+  - rsync -aIX /tmp/testrunner /var/www/owncloud
+  - cp -r /var/www/owncloud/testrunner/apps/files_antivirus /var/www/owncloud/server/apps/
+  - cd /var/www/owncloud/testrunner
+  - make install-composer-deps vendor-bin-deps
+
+- name: setup-server-files_antivirus
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
+  - cd /var/www/owncloud/server/apps/files_antivirus
+  - make
+  - cd /var/www/owncloud/server
+  - php occ a:l
+  - php occ a:e files_antivirus
+  - php occ a:e testing
+  - php occ a:l
+  - php occ config:system:set trusted_domains 1 --value=server
+  - php occ log:manage --level 2
+
+- name: owncloud-log-server
+  pull: always
+  image: owncloud/ubuntu:18.04
+  detach: true
+  commands:
+  - tail -f /var/www/owncloud/server/data/owncloud.log
+
+- name: configure-app
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
+  - cd /var/www/owncloud/server
+  - php occ config:app:set --value "clamav" files_antivirus av_host
+  - php occ config:app:set --value "daemon" files_antivirus av_mode
+  - php occ config:app:set --value "3310" files_antivirus av_port
+
+- name: fix-permissions
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
+  - chown -R www-data /var/www/owncloud/server
+
+- name: acceptance-tests
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
+  - touch /var/www/owncloud/saved-settings.sh
+  - . /var/www/owncloud/saved-settings.sh
+  - make test-acceptance-api
+  environment:
+    BEHAT_SUITE: apiAntiVirus
+    TEST_SERVER_URL: http://server
+
+services:
+- name: mariadb
+  pull: always
+  image: mariadb:10.2
+  environment:
+    MYSQL_DATABASE: owncloud
+    MYSQL_PASSWORD: owncloud
+    MYSQL_ROOT_PASSWORD: owncloud
+    MYSQL_USER: owncloud
+
+- name: clamav
+  pull: always
+  image: dinkel/clamavd
+
+- name: server
+  pull: always
+  image: owncloudci/php:7.0
+  command:
+  - /usr/local/bin/apachectl
+  - -e
+  - debug
+  - -D
+  - FOREGROUND
+  environment:
+    APACHE_WEBROOT: /var/www/owncloud/server
+
+trigger:
+  ref:
+  - refs/pull/**
+  - refs/tags/**
+  - refs/heads/master
+
+depends_on:
+- coding-standard-php7.0
+- coding-standard-php7.1
+- coding-standard-php7.2
+- coding-standard-php7.3
+
+---
+kind: pipeline
+type: docker
+name: apiAntiVirus-10.2.1-mysql5.5-php7.0
+
+platform:
+  os: linux
+  arch: amd64
+
+workspace:
+  base: /var/www/owncloud
+  path: testrunner/apps/files_antivirus
+
+steps:
+- name: install-core
+  pull: always
+  image: owncloudci/core
+  settings:
+    core_path: /var/www/owncloud/server
+    db_host: mysql
+    db_name: owncloud
+    db_password: owncloud
+    db_type: mysql
+    db_username: owncloud
+    exclude: apps/files_antivirus
+    version: 10.2.1
+
+- name: install-testrunner
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
+  - mkdir /tmp/testrunner
+  - git clone -b master --depth=1 https://github.com/owncloud/core.git /tmp/testrunner
+  - rsync -aIX /tmp/testrunner /var/www/owncloud
+  - cp -r /var/www/owncloud/testrunner/apps/files_antivirus /var/www/owncloud/server/apps/
+  - cd /var/www/owncloud/testrunner
+  - make install-composer-deps vendor-bin-deps
+
+- name: setup-server-files_antivirus
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
+  - cd /var/www/owncloud/server/apps/files_antivirus
+  - make
+  - cd /var/www/owncloud/server
+  - php occ a:l
+  - php occ a:e files_antivirus
+  - php occ a:e testing
+  - php occ a:l
+  - php occ config:system:set trusted_domains 1 --value=server
+  - php occ log:manage --level 2
+
+- name: owncloud-log-server
+  pull: always
+  image: owncloud/ubuntu:18.04
+  detach: true
+  commands:
+  - tail -f /var/www/owncloud/server/data/owncloud.log
+
+- name: configure-app
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
+  - cd /var/www/owncloud/server
+  - php occ config:app:set --value "clamav" files_antivirus av_host
+  - php occ config:app:set --value "daemon" files_antivirus av_mode
+  - php occ config:app:set --value "3310" files_antivirus av_port
+
+- name: fix-permissions
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
+  - chown -R www-data /var/www/owncloud/server
+
+- name: acceptance-tests
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
+  - touch /var/www/owncloud/saved-settings.sh
+  - . /var/www/owncloud/saved-settings.sh
+  - make test-acceptance-api
+  environment:
+    BEHAT_SUITE: apiAntiVirus
+    TEST_SERVER_URL: http://server
+
+services:
+- name: mysql
+  pull: always
+  image: mysql:5.5
+  environment:
+    MYSQL_DATABASE: owncloud
+    MYSQL_PASSWORD: owncloud
+    MYSQL_ROOT_PASSWORD: owncloud
+    MYSQL_USER: owncloud
+
+- name: clamav
+  pull: always
+  image: dinkel/clamavd
+
+- name: server
+  pull: always
+  image: owncloudci/php:7.0
+  command:
+  - /usr/local/bin/apachectl
+  - -e
+  - debug
+  - -D
+  - FOREGROUND
+  environment:
+    APACHE_WEBROOT: /var/www/owncloud/server
+
+trigger:
+  ref:
+  - refs/pull/**
+  - refs/tags/**
+  - refs/heads/master
+
+depends_on:
+- coding-standard-php7.0
+- coding-standard-php7.1
+- coding-standard-php7.2
+- coding-standard-php7.3
+
+---
+kind: pipeline
+type: docker
+name: apiAntiVirus-10.2.1-mysql5.7-php7.0
+
+platform:
+  os: linux
+  arch: amd64
+
+workspace:
+  base: /var/www/owncloud
+  path: testrunner/apps/files_antivirus
+
+steps:
+- name: install-core
+  pull: always
+  image: owncloudci/core
+  settings:
+    core_path: /var/www/owncloud/server
+    db_host: mysql
+    db_name: owncloud
+    db_password: owncloud
+    db_type: mysql
+    db_username: owncloud
+    exclude: apps/files_antivirus
+    version: 10.2.1
+
+- name: install-testrunner
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
+  - mkdir /tmp/testrunner
+  - git clone -b master --depth=1 https://github.com/owncloud/core.git /tmp/testrunner
+  - rsync -aIX /tmp/testrunner /var/www/owncloud
+  - cp -r /var/www/owncloud/testrunner/apps/files_antivirus /var/www/owncloud/server/apps/
+  - cd /var/www/owncloud/testrunner
+  - make install-composer-deps vendor-bin-deps
+
+- name: setup-server-files_antivirus
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
+  - cd /var/www/owncloud/server/apps/files_antivirus
+  - make
+  - cd /var/www/owncloud/server
+  - php occ a:l
+  - php occ a:e files_antivirus
+  - php occ a:e testing
+  - php occ a:l
+  - php occ config:system:set trusted_domains 1 --value=server
+  - php occ log:manage --level 2
+
+- name: owncloud-log-server
+  pull: always
+  image: owncloud/ubuntu:18.04
+  detach: true
+  commands:
+  - tail -f /var/www/owncloud/server/data/owncloud.log
+
+- name: configure-app
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
+  - cd /var/www/owncloud/server
+  - php occ config:app:set --value "clamav" files_antivirus av_host
+  - php occ config:app:set --value "daemon" files_antivirus av_mode
+  - php occ config:app:set --value "3310" files_antivirus av_port
+
+- name: fix-permissions
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
+  - chown -R www-data /var/www/owncloud/server
+
+- name: acceptance-tests
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
+  - touch /var/www/owncloud/saved-settings.sh
+  - . /var/www/owncloud/saved-settings.sh
+  - make test-acceptance-api
+  environment:
+    BEHAT_SUITE: apiAntiVirus
+    TEST_SERVER_URL: http://server
+
+services:
+- name: mysql
+  pull: always
+  image: mysql:5.7
+  environment:
+    MYSQL_DATABASE: owncloud
+    MYSQL_PASSWORD: owncloud
+    MYSQL_ROOT_PASSWORD: owncloud
+    MYSQL_USER: owncloud
+
+- name: clamav
+  pull: always
+  image: dinkel/clamavd
+
+- name: server
+  pull: always
+  image: owncloudci/php:7.0
+  command:
+  - /usr/local/bin/apachectl
+  - -e
+  - debug
+  - -D
+  - FOREGROUND
+  environment:
+    APACHE_WEBROOT: /var/www/owncloud/server
+
+trigger:
+  ref:
+  - refs/pull/**
+  - refs/tags/**
+  - refs/heads/master
+
+depends_on:
+- coding-standard-php7.0
+- coding-standard-php7.1
+- coding-standard-php7.2
+- coding-standard-php7.3
+
+---
+kind: pipeline
+type: docker
+name: apiAntiVirus-10.2.1-postgres9.4-php7.0
+
+platform:
+  os: linux
+  arch: amd64
+
+workspace:
+  base: /var/www/owncloud
+  path: testrunner/apps/files_antivirus
+
+steps:
+- name: install-core
+  pull: always
+  image: owncloudci/core
+  settings:
+    core_path: /var/www/owncloud/server
+    db_host: postgres
+    db_name: owncloud
+    db_password: owncloud
+    db_type: pgsql
+    db_username: owncloud
+    exclude: apps/files_antivirus
+    version: 10.2.1
+
+- name: install-testrunner
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
+  - mkdir /tmp/testrunner
+  - git clone -b master --depth=1 https://github.com/owncloud/core.git /tmp/testrunner
+  - rsync -aIX /tmp/testrunner /var/www/owncloud
+  - cp -r /var/www/owncloud/testrunner/apps/files_antivirus /var/www/owncloud/server/apps/
+  - cd /var/www/owncloud/testrunner
+  - make install-composer-deps vendor-bin-deps
+
+- name: setup-server-files_antivirus
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
+  - cd /var/www/owncloud/server/apps/files_antivirus
+  - make
+  - cd /var/www/owncloud/server
+  - php occ a:l
+  - php occ a:e files_antivirus
+  - php occ a:e testing
+  - php occ a:l
+  - php occ config:system:set trusted_domains 1 --value=server
+  - php occ log:manage --level 2
+
+- name: owncloud-log-server
+  pull: always
+  image: owncloud/ubuntu:18.04
+  detach: true
+  commands:
+  - tail -f /var/www/owncloud/server/data/owncloud.log
+
+- name: configure-app
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
+  - cd /var/www/owncloud/server
+  - php occ config:app:set --value "clamav" files_antivirus av_host
+  - php occ config:app:set --value "daemon" files_antivirus av_mode
+  - php occ config:app:set --value "3310" files_antivirus av_port
+
+- name: fix-permissions
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
+  - chown -R www-data /var/www/owncloud/server
+
+- name: acceptance-tests
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
+  - touch /var/www/owncloud/saved-settings.sh
+  - . /var/www/owncloud/saved-settings.sh
+  - make test-acceptance-api
+  environment:
+    BEHAT_SUITE: apiAntiVirus
+    TEST_SERVER_URL: http://server
+
+services:
+- name: postgres
+  pull: always
+  image: postgres:9.4
+  environment:
+    POSTGRES_DB: owncloud
+    POSTGRES_PASSWORD: owncloud
+    POSTGRES_USER: owncloud
+
+- name: clamav
+  pull: always
+  image: dinkel/clamavd
+
+- name: server
+  pull: always
+  image: owncloudci/php:7.0
+  command:
+  - /usr/local/bin/apachectl
+  - -e
+  - debug
+  - -D
+  - FOREGROUND
+  environment:
+    APACHE_WEBROOT: /var/www/owncloud/server
+
+trigger:
+  ref:
+  - refs/pull/**
+  - refs/tags/**
+  - refs/heads/master
+
+depends_on:
+- coding-standard-php7.0
+- coding-standard-php7.1
+- coding-standard-php7.2
+- coding-standard-php7.3
+
+---
+kind: pipeline
+type: docker
+name: apiAntiVirus-10.2.1-oracle-php7.0
+
+platform:
+  os: linux
+  arch: amd64
+
+workspace:
+  base: /var/www/owncloud
+  path: testrunner/apps/files_antivirus
+
+steps:
+- name: install-core
+  pull: always
+  image: owncloudci/core
+  settings:
+    core_path: /var/www/owncloud/server
+    db_host: oracle
+    db_name: XE
+    db_password: oracle
+    db_type: oci
+    db_username: system
+    exclude: apps/files_antivirus
+    version: 10.2.1
+
+- name: install-testrunner
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
+  - mkdir /tmp/testrunner
+  - git clone -b master --depth=1 https://github.com/owncloud/core.git /tmp/testrunner
+  - rsync -aIX /tmp/testrunner /var/www/owncloud
+  - cp -r /var/www/owncloud/testrunner/apps/files_antivirus /var/www/owncloud/server/apps/
+  - cd /var/www/owncloud/testrunner
+  - make install-composer-deps vendor-bin-deps
+
+- name: setup-server-files_antivirus
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
+  - cd /var/www/owncloud/server/apps/files_antivirus
+  - make
+  - cd /var/www/owncloud/server
+  - php occ a:l
+  - php occ a:e files_antivirus
+  - php occ a:e testing
+  - php occ a:l
+  - php occ config:system:set trusted_domains 1 --value=server
+  - php occ log:manage --level 2
+
+- name: owncloud-log-server
+  pull: always
+  image: owncloud/ubuntu:18.04
+  detach: true
+  commands:
+  - tail -f /var/www/owncloud/server/data/owncloud.log
+
+- name: configure-app
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
+  - cd /var/www/owncloud/server
+  - php occ config:app:set --value "clamav" files_antivirus av_host
+  - php occ config:app:set --value "daemon" files_antivirus av_mode
+  - php occ config:app:set --value "3310" files_antivirus av_port
+
+- name: fix-permissions
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
+  - chown -R www-data /var/www/owncloud/server
+
+- name: acceptance-tests
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
+  - touch /var/www/owncloud/saved-settings.sh
+  - . /var/www/owncloud/saved-settings.sh
+  - make test-acceptance-api
+  environment:
+    BEHAT_SUITE: apiAntiVirus
+    TEST_SERVER_URL: http://server
+
+services:
+- name: oracle
+  pull: always
+  image: deepdiver/docker-oracle-xe-11g:latest
+  environment:
+    ORACLE_DB: XE
+    ORACLE_DISABLE_ASYNCH_IO: true
+    ORACLE_PASSWORD: oracle
+    ORACLE_USER: system
+
+- name: clamav
+  pull: always
+  image: dinkel/clamavd
+
+- name: server
+  pull: always
+  image: owncloudci/php:7.0
+  command:
+  - /usr/local/bin/apachectl
+  - -e
+  - debug
+  - -D
+  - FOREGROUND
+  environment:
+    APACHE_WEBROOT: /var/www/owncloud/server
+
+trigger:
+  ref:
+  - refs/pull/**
+  - refs/tags/**
+  - refs/heads/master
+
+depends_on:
+- coding-standard-php7.0
+- coding-standard-php7.1
+- coding-standard-php7.2
+- coding-standard-php7.3
+
+---
+kind: pipeline
+type: docker
+name: chat-notifications
+
+platform:
+  os: linux
+  arch: amd64
+
+clone:
+  disable: true
+
+steps:
+- name: notify-rocketchat
+  pull: always
+  image: plugins/slack:1
+  settings:
+    channel: builds
+    webhook:
+      from_secret: public_rocketchat
+
+trigger:
+  ref:
+  - refs/tags/**
+  - refs/heads/master
+
+depends_on:
+- phpunit-php7.0-sqlite
+- phpunit-php7.0-mariadb10.2
+- phpunit-php7.0-mysql5.5
+- phpunit-php7.0-mysql5.7
+- phpunit-php7.0-postgres9.4
+- phpunit-php7.0-oracle
+- phpunit-php7.1-sqlite
+- phpunit-php7.1-mariadb10.2
+- phpunit-php7.2-sqlite
+- phpunit-php7.2-mariadb10.2
+- phpunit-php7.3-sqlite
+- phpunit-php7.3-mariadb10.2
+- webUIActList-master-chrome-mariadb10.2-php7.0
+- webUIActList-master-firefox-mariadb10.2-php7.0
+- webUIActList-10.2.1-chrome-mariadb10.2-php7.0
+- webUIActList-10.2.1-firefox-mariadb10.2-php7.0
+- apiAntiVirus-master-mariadb10.2-php7.0
+- apiAntiVirus-master-mysql5.5-php7.0
+- apiAntiVirus-master-mysql5.7-php7.0
+- apiAntiVirus-master-postgres9.4-php7.0
+- apiAntiVirus-master-oracle-php7.0
+- apiAntiVirus-10.2.1-mariadb10.2-php7.0
+- apiAntiVirus-10.2.1-mysql5.5-php7.0
+- apiAntiVirus-10.2.1-mysql5.7-php7.0
+- apiAntiVirus-10.2.1-postgres9.4-php7.0
+- apiAntiVirus-10.2.1-oracle-php7.0
+
+...
