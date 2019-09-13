@@ -64,6 +64,46 @@ config = {
 				'oracle'
 			],
 		},
+		'api-objectstore': {
+			'suites': {
+				'apiAntivirus': 'apiAntivirusObjectstore',
+			},
+			'databases': [
+				'mariadb:10.2',
+			],
+			'extraApps': {
+				'files_primary_s3': 'composer install'
+			},
+			'extraSetup': {
+				'name': 'configure-app',
+				'image': 'owncloudci/php:7.0',
+				'pull': 'always',
+				'commands': [
+					'cd /var/www/owncloud/server/apps/files_primary_s3',
+					'cp tests/drone/scality.config.php /var/www/owncloud/server/config',
+					'cd /var/www/owncloud/server',
+					'php occ s3:create-bucket owncloud --accept-warning',
+					'php occ config:app:set --value "clamav" files_antivirus av_host',
+					'php occ config:app:set --value "daemon" files_antivirus av_mode',
+					'php occ config:app:set --value "3310" files_antivirus av_port',
+				]
+			},
+			'extraServices': [
+				{
+					'name': 'clamav',
+					'image': 'dinkel/clamavd',
+					'pull': 'always',
+				},
+				{
+					'name': 'scality',
+					'image': 'owncloudci/scality-s3server',
+					'pull': 'always',
+					'environment': {
+						'HOST_NAME': 'scality'
+					}
+				}
+			]
+		},
 	},
 
 	'defaults': {
@@ -670,7 +710,7 @@ def acceptance():
 			extraSetup = matrix['extraSetup'] if 'extraSetup' in matrix else default['extraSetup']
 			extraServices = matrix['extraServices'] if 'extraServices' in matrix else default['extraServices']
 			extraEnvironment = matrix['extraEnvironment'] if 'extraEnvironment' in matrix else default['extraEnvironment']
-			extraCommandsBeforeMake = matrix['extraCommandsBeforeMake'] if 'extraServices' in matrix else default['extraCommandsBeforeMake']
+			extraCommandsBeforeMake = matrix['extraCommandsBeforeMake'] if 'extraCommandsBeforeMake' in matrix else default['extraCommandsBeforeMake']
 			extraApps = matrix['extraApps'] if 'extraApps' in matrix else default['extraApps']
 			useBundledApp = matrix['useBundledApp'] if 'useBundledApp' in matrix else default['useBundledApp']
 
@@ -1016,13 +1056,24 @@ def installTestrunner(phpVersion, useBundledApp):
 	}
 
 def installExtraApps(phpVersion, extraApps):
-	if extraApps == []:
-		return None
+	if type(extraApps) == "list":
+		if extraApps == []:
+			return None
+		apps = {}
+		for app in extraApps:
+			apps[app] = None
+	else:
+		apps = {}
+		for app, command in extraApps.items():
+			apps[app] = command
 
 	commandArray = []
-	for app in extraApps:
+	for app, command in apps.items():
 		commandArray.append('git clone https://github.com/owncloud/%s.git /var/www/owncloud/testrunner/apps/%s' % (app, app))
 		commandArray.append('cp -r /var/www/owncloud/testrunner/apps/%s /var/www/owncloud/server/apps/' % app)
+		if (command != None):
+			commandArray.append('cd /var/www/owncloud/server/apps/%s' % app)
+			commandArray.append(command)
 		commandArray.append('cd /var/www/owncloud/server')
 		commandArray.append('php occ a:l')
 		commandArray.append('php occ a:e %s' % app)
