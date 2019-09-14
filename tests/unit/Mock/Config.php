@@ -14,8 +14,12 @@ use \OCA\Files_Antivirus\Tests\util\DummyClam;
 
 class Config extends AppConfig {
 	public function getAppValue($key) {
+		$avirHost = \getenv('AVIR_HOST');
+		if ($avirHost === false) {
+			$avirHost = '127.0.0.1';
+		}
 		$map = [
-			'av_host' => '127.0.0.1',
+			'av_host' => $avirHost,
 			'av_port' => 5555,
 			'av_stream_max_length' => DummyClam::TEST_STREAM_SIZE,
 			'av_mode' => 'daemon',
