@@ -133,7 +133,7 @@ config = {
 					'wait-for-it dummy-clamav:5555',
 				]
 			},
-			'extraCommandsBeforeMake': [
+			'extraCommandsBeforeTestRun': [
 				# required to pass the executable tests
 				'ln -s /var/www/owncloud/server/apps/files_antivirus/tests/util/avir.sh /usr/bin/clamscan',
 			],
@@ -420,7 +420,7 @@ def javascript():
 		'extraSetup': None,
 		'extraServices': [],
 		'extraEnvironment': {},
-		'extraCommandsBeforeMake': [],
+		'extraCommandsBeforeTestRun': [],
 	}
 
 	if 'defaults' in config:
@@ -458,7 +458,7 @@ def javascript():
 				'image': 'owncloudci/php:7.0',
 				'pull': 'always',
 				'environment': params['extraEnvironment'],
-				'commands': params['extraCommandsBeforeMake'] + [
+				'commands': params['extraCommandsBeforeTestRun'] + [
 					'make test-js'
 				]
 			}
@@ -509,7 +509,7 @@ def phptests(testType):
 		'extraSetup': None,
 		'extraServices': [],
 		'extraEnvironment': {},
-		'extraCommandsBeforeMake': [],
+		'extraCommandsBeforeTestRun': [],
 	}
 
 	if 'defaults' in config:
@@ -566,7 +566,7 @@ def phptests(testType):
 							'image': 'owncloudci/php:%s' % phpVersion,
 							'pull': 'always',
 							'environment': params['extraEnvironment'],
-							'commands': params['extraCommandsBeforeMake'] + [
+							'commands': params['extraCommandsBeforeTestRun'] + [
 								command
 							]
 						}
@@ -623,7 +623,7 @@ def acceptance():
 		'extraSetup': None,
 		'extraServices': [],
 		'extraEnvironment': {},
-		'extraCommandsBeforeMake': [],
+		'extraCommandsBeforeTestRun': [],
 		'extraApps': [],
 		'useBundledApp': False,
 	}
@@ -740,7 +740,7 @@ def acceptance():
 										'image': 'owncloudci/php:%s' % phpVersion,
 										'pull': 'always',
 										'environment': environment,
-										'commands': params['extraCommandsBeforeMake'] + [
+										'commands': params['extraCommandsBeforeTestRun'] + [
 											'touch /var/www/owncloud/saved-settings.sh',
 											'. /var/www/owncloud/saved-settings.sh',
 											'make %s' % makeParameter
