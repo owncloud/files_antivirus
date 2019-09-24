@@ -129,12 +129,17 @@ steps:
     exclude: apps/files_antivirus
     version: daily-master-qa
 
-- name: setup-server-files_antivirus
+- name: install-app-files_antivirus
   pull: always
   image: owncloudci/php:7.0
   commands:
   - cd /var/www/owncloud/server/apps/files_antivirus
   - make
+
+- name: setup-server-files_antivirus
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
   - cd /var/www/owncloud/server
   - php occ a:l
   - php occ a:e files_antivirus
@@ -213,12 +218,17 @@ steps:
     exclude: apps/files_antivirus
     version: daily-master-qa
 
-- name: setup-server-files_antivirus
+- name: install-app-files_antivirus
   pull: always
   image: owncloudci/php:7.0
   commands:
   - cd /var/www/owncloud/server/apps/files_antivirus
   - make
+
+- name: setup-server-files_antivirus
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
   - cd /var/www/owncloud/server
   - php occ a:l
   - php occ a:e files_antivirus
@@ -306,12 +316,17 @@ steps:
     exclude: apps/files_antivirus
     version: daily-master-qa
 
-- name: setup-server-files_antivirus
+- name: install-app-files_antivirus
   pull: always
   image: owncloudci/php:7.0
   commands:
   - cd /var/www/owncloud/server/apps/files_antivirus
   - make
+
+- name: setup-server-files_antivirus
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
   - cd /var/www/owncloud/server
   - php occ a:l
   - php occ a:e files_antivirus
@@ -399,12 +414,17 @@ steps:
     exclude: apps/files_antivirus
     version: daily-master-qa
 
-- name: setup-server-files_antivirus
+- name: install-app-files_antivirus
   pull: always
   image: owncloudci/php:7.0
   commands:
   - cd /var/www/owncloud/server/apps/files_antivirus
   - make
+
+- name: setup-server-files_antivirus
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
   - cd /var/www/owncloud/server
   - php occ a:l
   - php occ a:e files_antivirus
@@ -492,12 +512,17 @@ steps:
     exclude: apps/files_antivirus
     version: daily-master-qa
 
-- name: setup-server-files_antivirus
+- name: install-app-files_antivirus
   pull: always
   image: owncloudci/php:7.0
   commands:
   - cd /var/www/owncloud/server/apps/files_antivirus
   - make
+
+- name: setup-server-files_antivirus
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
   - cd /var/www/owncloud/server
   - php occ a:l
   - php occ a:e files_antivirus
@@ -584,12 +609,17 @@ steps:
     exclude: apps/files_antivirus
     version: daily-master-qa
 
-- name: setup-server-files_antivirus
+- name: install-app-files_antivirus
   pull: always
   image: owncloudci/php:7.0
   commands:
   - cd /var/www/owncloud/server/apps/files_antivirus
   - make
+
+- name: setup-server-files_antivirus
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
   - cd /var/www/owncloud/server
   - php occ a:l
   - php occ a:e files_antivirus
@@ -677,12 +707,17 @@ steps:
     exclude: apps/files_antivirus
     version: daily-master-qa
 
-- name: setup-server-files_antivirus
+- name: install-app-files_antivirus
   pull: always
   image: owncloudci/php:7.1
   commands:
   - cd /var/www/owncloud/server/apps/files_antivirus
   - make
+
+- name: setup-server-files_antivirus
+  pull: always
+  image: owncloudci/php:7.1
+  commands:
   - cd /var/www/owncloud/server
   - php occ a:l
   - php occ a:e files_antivirus
@@ -752,12 +787,17 @@ steps:
     exclude: apps/files_antivirus
     version: daily-master-qa
 
-- name: setup-server-files_antivirus
+- name: install-app-files_antivirus
   pull: always
   image: owncloudci/php:7.1
   commands:
   - cd /var/www/owncloud/server/apps/files_antivirus
   - make
+
+- name: setup-server-files_antivirus
+  pull: always
+  image: owncloudci/php:7.1
+  commands:
   - cd /var/www/owncloud/server
   - php occ a:l
   - php occ a:e files_antivirus
@@ -836,12 +876,17 @@ steps:
     exclude: apps/files_antivirus
     version: daily-master-qa
 
-- name: setup-server-files_antivirus
+- name: install-app-files_antivirus
   pull: always
   image: owncloudci/php:7.2
   commands:
   - cd /var/www/owncloud/server/apps/files_antivirus
   - make
+
+- name: setup-server-files_antivirus
+  pull: always
+  image: owncloudci/php:7.2
+  commands:
   - cd /var/www/owncloud/server
   - php occ a:l
   - php occ a:e files_antivirus
@@ -911,12 +956,17 @@ steps:
     exclude: apps/files_antivirus
     version: daily-master-qa
 
-- name: setup-server-files_antivirus
+- name: install-app-files_antivirus
   pull: always
   image: owncloudci/php:7.2
   commands:
   - cd /var/www/owncloud/server/apps/files_antivirus
   - make
+
+- name: setup-server-files_antivirus
+  pull: always
+  image: owncloudci/php:7.2
+  commands:
   - cd /var/www/owncloud/server
   - php occ a:l
   - php occ a:e files_antivirus
@@ -995,12 +1045,17 @@ steps:
     exclude: apps/files_antivirus
     version: daily-master-qa
 
-- name: setup-server-files_antivirus
+- name: install-app-files_antivirus
   pull: always
   image: owncloudci/php:7.3
   commands:
   - cd /var/www/owncloud/server/apps/files_antivirus
   - make
+
+- name: setup-server-files_antivirus
+  pull: always
+  image: owncloudci/php:7.3
+  commands:
   - cd /var/www/owncloud/server
   - php occ a:l
   - php occ a:e files_antivirus
@@ -1070,12 +1125,17 @@ steps:
     exclude: apps/files_antivirus
     version: daily-master-qa
 
-- name: setup-server-files_antivirus
+- name: install-app-files_antivirus
   pull: always
   image: owncloudci/php:7.3
   commands:
   - cd /var/www/owncloud/server/apps/files_antivirus
   - make
+
+- name: setup-server-files_antivirus
+  pull: always
+  image: owncloudci/php:7.3
+  commands:
   - cd /var/www/owncloud/server
   - php occ a:l
   - php occ a:e files_antivirus
@@ -1165,12 +1225,28 @@ steps:
   - cd /var/www/owncloud/testrunner
   - make install-composer-deps vendor-bin-deps
 
-- name: setup-server-files_antivirus
+- name: install-app-files_antivirus
   pull: always
   image: owncloudci/php:7.0
   commands:
   - cd /var/www/owncloud/server/apps/files_antivirus
   - make
+
+- name: install-extra-apps
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
+  - git clone https://github.com/owncloud/activity.git /var/www/owncloud/testrunner/apps/activity
+  - cp -r /var/www/owncloud/testrunner/apps/activity /var/www/owncloud/server/apps/
+  - cd /var/www/owncloud/server
+  - php occ a:l
+  - php occ a:e activity
+  - php occ a:l
+
+- name: setup-server-files_antivirus
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
   - cd /var/www/owncloud/server
   - php occ a:l
   - php occ a:e files_antivirus
@@ -1185,17 +1261,6 @@ steps:
   detach: true
   commands:
   - tail -f /var/www/owncloud/server/data/owncloud.log
-
-- name: install-extra-apps
-  pull: always
-  image: owncloudci/php:7.0
-  commands:
-  - git clone https://github.com/owncloud/activity.git /var/www/owncloud/testrunner/apps/activity
-  - cp -r /var/www/owncloud/testrunner/apps/activity /var/www/owncloud/server/apps/
-  - cd /var/www/owncloud/server
-  - php occ a:l
-  - php occ a:e activity
-  - php occ a:l
 
 - name: configure-app
   pull: always
@@ -1309,12 +1374,28 @@ steps:
   - cd /var/www/owncloud/testrunner
   - make install-composer-deps vendor-bin-deps
 
-- name: setup-server-files_antivirus
+- name: install-app-files_antivirus
   pull: always
   image: owncloudci/php:7.0
   commands:
   - cd /var/www/owncloud/server/apps/files_antivirus
   - make
+
+- name: install-extra-apps
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
+  - git clone https://github.com/owncloud/activity.git /var/www/owncloud/testrunner/apps/activity
+  - cp -r /var/www/owncloud/testrunner/apps/activity /var/www/owncloud/server/apps/
+  - cd /var/www/owncloud/server
+  - php occ a:l
+  - php occ a:e activity
+  - php occ a:l
+
+- name: setup-server-files_antivirus
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
   - cd /var/www/owncloud/server
   - php occ a:l
   - php occ a:e files_antivirus
@@ -1329,17 +1410,6 @@ steps:
   detach: true
   commands:
   - tail -f /var/www/owncloud/server/data/owncloud.log
-
-- name: install-extra-apps
-  pull: always
-  image: owncloudci/php:7.0
-  commands:
-  - git clone https://github.com/owncloud/activity.git /var/www/owncloud/testrunner/apps/activity
-  - cp -r /var/www/owncloud/testrunner/apps/activity /var/www/owncloud/server/apps/
-  - cd /var/www/owncloud/server
-  - php occ a:l
-  - php occ a:e activity
-  - php occ a:l
 
 - name: configure-app
   pull: always
@@ -1419,7 +1489,7 @@ depends_on:
 ---
 kind: pipeline
 type: docker
-name: webUIActList-10.2.1-chrome-mariadb10.2-php7.0
+name: webUIActList-latest-chrome-mariadb10.2-php7.0
 
 platform:
   os: linux
@@ -1441,7 +1511,7 @@ steps:
     db_type: mysql
     db_username: owncloud
     exclude: apps/files_antivirus
-    version: 10.2.1
+    version: latest
 
 - name: install-testrunner
   pull: always
@@ -1454,12 +1524,28 @@ steps:
   - cd /var/www/owncloud/testrunner
   - make install-composer-deps vendor-bin-deps
 
-- name: setup-server-files_antivirus
+- name: install-app-files_antivirus
   pull: always
   image: owncloudci/php:7.0
   commands:
   - cd /var/www/owncloud/server/apps/files_antivirus
   - make
+
+- name: install-extra-apps
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
+  - git clone https://github.com/owncloud/activity.git /var/www/owncloud/testrunner/apps/activity
+  - cp -r /var/www/owncloud/testrunner/apps/activity /var/www/owncloud/server/apps/
+  - cd /var/www/owncloud/server
+  - php occ a:l
+  - php occ a:e activity
+  - php occ a:l
+
+- name: setup-server-files_antivirus
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
   - cd /var/www/owncloud/server
   - php occ a:l
   - php occ a:e files_antivirus
@@ -1474,17 +1560,6 @@ steps:
   detach: true
   commands:
   - tail -f /var/www/owncloud/server/data/owncloud.log
-
-- name: install-extra-apps
-  pull: always
-  image: owncloudci/php:7.0
-  commands:
-  - git clone https://github.com/owncloud/activity.git /var/www/owncloud/testrunner/apps/activity
-  - cp -r /var/www/owncloud/testrunner/apps/activity /var/www/owncloud/server/apps/
-  - cd /var/www/owncloud/server
-  - php occ a:l
-  - php occ a:e activity
-  - php occ a:l
 
 - name: configure-app
   pull: always
@@ -1563,7 +1638,7 @@ depends_on:
 ---
 kind: pipeline
 type: docker
-name: webUIActList-10.2.1-firefox-mariadb10.2-php7.0
+name: webUIActList-latest-firefox-mariadb10.2-php7.0
 
 platform:
   os: linux
@@ -1585,7 +1660,7 @@ steps:
     db_type: mysql
     db_username: owncloud
     exclude: apps/files_antivirus
-    version: 10.2.1
+    version: latest
 
 - name: install-testrunner
   pull: always
@@ -1598,12 +1673,28 @@ steps:
   - cd /var/www/owncloud/testrunner
   - make install-composer-deps vendor-bin-deps
 
-- name: setup-server-files_antivirus
+- name: install-app-files_antivirus
   pull: always
   image: owncloudci/php:7.0
   commands:
   - cd /var/www/owncloud/server/apps/files_antivirus
   - make
+
+- name: install-extra-apps
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
+  - git clone https://github.com/owncloud/activity.git /var/www/owncloud/testrunner/apps/activity
+  - cp -r /var/www/owncloud/testrunner/apps/activity /var/www/owncloud/server/apps/
+  - cd /var/www/owncloud/server
+  - php occ a:l
+  - php occ a:e activity
+  - php occ a:l
+
+- name: setup-server-files_antivirus
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
   - cd /var/www/owncloud/server
   - php occ a:l
   - php occ a:e files_antivirus
@@ -1618,17 +1709,6 @@ steps:
   detach: true
   commands:
   - tail -f /var/www/owncloud/server/data/owncloud.log
-
-- name: install-extra-apps
-  pull: always
-  image: owncloudci/php:7.0
-  commands:
-  - git clone https://github.com/owncloud/activity.git /var/www/owncloud/testrunner/apps/activity
-  - cp -r /var/www/owncloud/testrunner/apps/activity /var/www/owncloud/server/apps/
-  - cd /var/www/owncloud/server
-  - php occ a:l
-  - php occ a:e activity
-  - php occ a:l
 
 - name: configure-app
   pull: always
@@ -1743,12 +1823,17 @@ steps:
   - cd /var/www/owncloud/testrunner
   - make install-composer-deps vendor-bin-deps
 
-- name: setup-server-files_antivirus
+- name: install-app-files_antivirus
   pull: always
   image: owncloudci/php:7.0
   commands:
   - cd /var/www/owncloud/server/apps/files_antivirus
   - make
+
+- name: setup-server-files_antivirus
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
   - cd /var/www/owncloud/server
   - php occ a:l
   - php occ a:e files_antivirus
@@ -1866,12 +1951,17 @@ steps:
   - cd /var/www/owncloud/testrunner
   - make install-composer-deps vendor-bin-deps
 
-- name: setup-server-files_antivirus
+- name: install-app-files_antivirus
   pull: always
   image: owncloudci/php:7.0
   commands:
   - cd /var/www/owncloud/server/apps/files_antivirus
   - make
+
+- name: setup-server-files_antivirus
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
   - cd /var/www/owncloud/server
   - php occ a:l
   - php occ a:e files_antivirus
@@ -1989,12 +2079,17 @@ steps:
   - cd /var/www/owncloud/testrunner
   - make install-composer-deps vendor-bin-deps
 
-- name: setup-server-files_antivirus
+- name: install-app-files_antivirus
   pull: always
   image: owncloudci/php:7.0
   commands:
   - cd /var/www/owncloud/server/apps/files_antivirus
   - make
+
+- name: setup-server-files_antivirus
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
   - cd /var/www/owncloud/server
   - php occ a:l
   - php occ a:e files_antivirus
@@ -2112,12 +2207,17 @@ steps:
   - cd /var/www/owncloud/testrunner
   - make install-composer-deps vendor-bin-deps
 
-- name: setup-server-files_antivirus
+- name: install-app-files_antivirus
   pull: always
   image: owncloudci/php:7.0
   commands:
   - cd /var/www/owncloud/server/apps/files_antivirus
   - make
+
+- name: setup-server-files_antivirus
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
   - cd /var/www/owncloud/server
   - php occ a:l
   - php occ a:e files_antivirus
@@ -2234,12 +2334,17 @@ steps:
   - cd /var/www/owncloud/testrunner
   - make install-composer-deps vendor-bin-deps
 
-- name: setup-server-files_antivirus
+- name: install-app-files_antivirus
   pull: always
   image: owncloudci/php:7.0
   commands:
   - cd /var/www/owncloud/server/apps/files_antivirus
   - make
+
+- name: setup-server-files_antivirus
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
   - cd /var/www/owncloud/server
   - php occ a:l
   - php occ a:e files_antivirus
@@ -2322,7 +2427,7 @@ depends_on:
 ---
 kind: pipeline
 type: docker
-name: apiAntivirus-10.2.1-mariadb10.2-php7.0
+name: apiAntivirus-latest-mariadb10.2-php7.0
 
 platform:
   os: linux
@@ -2344,7 +2449,7 @@ steps:
     db_type: mysql
     db_username: owncloud
     exclude: apps/files_antivirus
-    version: 10.2.1
+    version: latest
 
 - name: install-testrunner
   pull: always
@@ -2357,12 +2462,17 @@ steps:
   - cd /var/www/owncloud/testrunner
   - make install-composer-deps vendor-bin-deps
 
-- name: setup-server-files_antivirus
+- name: install-app-files_antivirus
   pull: always
   image: owncloudci/php:7.0
   commands:
   - cd /var/www/owncloud/server/apps/files_antivirus
   - make
+
+- name: setup-server-files_antivirus
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
   - cd /var/www/owncloud/server
   - php occ a:l
   - php occ a:e files_antivirus
@@ -2445,7 +2555,7 @@ depends_on:
 ---
 kind: pipeline
 type: docker
-name: apiAntivirus-10.2.1-mysql5.5-php7.0
+name: apiAntivirus-latest-mysql5.5-php7.0
 
 platform:
   os: linux
@@ -2467,7 +2577,7 @@ steps:
     db_type: mysql
     db_username: owncloud
     exclude: apps/files_antivirus
-    version: 10.2.1
+    version: latest
 
 - name: install-testrunner
   pull: always
@@ -2480,12 +2590,17 @@ steps:
   - cd /var/www/owncloud/testrunner
   - make install-composer-deps vendor-bin-deps
 
-- name: setup-server-files_antivirus
+- name: install-app-files_antivirus
   pull: always
   image: owncloudci/php:7.0
   commands:
   - cd /var/www/owncloud/server/apps/files_antivirus
   - make
+
+- name: setup-server-files_antivirus
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
   - cd /var/www/owncloud/server
   - php occ a:l
   - php occ a:e files_antivirus
@@ -2568,7 +2683,7 @@ depends_on:
 ---
 kind: pipeline
 type: docker
-name: apiAntivirus-10.2.1-mysql5.7-php7.0
+name: apiAntivirus-latest-mysql5.7-php7.0
 
 platform:
   os: linux
@@ -2590,7 +2705,7 @@ steps:
     db_type: mysql
     db_username: owncloud
     exclude: apps/files_antivirus
-    version: 10.2.1
+    version: latest
 
 - name: install-testrunner
   pull: always
@@ -2603,12 +2718,17 @@ steps:
   - cd /var/www/owncloud/testrunner
   - make install-composer-deps vendor-bin-deps
 
-- name: setup-server-files_antivirus
+- name: install-app-files_antivirus
   pull: always
   image: owncloudci/php:7.0
   commands:
   - cd /var/www/owncloud/server/apps/files_antivirus
   - make
+
+- name: setup-server-files_antivirus
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
   - cd /var/www/owncloud/server
   - php occ a:l
   - php occ a:e files_antivirus
@@ -2691,7 +2811,7 @@ depends_on:
 ---
 kind: pipeline
 type: docker
-name: apiAntivirus-10.2.1-postgres9.4-php7.0
+name: apiAntivirus-latest-postgres9.4-php7.0
 
 platform:
   os: linux
@@ -2713,7 +2833,7 @@ steps:
     db_type: pgsql
     db_username: owncloud
     exclude: apps/files_antivirus
-    version: 10.2.1
+    version: latest
 
 - name: install-testrunner
   pull: always
@@ -2726,12 +2846,17 @@ steps:
   - cd /var/www/owncloud/testrunner
   - make install-composer-deps vendor-bin-deps
 
-- name: setup-server-files_antivirus
+- name: install-app-files_antivirus
   pull: always
   image: owncloudci/php:7.0
   commands:
   - cd /var/www/owncloud/server/apps/files_antivirus
   - make
+
+- name: setup-server-files_antivirus
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
   - cd /var/www/owncloud/server
   - php occ a:l
   - php occ a:e files_antivirus
@@ -2813,7 +2938,7 @@ depends_on:
 ---
 kind: pipeline
 type: docker
-name: apiAntivirus-10.2.1-oracle-php7.0
+name: apiAntivirus-latest-oracle-php7.0
 
 platform:
   os: linux
@@ -2835,7 +2960,7 @@ steps:
     db_type: oci
     db_username: system
     exclude: apps/files_antivirus
-    version: 10.2.1
+    version: latest
 
 - name: install-testrunner
   pull: always
@@ -2848,12 +2973,17 @@ steps:
   - cd /var/www/owncloud/testrunner
   - make install-composer-deps vendor-bin-deps
 
-- name: setup-server-files_antivirus
+- name: install-app-files_antivirus
   pull: always
   image: owncloudci/php:7.0
   commands:
   - cd /var/www/owncloud/server/apps/files_antivirus
   - make
+
+- name: setup-server-files_antivirus
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
   - cd /var/www/owncloud/server
   - php occ a:l
   - php occ a:e files_antivirus
@@ -2971,12 +3101,30 @@ steps:
   - cd /var/www/owncloud/testrunner
   - make install-composer-deps vendor-bin-deps
 
-- name: setup-server-files_antivirus
+- name: install-app-files_antivirus
   pull: always
   image: owncloudci/php:7.0
   commands:
   - cd /var/www/owncloud/server/apps/files_antivirus
   - make
+
+- name: install-extra-apps
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
+  - git clone https://github.com/owncloud/files_primary_s3.git /var/www/owncloud/testrunner/apps/files_primary_s3
+  - cp -r /var/www/owncloud/testrunner/apps/files_primary_s3 /var/www/owncloud/server/apps/
+  - cd /var/www/owncloud/server/apps/files_primary_s3
+  - composer install
+  - cd /var/www/owncloud/server
+  - php occ a:l
+  - php occ a:e files_primary_s3
+  - php occ a:l
+
+- name: setup-server-files_antivirus
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
   - cd /var/www/owncloud/server
   - php occ a:l
   - php occ a:e files_antivirus
@@ -2991,19 +3139,6 @@ steps:
   detach: true
   commands:
   - tail -f /var/www/owncloud/server/data/owncloud.log
-
-- name: install-extra-apps
-  pull: always
-  image: owncloudci/php:7.0
-  commands:
-  - git clone https://github.com/owncloud/files_primary_s3.git /var/www/owncloud/testrunner/apps/files_primary_s3
-  - cp -r /var/www/owncloud/testrunner/apps/files_primary_s3 /var/www/owncloud/server/apps/
-  - cd /var/www/owncloud/server/apps/files_primary_s3
-  - composer install
-  - cd /var/www/owncloud/server
-  - php occ a:l
-  - php occ a:e files_primary_s3
-  - php occ a:l
 
 - name: configure-app
   pull: always
@@ -3081,7 +3216,7 @@ depends_on:
 ---
 kind: pipeline
 type: docker
-name: apiAntivirusObjectstore-10.2.1-mariadb10.2-php7.0
+name: apiAntivirusObjectstore-latest-mariadb10.2-php7.0
 
 platform:
   os: linux
@@ -3103,7 +3238,7 @@ steps:
     db_type: mysql
     db_username: owncloud
     exclude: apps/files_antivirus
-    version: 10.2.1
+    version: latest
 
 - name: install-testrunner
   pull: always
@@ -3116,12 +3251,30 @@ steps:
   - cd /var/www/owncloud/testrunner
   - make install-composer-deps vendor-bin-deps
 
-- name: setup-server-files_antivirus
+- name: install-app-files_antivirus
   pull: always
   image: owncloudci/php:7.0
   commands:
   - cd /var/www/owncloud/server/apps/files_antivirus
   - make
+
+- name: install-extra-apps
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
+  - git clone https://github.com/owncloud/files_primary_s3.git /var/www/owncloud/testrunner/apps/files_primary_s3
+  - cp -r /var/www/owncloud/testrunner/apps/files_primary_s3 /var/www/owncloud/server/apps/
+  - cd /var/www/owncloud/server/apps/files_primary_s3
+  - composer install
+  - cd /var/www/owncloud/server
+  - php occ a:l
+  - php occ a:e files_primary_s3
+  - php occ a:l
+
+- name: setup-server-files_antivirus
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
   - cd /var/www/owncloud/server
   - php occ a:l
   - php occ a:e files_antivirus
@@ -3136,19 +3289,6 @@ steps:
   detach: true
   commands:
   - tail -f /var/www/owncloud/server/data/owncloud.log
-
-- name: install-extra-apps
-  pull: always
-  image: owncloudci/php:7.0
-  commands:
-  - git clone https://github.com/owncloud/files_primary_s3.git /var/www/owncloud/testrunner/apps/files_primary_s3
-  - cp -r /var/www/owncloud/testrunner/apps/files_primary_s3 /var/www/owncloud/server/apps/
-  - cd /var/www/owncloud/server/apps/files_primary_s3
-  - composer install
-  - cd /var/www/owncloud/server
-  - php occ a:l
-  - php occ a:e files_primary_s3
-  - php occ a:l
 
 - name: configure-app
   pull: always
@@ -3264,19 +3404,19 @@ depends_on:
 - phpunit-php7.3-mariadb10.2
 - webUIActList-master-chrome-mariadb10.2-php7.0
 - webUIActList-master-firefox-mariadb10.2-php7.0
-- webUIActList-10.2.1-chrome-mariadb10.2-php7.0
-- webUIActList-10.2.1-firefox-mariadb10.2-php7.0
+- webUIActList-latest-chrome-mariadb10.2-php7.0
+- webUIActList-latest-firefox-mariadb10.2-php7.0
 - apiAntivirus-master-mariadb10.2-php7.0
 - apiAntivirus-master-mysql5.5-php7.0
 - apiAntivirus-master-mysql5.7-php7.0
 - apiAntivirus-master-postgres9.4-php7.0
 - apiAntivirus-master-oracle-php7.0
-- apiAntivirus-10.2.1-mariadb10.2-php7.0
-- apiAntivirus-10.2.1-mysql5.5-php7.0
-- apiAntivirus-10.2.1-mysql5.7-php7.0
-- apiAntivirus-10.2.1-postgres9.4-php7.0
-- apiAntivirus-10.2.1-oracle-php7.0
+- apiAntivirus-latest-mariadb10.2-php7.0
+- apiAntivirus-latest-mysql5.5-php7.0
+- apiAntivirus-latest-mysql5.7-php7.0
+- apiAntivirus-latest-postgres9.4-php7.0
+- apiAntivirus-latest-oracle-php7.0
 - apiAntivirusObjectstore-master-mariadb10.2-php7.0
-- apiAntivirusObjectstore-10.2.1-mariadb10.2-php7.0
+- apiAntivirusObjectstore-latest-mariadb10.2-php7.0
 
 ...
