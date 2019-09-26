@@ -67,10 +67,14 @@ config = {
 				'oracle'
 			],
 		},
-		'api-objectstore': {
+		'api-scality': {
 			'suites': {
-				'apiAntivirus': 'apiAntivirusObjectstore',
+				'apiAntivirus': 'apiAvScality',
 			},
+			'servers': [
+				'daily-master-qa',
+				'10.3.0alpha2'
+			],
 			'databases': [
 				'mariadb:10.2',
 			],
