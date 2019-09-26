@@ -3066,7 +3066,7 @@ depends_on:
 ---
 kind: pipeline
 type: docker
-name: apiAntivirusObjectstore-master-mariadb10.2-php7.0
+name: apiAvScality-master-mariadb10.2-php7.0
 
 platform:
   os: linux
@@ -3216,7 +3216,7 @@ depends_on:
 ---
 kind: pipeline
 type: docker
-name: apiAntivirusObjectstore-latest-mariadb10.2-php7.0
+name: apiAvScality-10.3.0alpha2-mariadb10.2-php7.0
 
 platform:
   os: linux
@@ -3238,7 +3238,7 @@ steps:
     db_type: mysql
     db_username: owncloud
     exclude: apps/files_antivirus
-    version: latest
+    version: 10.3.0alpha2
 
 - name: install-testrunner
   pull: always
@@ -3416,7 +3416,7 @@ depends_on:
 - apiAntivirus-latest-mysql5.7-php7.0
 - apiAntivirus-latest-postgres9.4-php7.0
 - apiAntivirus-latest-oracle-php7.0
-- apiAntivirusObjectstore-master-mariadb10.2-php7.0
-- apiAntivirusObjectstore-latest-mariadb10.2-php7.0
+- apiAvScality-master-mariadb10.2-php7.0
+- apiAvScality-10.3.0alpha2-mariadb10.2-php7.0
 
 ...
