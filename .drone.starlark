@@ -111,6 +111,55 @@ config = {
 				}
 			]
 		},
+		'api-ceph': {
+			'suites': {
+				'apiAntivirus': 'apiAvCeph',
+			},
+			'servers': [
+				'daily-master-qa',
+				'10.3.0alpha2'
+			],
+			'databases': [
+				'mariadb:10.2',
+			],
+			'extraApps': {
+				'files_primary_s3': 'composer install'
+			},
+			'extraSetup': {
+				'name': 'configure-app',
+				'image': 'owncloudci/php:7.0',
+				'pull': 'always',
+				'commands': [
+					'cd /var/www/owncloud/server/apps/files_primary_s3',
+					'cp tests/drone/ceph.config.php /var/www/owncloud/server/config',
+					'cd /var/www/owncloud/server',
+					'./apps/files_primary_s3/tests/drone/create-bucket.sh',
+					'php occ config:app:set --value "clamav" files_antivirus av_host',
+					'php occ config:app:set --value "daemon" files_antivirus av_mode',
+					'php occ config:app:set --value "3310" files_antivirus av_port',
+				]
+			},
+			'extraServices': [
+				{
+					'name': 'clamav',
+					'image': 'dinkel/clamavd',
+					'pull': 'always',
+				},
+				{
+					'name': 'ceph',
+					'image': 'owncloudci/ceph:tag-build-master-jewel-ubuntu-16.04',
+					'pull': 'always',
+					'environment': {
+						'NETWORK_AUTO_DETECT': '4',
+						'CEPH_DAEMON': 'demo',
+						'RGW_NAME': 'ceph',
+						'CEPH_DEMO_UID': 'owncloud',
+						'CEPH_DEMO_ACCESS_KEY': 'owncloud123456',
+						'CEPH_DEMO_SECRET_KEY': 'secret123456',
+					}
+				}
+			]
+		},
 	},
 
 	'defaults': {
