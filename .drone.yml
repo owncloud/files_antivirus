@@ -3216,7 +3216,7 @@ depends_on:
 ---
 kind: pipeline
 type: docker
-name: apiAvScality-10.3.0alpha2-mariadb10.2-php7.0
+name: apiAvScality-10.3.0RC1-mariadb10.2-php7.0
 
 platform:
   os: linux
@@ -3238,7 +3238,7 @@ steps:
     db_type: mysql
     db_username: owncloud
     exclude: apps/files_antivirus
-    version: 10.3.0alpha2
+    version: 10.3.0RC1
 
 - name: install-testrunner
   pull: always
@@ -3521,7 +3521,7 @@ depends_on:
 ---
 kind: pipeline
 type: docker
-name: apiAvCeph-10.3.0alpha2-mariadb10.2-php7.0
+name: apiAvCeph-10.3.0RC1-mariadb10.2-php7.0
 
 platform:
   os: linux
@@ -3543,7 +3543,7 @@ steps:
     db_type: mysql
     db_username: owncloud
     exclude: apps/files_antivirus
-    version: 10.3.0alpha2
+    version: 10.3.0RC1
 
 - name: install-testrunner
   pull: always
@@ -3727,8 +3727,8 @@ depends_on:
 - apiAntivirus-latest-postgres9.4-php7.0
 - apiAntivirus-latest-oracle-php7.0
 - apiAvScality-master-mariadb10.2-php7.0
-- apiAvScality-10.3.0alpha2-mariadb10.2-php7.0
+- apiAvScality-10.3.0RC1-mariadb10.2-php7.0
 - apiAvCeph-master-mariadb10.2-php7.0
-- apiAvCeph-10.3.0alpha2-mariadb10.2-php7.0
+- apiAvCeph-10.3.0RC1-mariadb10.2-php7.0
 
 ...
