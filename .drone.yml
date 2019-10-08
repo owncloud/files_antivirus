@@ -3140,14 +3140,21 @@ steps:
   commands:
   - tail -f /var/www/owncloud/server/data/owncloud.log
 
-- name: configure-app
+- name: setup-scality
   pull: always
   image: owncloudci/php:7.0
   commands:
+  - wait-for-it -t 60 scality:8000
   - cd /var/www/owncloud/server/apps/files_primary_s3
   - cp tests/drone/scality.config.php /var/www/owncloud/server/config
   - cd /var/www/owncloud/server
   - php occ s3:create-bucket owncloud --accept-warning
+
+- name: configure-app
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
+  - cd /var/www/owncloud/server
   - php occ config:app:set --value "clamav" files_antivirus av_host
   - php occ config:app:set --value "daemon" files_antivirus av_mode
   - php occ config:app:set --value "3310" files_antivirus av_port
@@ -3167,6 +3174,8 @@ steps:
   - make test-acceptance-api
   environment:
     BEHAT_SUITE: apiAntivirus
+    OC_TEST_ON_OBJECTSTORE: 1
+    S3_TYPE: scality
     TEST_SERVER_URL: http://server
 
 services:
@@ -3179,15 +3188,15 @@ services:
     MYSQL_ROOT_PASSWORD: owncloud
     MYSQL_USER: owncloud
 
-- name: clamav
-  pull: always
-  image: dinkel/clamavd
-
 - name: scality
   pull: always
   image: owncloudci/scality-s3server
   environment:
     HOST_NAME: scality
+
+- name: clamav
+  pull: always
+  image: dinkel/clamavd
 
 - name: server
   pull: always
@@ -3290,14 +3299,21 @@ steps:
   commands:
   - tail -f /var/www/owncloud/server/data/owncloud.log
 
-- name: configure-app
+- name: setup-scality
   pull: always
   image: owncloudci/php:7.0
   commands:
+  - wait-for-it -t 60 scality:8000
   - cd /var/www/owncloud/server/apps/files_primary_s3
   - cp tests/drone/scality.config.php /var/www/owncloud/server/config
   - cd /var/www/owncloud/server
   - php occ s3:create-bucket owncloud --accept-warning
+
+- name: configure-app
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
+  - cd /var/www/owncloud/server
   - php occ config:app:set --value "clamav" files_antivirus av_host
   - php occ config:app:set --value "daemon" files_antivirus av_mode
   - php occ config:app:set --value "3310" files_antivirus av_port
@@ -3317,6 +3333,8 @@ steps:
   - make test-acceptance-api
   environment:
     BEHAT_SUITE: apiAntivirus
+    OC_TEST_ON_OBJECTSTORE: 1
+    S3_TYPE: scality
     TEST_SERVER_URL: http://server
 
 services:
@@ -3329,15 +3347,15 @@ services:
     MYSQL_ROOT_PASSWORD: owncloud
     MYSQL_USER: owncloud
 
-- name: clamav
-  pull: always
-  image: dinkel/clamavd
-
 - name: scality
   pull: always
   image: owncloudci/scality-s3server
   environment:
     HOST_NAME: scality
+
+- name: clamav
+  pull: always
+  image: dinkel/clamavd
 
 - name: server
   pull: always
@@ -3440,14 +3458,21 @@ steps:
   commands:
   - tail -f /var/www/owncloud/server/data/owncloud.log
 
-- name: configure-app
+- name: setup-ceph
   pull: always
   image: owncloudci/php:7.0
   commands:
+  - wait-for-it -t 60 ceph:80
   - cd /var/www/owncloud/server/apps/files_primary_s3
   - cp tests/drone/ceph.config.php /var/www/owncloud/server/config
   - cd /var/www/owncloud/server
   - ./apps/files_primary_s3/tests/drone/create-bucket.sh
+
+- name: configure-app
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
+  - cd /var/www/owncloud/server
   - php occ config:app:set --value "clamav" files_antivirus av_host
   - php occ config:app:set --value "daemon" files_antivirus av_mode
   - php occ config:app:set --value "3310" files_antivirus av_port
@@ -3467,6 +3492,8 @@ steps:
   - make test-acceptance-api
   environment:
     BEHAT_SUITE: apiAntivirus
+    OC_TEST_ON_OBJECTSTORE: 1
+    S3_TYPE: ceph
     TEST_SERVER_URL: http://server
 
 services:
@@ -3479,20 +3506,19 @@ services:
     MYSQL_ROOT_PASSWORD: owncloud
     MYSQL_USER: owncloud
 
-- name: clamav
-  pull: always
-  image: dinkel/clamavd
-
 - name: ceph
   pull: always
   image: owncloudci/ceph:tag-build-master-jewel-ubuntu-16.04
   environment:
-    CEPH_DAEMON: demo
     CEPH_DEMO_ACCESS_KEY: owncloud123456
     CEPH_DEMO_SECRET_KEY: secret123456
     CEPH_DEMO_UID: owncloud
     NETWORK_AUTO_DETECT: 4
     RGW_NAME: ceph
+
+- name: clamav
+  pull: always
+  image: dinkel/clamavd
 
 - name: server
   pull: always
@@ -3595,14 +3621,21 @@ steps:
   commands:
   - tail -f /var/www/owncloud/server/data/owncloud.log
 
-- name: configure-app
+- name: setup-ceph
   pull: always
   image: owncloudci/php:7.0
   commands:
+  - wait-for-it -t 60 ceph:80
   - cd /var/www/owncloud/server/apps/files_primary_s3
   - cp tests/drone/ceph.config.php /var/www/owncloud/server/config
   - cd /var/www/owncloud/server
   - ./apps/files_primary_s3/tests/drone/create-bucket.sh
+
+- name: configure-app
+  pull: always
+  image: owncloudci/php:7.0
+  commands:
+  - cd /var/www/owncloud/server
   - php occ config:app:set --value "clamav" files_antivirus av_host
   - php occ config:app:set --value "daemon" files_antivirus av_mode
   - php occ config:app:set --value "3310" files_antivirus av_port
@@ -3622,6 +3655,8 @@ steps:
   - make test-acceptance-api
   environment:
     BEHAT_SUITE: apiAntivirus
+    OC_TEST_ON_OBJECTSTORE: 1
+    S3_TYPE: ceph
     TEST_SERVER_URL: http://server
 
 services:
@@ -3634,20 +3669,19 @@ services:
     MYSQL_ROOT_PASSWORD: owncloud
     MYSQL_USER: owncloud
 
-- name: clamav
-  pull: always
-  image: dinkel/clamavd
-
 - name: ceph
   pull: always
   image: owncloudci/ceph:tag-build-master-jewel-ubuntu-16.04
   environment:
-    CEPH_DAEMON: demo
     CEPH_DEMO_ACCESS_KEY: owncloud123456
     CEPH_DEMO_SECRET_KEY: secret123456
     CEPH_DEMO_UID: owncloud
     NETWORK_AUTO_DETECT: 4
     RGW_NAME: ceph
+
+- name: clamav
+  pull: always
+  image: dinkel/clamavd
 
 - name: server
   pull: always
