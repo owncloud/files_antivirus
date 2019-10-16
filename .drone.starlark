@@ -73,7 +73,7 @@ config = {
 			},
 			'servers': [
 				'daily-master-qa',
-				'10.3.0RC1'
+				'10.3.0'
 			],
 			'databases': [
 				'mariadb:10.2',
@@ -106,7 +106,7 @@ config = {
 			},
 			'servers': [
 				'daily-master-qa',
-				'10.3.0RC1'
+				'10.3.0'
 			],
 			'databases': [
 				'mariadb:10.2',
