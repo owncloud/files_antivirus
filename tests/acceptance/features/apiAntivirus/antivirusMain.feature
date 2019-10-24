@@ -91,17 +91,40 @@ Feature: Antivirus basic
       | status | /^error$/      |
     And as "user0" file "/myChunkedFile.txt" should not exist
 
-  Scenario: A small file without a virus can be uploaded via public upload
-    Given as user "user0"
+  Scenario Outline: A small file without a virus can be uploaded via public upload
+    Given the administrator has enabled DAV tech_preview
+    And as user "user0"
     And user "user0" has created a public link share of folder "FOLDER" with change permissions
-    When the public uploads file "textfile.txt" from the antivirus test data folder using the old WebDAV API
+    When the public uploads file "textfile.txt" from the antivirus test data folder using the <public-webdav-api> WebDAV API
     Then the HTTP status code should be "201"
     And as "user0" file "/FOLDER/textfile.txt" should exist
+    Examples:
+      | public-webdav-api |
+      | new               |
+      | old               |
 
-  Scenario Outline: A small file with a virus cannot be uploaded via public upload
-    Given as user "user0"
+  Scenario Outline: A small file with a virus cannot be uploaded via old public upload
+    Given the administrator has enabled DAV tech_preview
+    And as user "user0"
     And user "user0" has created a public link share of folder "FOLDER" with change permissions
     When the public uploads file "<virus-file-name>" from the antivirus test data folder using the old WebDAV API
+    Then the HTTP status code should be "403"
+    And the last lines of the log file should contain log-entries containing these attributes:
+      | user | app             | method | message               |
+      | --   | files_antivirus | PUT    | Infected file deleted |
+    And as "user0" file "/FOLDER/<virus-file-name>" should not exist
+    Examples:
+      | virus-file-name |
+      | eicar.com       |
+      | eicar_com.zip   |
+      | eicarcom2.zip   |
+
+  @skip @issue-334
+  Scenario Outline: A small file with a virus cannot be uploaded via new public upload
+    Given the administrator has enabled DAV tech_preview
+    And as user "user0"
+    And user "user0" has created a public link share of folder "FOLDER" with change permissions
+    When the public uploads file "<virus-file-name>" from the antivirus test data folder using the new WebDAV API
     Then the HTTP status code should be "403"
     And the last lines of the log file should contain log-entries containing these attributes:
       | user | app             | method | message               |
