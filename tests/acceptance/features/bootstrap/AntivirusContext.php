@@ -86,16 +86,17 @@ class AntivirusContext implements Context {
 	}
 
 	/**
-	 * @When the public uploads file ":filename" from the antivirus test data folder using the old WebDAV API
+	 * @When /^the public uploads file "([^"]*)" from the antivirus test data folder using the (new|old) WebDAV API$/
 	 * @Given the public has uploaded file ":filename" from the antivirus test data folder
 	 *
 	 * @param string $source target file name
+	 * @param string $publicWebDavAPIVersion
 	 *
 	 * @return void
 	 */
-	public function publicUploadsFileFromAntivirusDataFolder($source) {
+	public function publicUploadsFileFromAntivirusDataFolder($source, $publicWebDavAPIVersion = "old") {
 		$source = $this->getRelativePathToTestDataFolder() . $source;
-		$this->publicWebDavContext->publiclyUploadingFile($source);
+		$this->publicWebDavContext->publiclyUploadingFile($source, $publicWebDavAPIVersion);
 	}
 
 	/**
