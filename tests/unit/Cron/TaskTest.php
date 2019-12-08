@@ -21,7 +21,7 @@ class TaskTest extends TestBase {
 	/** @var  ScannerFactory */
 	protected $scannerFactory;
 
-	public function setUp() {
+	public function setUp(): void {
 		parent::setUp();
 		//Background scanner requires at least one user on the current instance
 		$userManager = $this->application->getContainer()->query('ServerContainer')->getUserManager();

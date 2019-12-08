@@ -30,7 +30,7 @@ class AvirWrapperTest extends TestBase {
 	/** @var ScannerFactory | \PHPUnit\Framework\MockObject\MockObject */
 	protected $scannerFactory;
 
-	public function setUp() {
+	public function setUp(): void {
 		parent::setUp();
 		$this->request = $this->getMockBuilder(IRequest::class)
 			->disableOriginalConstructor()

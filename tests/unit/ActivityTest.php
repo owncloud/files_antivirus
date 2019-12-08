@@ -14,7 +14,7 @@ class ActivityTest extends TestBase {
 	/** @var  Activity */
 	protected $activity;
 	
-	public function setUp() {
+	public function setUp(): void {
 		parent::setUp();
 		$langFactory = $this->getMockBuilder('OC\L10N\Factory')
 				->disableOriginalConstructor()

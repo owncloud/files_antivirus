@@ -25,7 +25,7 @@ class ItemTest extends TestBase {
 		\OC_User::useBackend(new \Test\Util\User\Dummy());
 	}
 
-	public function setUp() {
+	public function setUp(): void {
 		parent::setUp();
 
 		//login

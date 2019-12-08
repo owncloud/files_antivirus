@@ -26,7 +26,7 @@ class LocalTest extends TestBase {
 	protected $infectedItem;
 	protected $scannerFactory;
 	
-	public function setUp() {
+	public function setUp(): void {
 		parent::setUp();
 		$this->view = $this->getMockBuilder('\OC\Files\View')
 				->disableOriginalConstructor()

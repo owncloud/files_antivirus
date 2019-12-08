@@ -18,7 +18,7 @@ abstract class TestBase extends \PHPUnit\Framework\TestCase {
 	protected $config;
 	protected $l10n;
 	
-	public function setUp() {
+	public function setUp(): void {
 		parent::setUp();
 		\OC_App::enable('files_antivirus');
 		

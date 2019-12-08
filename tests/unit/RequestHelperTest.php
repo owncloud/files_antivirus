@@ -32,7 +32,7 @@ class RequestHelperTest extends TestBase {
 	 */
 	private $owner = 'anon';
 
-	public function setUp() {
+	public function setUp(): void {
 		parent::setUp();
 		$this->request = $this->getMockBuilder(IRequest::class)
 			->disableOriginalConstructor()
