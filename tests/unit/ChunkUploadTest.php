@@ -29,7 +29,7 @@ class ChunkUploadTest extends TestBase {
 		\OC_User::useBackend(new Dummy());
 	}
 	
-	public function setUp() {
+	public function setUp(): void {
 		parent::setUp();
 		if (!\OC::$server->getUserManager()->get(self::UID)) {
 			\OC::$server->getUserManager()->createUser(self::UID, self::PWD);

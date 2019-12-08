@@ -39,7 +39,7 @@ class AvirWrapperTest extends TestBase {
 		\OC_User::useBackend(new Dummy());
 	}
 
-	public function setUp() {
+	public function setUp(): void {
 		parent::setUp();
 		$this->skeletonDirectory = \OC::$server->getConfig()->getSystemValue(
 			'skeletondirectory',
@@ -125,7 +125,7 @@ class AvirWrapperTest extends TestBase {
 		\OC_User::clearBackends();
 	}
 
-	protected function tearDown() {
+	protected function tearDown(): void {
 		parent::tearDown();
 		if ($this->skeletonDirectory !== null) {
 			\OC::$server->getConfig()->setSystemValue(
