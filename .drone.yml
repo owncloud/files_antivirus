@@ -1017,8 +1017,6 @@ steps:
   - git clone -b master --depth=1 https://github.com/owncloud/core.git /tmp/testrunner
   - rsync -aIX /tmp/testrunner /var/www/owncloud
   - cp -r /var/www/owncloud/testrunner/apps/files_antivirus /var/www/owncloud/server/apps/
-  - cd /var/www/owncloud/testrunner
-  - make install-composer-deps
 
 - name: install-app-files_antivirus
   pull: always
@@ -1165,8 +1163,6 @@ steps:
   - git clone -b master --depth=1 https://github.com/owncloud/core.git /tmp/testrunner
   - rsync -aIX /tmp/testrunner /var/www/owncloud
   - cp -r /var/www/owncloud/testrunner/apps/files_antivirus /var/www/owncloud/server/apps/
-  - cd /var/www/owncloud/testrunner
-  - make install-composer-deps
 
 - name: install-app-files_antivirus
   pull: always
@@ -1314,8 +1310,6 @@ steps:
   - git clone -b master --depth=1 https://github.com/owncloud/core.git /tmp/testrunner
   - rsync -aIX /tmp/testrunner /var/www/owncloud
   - cp -r /var/www/owncloud/testrunner/apps/files_antivirus /var/www/owncloud/server/apps/
-  - cd /var/www/owncloud/testrunner
-  - make install-composer-deps
 
 - name: install-app-files_antivirus
   pull: always
@@ -1462,8 +1456,6 @@ steps:
   - git clone -b master --depth=1 https://github.com/owncloud/core.git /tmp/testrunner
   - rsync -aIX /tmp/testrunner /var/www/owncloud
   - cp -r /var/www/owncloud/testrunner/apps/files_antivirus /var/www/owncloud/server/apps/
-  - cd /var/www/owncloud/testrunner
-  - make install-composer-deps
 
 - name: install-app-files_antivirus
   pull: always
@@ -1611,8 +1603,6 @@ steps:
   - git clone -b master --depth=1 https://github.com/owncloud/core.git /tmp/testrunner
   - rsync -aIX /tmp/testrunner /var/www/owncloud
   - cp -r /var/www/owncloud/testrunner/apps/files_antivirus /var/www/owncloud/server/apps/
-  - cd /var/www/owncloud/testrunner
-  - make install-composer-deps
 
 - name: install-app-files_antivirus
   pull: always
@@ -1738,8 +1728,6 @@ steps:
   - git clone -b master --depth=1 https://github.com/owncloud/core.git /tmp/testrunner
   - rsync -aIX /tmp/testrunner /var/www/owncloud
   - cp -r /var/www/owncloud/testrunner/apps/files_antivirus /var/www/owncloud/server/apps/
-  - cd /var/www/owncloud/testrunner
-  - make install-composer-deps
 
 - name: install-app-files_antivirus
   pull: always
@@ -1865,8 +1853,6 @@ steps:
   - git clone -b master --depth=1 https://github.com/owncloud/core.git /tmp/testrunner
   - rsync -aIX /tmp/testrunner /var/www/owncloud
   - cp -r /var/www/owncloud/testrunner/apps/files_antivirus /var/www/owncloud/server/apps/
-  - cd /var/www/owncloud/testrunner
-  - make install-composer-deps
 
 - name: install-app-files_antivirus
   pull: always
@@ -1992,8 +1978,6 @@ steps:
   - git clone -b master --depth=1 https://github.com/owncloud/core.git /tmp/testrunner
   - rsync -aIX /tmp/testrunner /var/www/owncloud
   - cp -r /var/www/owncloud/testrunner/apps/files_antivirus /var/www/owncloud/server/apps/
-  - cd /var/www/owncloud/testrunner
-  - make install-composer-deps
 
 - name: install-app-files_antivirus
   pull: always
@@ -2118,8 +2102,6 @@ steps:
   - git clone -b master --depth=1 https://github.com/owncloud/core.git /tmp/testrunner
   - rsync -aIX /tmp/testrunner /var/www/owncloud
   - cp -r /var/www/owncloud/testrunner/apps/files_antivirus /var/www/owncloud/server/apps/
-  - cd /var/www/owncloud/testrunner
-  - make install-composer-deps
 
 - name: install-app-files_antivirus
   pull: always
@@ -2245,8 +2227,6 @@ steps:
   - git clone -b master --depth=1 https://github.com/owncloud/core.git /tmp/testrunner
   - rsync -aIX /tmp/testrunner /var/www/owncloud
   - cp -r /var/www/owncloud/testrunner/apps/files_antivirus /var/www/owncloud/server/apps/
-  - cd /var/www/owncloud/testrunner
-  - make install-composer-deps
 
 - name: install-app-files_antivirus
   pull: always
@@ -2372,8 +2352,6 @@ steps:
   - git clone -b master --depth=1 https://github.com/owncloud/core.git /tmp/testrunner
   - rsync -aIX /tmp/testrunner /var/www/owncloud
   - cp -r /var/www/owncloud/testrunner/apps/files_antivirus /var/www/owncloud/server/apps/
-  - cd /var/www/owncloud/testrunner
-  - make install-composer-deps
 
 - name: install-app-files_antivirus
   pull: always
@@ -2499,8 +2477,6 @@ steps:
   - git clone -b master --depth=1 https://github.com/owncloud/core.git /tmp/testrunner
   - rsync -aIX /tmp/testrunner /var/www/owncloud
   - cp -r /var/www/owncloud/testrunner/apps/files_antivirus /var/www/owncloud/server/apps/
-  - cd /var/www/owncloud/testrunner
-  - make install-composer-deps
 
 - name: install-app-files_antivirus
   pull: always
@@ -2626,8 +2602,6 @@ steps:
   - git clone -b master --depth=1 https://github.com/owncloud/core.git /tmp/testrunner
   - rsync -aIX /tmp/testrunner /var/www/owncloud
   - cp -r /var/www/owncloud/testrunner/apps/files_antivirus /var/www/owncloud/server/apps/
-  - cd /var/www/owncloud/testrunner
-  - make install-composer-deps
 
 - name: install-app-files_antivirus
   pull: always
@@ -2752,8 +2726,6 @@ steps:
   - git clone -b master --depth=1 https://github.com/owncloud/core.git /tmp/testrunner
   - rsync -aIX /tmp/testrunner /var/www/owncloud
   - cp -r /var/www/owncloud/testrunner/apps/files_antivirus /var/www/owncloud/server/apps/
-  - cd /var/www/owncloud/testrunner
-  - make install-composer-deps
 
 - name: install-app-files_antivirus
   pull: always
@@ -2879,8 +2851,6 @@ steps:
   - git clone -b master --depth=1 https://github.com/owncloud/core.git /tmp/testrunner
   - rsync -aIX /tmp/testrunner /var/www/owncloud
   - cp -r /var/www/owncloud/testrunner/apps/files_antivirus /var/www/owncloud/server/apps/
-  - cd /var/www/owncloud/testrunner
-  - make install-composer-deps
 
 - name: install-app-files_antivirus
   pull: always
@@ -3037,8 +3007,6 @@ steps:
   - git clone -b master --depth=1 https://github.com/owncloud/core.git /tmp/testrunner
   - rsync -aIX /tmp/testrunner /var/www/owncloud
   - cp -r /var/www/owncloud/testrunner/apps/files_antivirus /var/www/owncloud/server/apps/
-  - cd /var/www/owncloud/testrunner
-  - make install-composer-deps
 
 - name: install-app-files_antivirus
   pull: always
@@ -3195,8 +3163,6 @@ steps:
   - git clone -b master --depth=1 https://github.com/owncloud/core.git /tmp/testrunner
   - rsync -aIX /tmp/testrunner /var/www/owncloud
   - cp -r /var/www/owncloud/testrunner/apps/files_antivirus /var/www/owncloud/server/apps/
-  - cd /var/www/owncloud/testrunner
-  - make install-composer-deps
 
 - name: install-app-files_antivirus
   pull: always
@@ -3357,8 +3323,6 @@ steps:
   - git clone -b master --depth=1 https://github.com/owncloud/core.git /tmp/testrunner
   - rsync -aIX /tmp/testrunner /var/www/owncloud
   - cp -r /var/www/owncloud/testrunner/apps/files_antivirus /var/www/owncloud/server/apps/
-  - cd /var/www/owncloud/testrunner
-  - make install-composer-deps
 
 - name: install-app-files_antivirus
   pull: always
