@@ -41,96 +41,60 @@ config = {
 	},
 
 	'acceptance': {
-		'webUI': {
+		'api1': {
 			'suites': {
-				'webUIActivityList': 'webUIActList',
+				'apiAntivirus': 'antivirus1',
 			},
-			'browsers': [
-				'chrome',
-				'firefox'
-			],
-			'extraApps': {
-				'activity': ''
-			},
-		},
-		'api': {
-			'suites': [
-				'apiAntivirus'
-			],
 			'databases': [
-				'mariadb:10.2',
 				'mysql:5.5',
 				'mysql:5.7',
-				'postgres:9.4',
-				'oracle'
 			],
 		},
-		'api-scality': {
+		'api2': {
 			'suites': {
-				'apiAntivirus': 'apiAvScality',
+				'apiAntivirus': 'antivirus2',
 			},
-			'servers': [
-				'daily-master-qa',
-				'latest'
-			],
 			'databases': [
-				'mariadb:10.2',
+				'mysql:5.5',
+				'mysql:5.7',
 			],
-			'scalityS3': True,
-			'extraSetup': [
-				{
-					'name': 'configure-app',
-					'image': 'owncloudci/php:7.1',
-					'pull': 'always',
-					'commands': [
-						'cd /var/www/owncloud/server',
-						'php occ config:app:set --value "clamav" files_antivirus av_host',
-						'php occ config:app:set --value "daemon" files_antivirus av_mode',
-						'php occ config:app:set --value "3310" files_antivirus av_port',
-					]
-				}
-			],
-			'extraServices': [
-				{
-					'name': 'clamav',
-					'image': 'dinkel/clamavd',
-					'pull': 'always',
-				},
-			]
 		},
-		'api-ceph': {
+		'api3': {
 			'suites': {
-				'apiAntivirus': 'apiAvCeph',
+				'apiAntivirus': 'antivirus3',
 			},
-			'servers': [
-				'daily-master-qa',
-				'latest'
-			],
 			'databases': [
-				'mariadb:10.2',
+				'mysql:5.5',
+				'mysql:5.7',
 			],
-			'cephS3': True,
-			'extraSetup': [
-				{
-					'name': 'configure-app',
-					'image': 'owncloudci/php:7.1',
-					'pull': 'always',
-					'commands': [
-						'cd /var/www/owncloud/server',
-						'php occ config:app:set --value "clamav" files_antivirus av_host',
-						'php occ config:app:set --value "daemon" files_antivirus av_mode',
-						'php occ config:app:set --value "3310" files_antivirus av_port',
-					]
-				}
-			],
-			'extraServices': [
-				{
-					'name': 'clamav',
-					'image': 'dinkel/clamavd',
-					'pull': 'always',
-				},
-			]
 		},
+		'api4': {
+			'suites': {
+				'apiAntivirus': 'antivirus4',
+			},
+			'databases': [
+				'mysql:5.5',
+				'mysql:5.7',
+			],
+		},
+		'api5': {
+			'suites': {
+				'apiAntivirus': 'antivirus5',
+			},
+			'databases': [
+				'mysql:5.5',
+				'mysql:5.7',
+			],
+		},
+		'api6': {
+			'suites': {
+				'apiAntivirus': 'antivirus6',
+			},
+			'databases': [
+				'mysql:5.5',
+				'mysql:5.7',
+			],
+		}
 	},
 
 	'defaults': {
