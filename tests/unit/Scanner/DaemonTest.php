@@ -14,9 +14,10 @@ use OCA\Files_Antivirus\Tests\unit\TestBase;
 
 class DaemonTest extends TestBase {
 	/**
-	 * @expectedException OCA\Files_Antivirus\Scanner\InitException
 	 */
 	public function testWrongAntivirusHost() {
+		$this->expectException(\OCA\Files_Antivirus\Scanner\InitException::class);
+
 		$config = $this->getMockBuilder(AppConfig::class)
 			->disableOriginalConstructor()
 			->getMock()
@@ -45,9 +46,10 @@ class DaemonTest extends TestBase {
 	}
 
 	/**
-	 * @expectedException OCA\Files_Antivirus\Scanner\InitException
 	 */
 	public function testEmptyAntivirusHost() {
+		$this->expectException(\OCA\Files_Antivirus\Scanner\InitException::class);
+
 		$config = $this->getMockBuilder(AppConfig::class)
 			->disableOriginalConstructor()
 			->getMock()
@@ -75,9 +77,10 @@ class DaemonTest extends TestBase {
 	}
 
 	/**
-	 * @expectedException OCA\Files_Antivirus\Scanner\InitException
 	 */
 	public function testEmptyAntivirusPort() {
+		$this->expectException(\OCA\Files_Antivirus\Scanner\InitException::class);
+
 		$config = $this->getMockBuilder(AppConfig::class)
 			->disableOriginalConstructor()
 			->getMock()

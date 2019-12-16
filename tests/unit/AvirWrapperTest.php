@@ -72,9 +72,10 @@ class AvirWrapperTest extends TestBase {
 	}
 
 	/**
-	 * @expectedException \OCP\Files\FileContentNotAllowedException
 	 */
 	public function testInfectedFwrite() {
+		$this->expectException(\OCP\Files\FileContentNotAllowedException::class);
+
 		$wrapper = $this->getWrapper();
 		$fd = $wrapper->fopen('killing bee', 'w+');
 		@\fwrite($fd, 'it ' . DummyClam::TEST_SIGNATURE);
@@ -82,9 +83,10 @@ class AvirWrapperTest extends TestBase {
 	}
 
 	/**
-	 * @expectedException \OCP\Files\FileContentNotAllowedException
 	 */
 	public function testBigInfectedFwrite() {
+		$this->expectException(\OCP\Files\FileContentNotAllowedException::class);
+
 		$wrapper = $this->getWrapper();
 		$fd = $wrapper->fopen('killing whale', 'w+');
 		@\fwrite($fd, \str_repeat('0', DummyClam::TEST_STREAM_SIZE-2) . DummyClam::TEST_SIGNATURE);
@@ -93,9 +95,10 @@ class AvirWrapperTest extends TestBase {
 	}
 
 	/**
-	 * @expectedException \OCP\Files\ForbiddenException
 	 */
 	public function testInfectedFilePutContents() {
+		$this->expectException(\OCP\Files\ForbiddenException::class);
+
 		$wrapper = $this->getWrapper();
 		$wrapper->file_put_contents('test_put_infected', 'it ' . DummyClam::TEST_SIGNATURE);
 	}

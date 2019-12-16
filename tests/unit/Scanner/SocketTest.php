@@ -14,9 +14,10 @@ use OCA\Files_Antivirus\Tests\unit\TestBase;
 
 class SocketTest extends TestBase {
 	/**
-	 * @expectedException OCA\Files_Antivirus\Scanner\InitException
 	 */
 	public function testWrongAntivirusSocket() {
+		$this->expectException(\OCA\Files_Antivirus\Scanner\InitException::class);
+
 		$config = $this->getMockBuilder(AppConfig::class)
 			->disableOriginalConstructor()
 			->getMock()
