@@ -57,9 +57,10 @@ class LocalTest extends TestBase {
 	}
 
 	/**
-	 * @expectedException OCA\Files_Antivirus\Scanner\InitException
 	 */
 	public function testWrongAntivirusPath() {
+		$this->expectException(\OCA\Files_Antivirus\Scanner\InitException::class);
+
 		$config = $this->getMockBuilder(AppConfig::class)
 			->disableOriginalConstructor()
 			->getMock()
