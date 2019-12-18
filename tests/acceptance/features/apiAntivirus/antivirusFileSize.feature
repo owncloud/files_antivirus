@@ -10,6 +10,12 @@ Feature: Antivirus file size
     And the owncloud log has been cleared
     And user "user0" has been created with default attributes and skeleton files
 
+  Scenario: Files bigger than the upload threshold are not checked for viruses
+    Given parameter "av_max_file_size" of app "files_antivirus" has been set to "100"
+    When user "user0" uploads file "eicar_com.zip" from the antivirus test data folder to "/virusfile.txt" using the WebDAV API
+    Then the HTTP status code should be "201"
+    And as "user0" file "/virusfile.txt" should exist
+
   Scenario: Files smaller than the upload threshold are checked for viruses
     Given parameter "av_max_file_size" of app "files_antivirus" has been set to "100"
     When user "user0" uploads file "eicar.com" from the antivirus test data folder to "/virusfile.txt" using the WebDAV API
@@ -18,12 +24,6 @@ Feature: Antivirus file size
       | user  | app             | method | message               |
       | user0 | files_antivirus | PUT    | Infected file deleted |
     And as "user0" file "/virusfile.txt" should not exist
-
-  Scenario: Files bigger than the upload threshold are not checked for viruses
-    Given parameter "av_max_file_size" of app "files_antivirus" has been set to "100"
-    When user "user0" uploads file "eicar_com.zip" from the antivirus test data folder to "/virusfile.txt" using the WebDAV API
-    Then the HTTP status code should be "201"
-    And as "user0" file "/virusfile.txt" should exist
 
   Scenario Outline: Files smaller than the upload threshold are checked for viruses when using chunking
     Given parameter "av_max_file_size" of app "files_antivirus" has been set to "100"
