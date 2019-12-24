@@ -128,7 +128,7 @@ test-php-phpstan: vendor-bin/phpstan/vendor
 .PHONY: test-acceptance-api
 test-acceptance-api:       ## Run API acceptance tests
 test-acceptance-api: $(acceptance_test_deps)
-	BEHAT_BIN=$(BEHAT_BIN) ../../tests/acceptance/run.sh --remote --type api
+	BEHAT_BIN=$(BEHAT_BIN) BEHAT_FEATURE=tests/acceptance/features/apiAntivirus/antivirusFileSize.feature:42 ../../tests/acceptance/run.sh --remote --type api
 
 .PHONY: test-acceptance-cli
 test-acceptance-cli:       ## Run CLI acceptance tests
