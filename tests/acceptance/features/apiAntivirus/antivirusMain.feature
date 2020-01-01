@@ -51,9 +51,10 @@ Feature: Antivirus basic
   Scenario Outline: A small file without a virus can be uploaded in chunks
     Given using <dav-path-version> DAV path
     When user "user0" uploads the following chunks to "/myChunkedFile.txt" with <dav-path-version> chunking and using the WebDAV API
-      | 1 | AAAAA |
-      | 2 | BBBBB |
-      | 3 | CCCCC |
+      | number | content |
+      | 1      | AAAAA   |
+      | 2      | BBBBB   |
+      | 3      | CCCCC   |
     Then the HTTP status code should be "201"
     And as "user0" file "/myChunkedFile.txt" should exist
     And the content of file "/myChunkedFile.txt" for user "user0" should be "AAAAABBBBBCCCCC"
@@ -65,9 +66,10 @@ Feature: Antivirus basic
   Scenario Outline: A small file with a virus cannot be uploaded in chunks
     Given using <dav-path-version> DAV path
     When user "user0" uploads the following chunks to "/myChunkedFile.txt" with <dav-path-version> chunking and using the WebDAV API
-      | 1 | X5O!P%@AP[4\PZX54(P^)7C |
-      | 2 | C)7}$EICAR-STANDARD-ANT |
-      | 3 | IVIRUS-TEST-FILE!$H+H*  |
+      | number | content                 |
+      | 1      | X5O!P%@AP[4\PZX54(P^)7C |
+      | 2      | C)7}$EICAR-STANDARD-ANT |
+      | 3      | IVIRUS-TEST-FILE!$H+H*  |
     Then the HTTP status code should be "403"
     And the last lines of the log file should contain log-entries containing these attributes:
       | user  | app             | message               |
@@ -88,7 +90,7 @@ Feature: Antivirus basic
     When user "user0" moves new chunk file with id "chunking-42" asynchronously to "/myChunkedFile.txt" using the WebDAV API
     Then the HTTP status code should be "202"
     And the oc job status values of last request for user "user0" should match these regular expressions
-      | status | /^error$/      |
+      | status | /^error$/ |
     And as "user0" file "/myChunkedFile.txt" should not exist
 
   Scenario Outline: A small file without a virus can be uploaded via public upload
