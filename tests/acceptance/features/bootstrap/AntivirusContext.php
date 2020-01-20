@@ -31,7 +31,6 @@ require_once 'bootstrap.php';
  * Defines test steps specific to the antivirus app
  */
 class AntivirusContext implements Context {
-	use Logging;
 
 	/**
 	 * @var FeatureContext
@@ -59,6 +58,7 @@ class AntivirusContext implements Context {
 	 * @param string $enableDisable
 	 *
 	 * @return void
+	 * @throws Exception
 	 */
 	public function theAdministratorEnablesTheAntivirusApp($enableDisable) {
 		if (($enableDisable === "enables") || ($enableDisable === "has enabled")) {
