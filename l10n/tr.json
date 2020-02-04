@@ -30,7 +30,7 @@
     "Port" : "Bağlantı Noktası",
     "Port number of Antivirus Host, 1-65535" : "Antivirus barındırıcısının bağlantı noktası, 1-65535",
     "Path to clamscan" : "Clamscan yolu",
-    "Path to clamscan executable" : "Clamscan uygulaması yolu",
+    "Path to clamscan executable" : "Clamscan çalıştırılabilir dosyası yolu",
     "Extra command line options (comma-separated)" : "Ek komut satırı seçenekleri (virgülle ayrılmış)",
     "Stream Length" : "Akış Uzunluğu",
     "ClamAV StreamMaxLength value in bytes" : "ClamAV StreamMaxLength bayt cinsinden değeri",
