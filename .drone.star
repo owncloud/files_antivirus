@@ -133,6 +133,63 @@ config = {
 				},
 			]
 		},
+		'core-api-acceptance': {
+			'suites': [
+				'apiAll',
+			],
+			'databases': [
+				'mysql:5.7',
+			],
+			'servers': [
+				'daily-master-qa',
+			],
+			'phpVersions': [
+				'7.1',
+			],
+			'runCoreTests': True,
+			'federatedServerNeeded': True,
+			# 'cron': 'nightly',
+			'runAllSuites': True,
+			'numberOfParts': 35,
+		},
+		'core-cli-acceptance': {
+			'suites': [
+				'cliTrashbin',
+				'cliMain',
+			],
+			'databases': [
+				'mysql:5.7',
+			],
+			'servers': [
+				'daily-master-qa',
+			],
+			'phpVersions': [
+				'7.1',
+			],
+			'runCoreTests': True,
+			# 'cron': 'nightly',
+		},
+		'core-webui-acceptance': {
+			'suites': [
+				"webUIall",
+			],
+			'databases': [
+				'mysql:5.7',
+			],
+			'servers': [
+				'daily-master-qa',
+			],
+			'phpVersions': [
+				'7.1',
+			],
+			'emailNeeded': True,
+			'runCoreTests': True,
+			'federatedServerNeeded': True,
+			# 'cron': 'nightly',
+			'runAllSuites': True,
+			'numberOfParts': 5,
+			'filterTags': '@smokeTest&&~@skip',
+		}
 	},
 
 	'defaults': {
