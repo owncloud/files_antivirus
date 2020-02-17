@@ -134,9 +134,9 @@ config = {
 			]
 		},
 		'core-api-acceptance': {
-			'suites': [
-				'apiAll',
-			],
+			'suites': {
+				'apiAll': 'core-apiAll',
+			},
 			'databases': [
 				'mysql:5.7',
 			],
@@ -148,15 +148,14 @@ config = {
 			],
 			'runCoreTests': True,
 			'federatedServerNeeded': True,
-			# 'cron': 'nightly',
+			'cron': 'nightly',
 			'runAllSuites': True,
 			'numberOfParts': 35,
 		},
 		'core-cli-acceptance': {
-			'suites': [
-				'cliTrashbin',
-				'cliMain',
-			],
+			'suites': {
+				'cliAll': 'core-cliAll',
+			},
 			'databases': [
 				'mysql:5.7',
 			],
@@ -167,12 +166,15 @@ config = {
 				'7.1',
 			],
 			'runCoreTests': True,
-			# 'cron': 'nightly',
+			'cron': 'nightly',
+			'runAllSuites': True,
+			'numberOfParts': 3,
+			'emailNeeded': True,
 		},
 		'core-webui-acceptance': {
-			'suites': [
-				"webUIall",
-			],
+			'suites': {
+				'webUIall': 'core-webUI',
+			},
 			'databases': [
 				'mysql:5.7',
 			],
@@ -185,7 +187,7 @@ config = {
 			'emailNeeded': True,
 			'runCoreTests': True,
 			'federatedServerNeeded': True,
-			# 'cron': 'nightly',
+			'cron': 'nightly',
 			'runAllSuites': True,
 			'numberOfParts': 5,
 			'filterTags': '@smokeTest&&~@skip',
