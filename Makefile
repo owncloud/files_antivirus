@@ -140,6 +140,21 @@ test-acceptance-webui:     ## Run webUI acceptance tests
 test-acceptance-webui: $(acceptance_test_deps)
 	BEHAT_BIN=$(BEHAT_BIN) ../../tests/acceptance/run.sh --remote --type webUI
 
+.PHONY: test-acceptance-core-api
+test-acceptance-core-api: ## Run core API acceptance tests
+test-acceptance-core-api: $(acceptance_test_deps)
+	BEHAT_BIN=$(BEHAT_BIN) ../../tests/acceptance/run.sh --remote --type api -c ../../tests/acceptance/config/behat.yml
+
+.PHONY: test-acceptance-core-cli
+test-acceptance-core-cli: ## Run core CLI acceptance tests
+test-acceptance-core-cli: $(acceptance_test_deps)
+	BEHAT_BIN=$(BEHAT_BIN) ../../tests/acceptance/run.sh --remote --type cli -c ../../tests/acceptance/config/behat.yml
+
+.PHONY: test-acceptance-core-webui
+test-acceptance-core-webui: ## Run core webUI acceptance tests
+test-acceptance-core-webui: $(acceptance_test_deps)
+	BEHAT_BIN=$(BEHAT_BIN) ../../tests/acceptance/run.sh --remote --type webui -c ../../tests/acceptance/config/behat.yml
+
 .PHONY: test-php-codecheck
 test-php-codecheck:
 	$(occ) app:check-code $(app_name) -c private -c strong-comparison
