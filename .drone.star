@@ -14,7 +14,6 @@ config = {
 	'codestyle': {
 		'ordinary' : {
 			'phpVersions': [
-				'7.1',
 				'7.2',
 				'7.3',
 			],
@@ -24,12 +23,11 @@ config = {
 	'phpunit': {
 		'allDatabases' : {
 			'phpVersions': [
-				'7.1',
+				'7.2',
 			]
 		},
 		'reducedDatabases' : {
 			'phpVersions': [
-				'7.2',
 				'7.3',
 			],
 			'databases': [
@@ -80,7 +78,7 @@ config = {
 			'extraSetup': [
 				{
 					'name': 'configure-app',
-					'image': 'owncloudci/php:7.1',
+					'image': 'owncloudci/php:7.2',
 					'pull': 'always',
 					'commands': [
 						'cd /var/www/owncloud/server',
@@ -114,7 +112,7 @@ config = {
 			'extraSetup': [
 				{
 					'name': 'configure-app',
-					'image': 'owncloudci/php:7.1',
+					'image': 'owncloudci/php:7.2',
 					'pull': 'always',
 					'commands': [
 						'cd /var/www/owncloud/server',
@@ -144,7 +142,7 @@ config = {
 				'daily-master-qa',
 			],
 			'phpVersions': [
-				'7.1',
+				'7.2',
 			],
 			'runCoreTests': True,
 			'federatedServerNeeded': True,
@@ -163,7 +161,7 @@ config = {
 				'daily-master-qa',
 			],
 			'phpVersions': [
-				'7.1',
+				'7.2',
 			],
 			'runCoreTests': True,
 			'cron': 'nightly',
@@ -182,7 +180,7 @@ config = {
 				'daily-master-qa',
 			],
 			'phpVersions': [
-				'7.1',
+				'7.2',
 			],
 			'emailNeeded': True,
 			'runCoreTests': True,
@@ -199,7 +197,7 @@ config = {
 			'extraServices': [
 				{
 					'name': 'dummy-clamav',
-					'image': 'owncloudci/php:7.1',
+					'image': 'owncloudci/php:7.2',
 					'pull': 'always',
 					'commands': [
 						# dummy clamav required for unit tests
@@ -213,7 +211,7 @@ config = {
 			'extraSetup': [
 				{
 					'name': 'wait-for-service',
-					'image': 'owncloudci/php:7.1',
+					'image': 'owncloudci/php:7.2',
 					'pull': 'always',
 					'commands': [
 						'wait-for-it dummy-clamav:5555',
@@ -229,7 +227,7 @@ config = {
 			'extraSetup': [
 				{
 					'name': 'configure-app',
-					'image': 'owncloudci/php:7.1',
+					'image': 'owncloudci/php:7.2',
 					'pull': 'always',
 					'commands': [
 						'cd /var/www/owncloud/server',
@@ -292,7 +290,7 @@ def codestyle():
 		return pipelines
 
 	default = {
-		'phpVersions': ['7.1'],
+		'phpVersions': ['7.2'],
 	}
 
 	if 'defaults' in config:
@@ -481,7 +479,7 @@ def phan():
 		return pipelines
 
 	default = {
-		'phpVersions': ['7.1', '7.2', '7.3'],
+		'phpVersions': ['7.2', '7.3'],
 	}
 
 	if 'defaults' in config:
@@ -553,7 +551,7 @@ def build():
 		return pipelines
 
 	default = {
-		'phpVersions': ['7.1'],
+		'phpVersions': ['7.2'],
 		'commands': [
 			'make dist'
 		],
@@ -648,6 +646,7 @@ def javascript():
 		'extraServices': [],
 		'extraEnvironment': {},
 		'extraCommandsBeforeTestRun': [],
+		'extraTeardown': [],
 	}
 
 	if 'defaults' in config:
@@ -678,20 +677,20 @@ def javascript():
 		},
 		'steps':
 			installCore('daily-master-qa', 'sqlite', False) +
-			installApp('7.1') +
-			setupServerAndApp('7.1', params['logLevel']) +
+			installApp('7.2') +
+			setupServerAndApp('7.2', params['logLevel']) +
 			params['extraSetup'] +
 		[
 			{
 				'name': 'js-tests',
-				'image': 'owncloudci/php:7.1',
+				'image': 'owncloudci/php:7.2',
 				'pull': 'always',
 				'environment': params['extraEnvironment'],
 				'commands': params['extraCommandsBeforeTestRun'] + [
 					'make test-js'
 				]
 			}
-		],
+		] + params['extraTeardown'],
 		'services': params['extraServices'],
 		'depends_on': [],
 		'trigger': {
@@ -731,7 +730,7 @@ def phptests(testType):
 	errorFound = False
 
 	default = {
-		'phpVersions': ['7.1', '7.2', '7.3'],
+		'phpVersions': ['7.2', '7.3'],
 		'databases': [
 			'sqlite', 'mariadb:10.2', 'mysql:5.5', 'mysql:5.7', 'postgres:9.4', 'oracle'
 		],
@@ -745,6 +744,7 @@ def phptests(testType):
 		'extraEnvironment': {},
 		'extraCommandsBeforeTestRun': [],
 		'extraApps': {},
+		'extraTeardown': [],
 	}
 
 	if 'defaults' in config:
@@ -843,7 +843,7 @@ def phptests(testType):
 								command
 							]
 						}
-					],
+					] + params['extraTeardown'],
 					'services':
 						databaseService(db) +
 						cephService(params['cephS3']) +
@@ -898,7 +898,7 @@ def acceptance():
 	default = {
 		'servers': ['daily-master-qa', 'latest'],
 		'browsers': ['chrome'],
-		'phpVersions': ['7.1'],
+		'phpVersions': ['7.2'],
 		'databases': ['mariadb:10.2'],
 		'federatedServerNeeded': False,
 		'filterTags': '',
@@ -911,6 +911,7 @@ def acceptance():
 		'xForwardedFor': False,
 		'extraSetup': [],
 		'extraServices': [],
+		'extraTeardown': [],
 		'extraEnvironment': {},
 		'extraCommandsBeforeTestRun': [],
 		'extraApps': {},
@@ -1071,7 +1072,7 @@ def acceptance():
 												'make %s' % makeParameter
 											]
 										}),
-									],
+									] + params['extraTeardown'],
 									'services':
 										databaseService(db) +
 										browserService(browser) +
@@ -1319,16 +1320,18 @@ def getDbName(db):
 def getDbUsername(db):
 	name = getDbName(db)
 
+	# The Oracle image has the Db Username hardcoded
 	if name == 'oracle':
-		return 'system'
+		return 'autotest'
 
 	return 'owncloud'
 
 def getDbPassword(db):
 	name = getDbName(db)
 
+	# The Oracle image has the Db Password hardcoded
 	if name == 'oracle':
-		return 'oracle'
+		return 'owncloud'
 
 	return 'owncloud'
 
@@ -1338,6 +1341,7 @@ def getDbRootPassword():
 def getDbDatabase(db):
 	name = getDbName(db)
 
+	# The Oracle image has the Db Name hardcoded
 	if name == 'oracle':
 		return 'XE'
 
@@ -1465,7 +1469,7 @@ def setupCeph(serviceParams):
 
 	return [{
 		'name': 'setup-ceph',
-		'image': 'owncloudci/php:7.1',
+		'image': 'owncloudci/php:7.2',
 		'pull': 'always',
 		'commands': setupCommands + ([
 			'./apps/files_primary_s3/tests/drone/create-bucket.sh',
@@ -1493,7 +1497,7 @@ def setupScality(serviceParams):
 
 	return [{
 		'name': 'setup-scality',
-		'image': 'owncloudci/php:7.1',
+		'image': 'owncloudci/php:7.2',
 		'pull': 'always',
 		'commands': setupCommands + ([
 			'php occ s3:create-bucket owncloud --accept-warning'
