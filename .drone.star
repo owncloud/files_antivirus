@@ -50,6 +50,9 @@ config = {
 			'extraApps': {
 				'activity': ''
 			},
+			'phpVersions': [
+				'7.4',
+			],
 		},
 		'api': {
 			'suites': [
@@ -62,6 +65,9 @@ config = {
 				'postgres:9.4',
 				'oracle'
 			],
+			'phpVersions': [
+				'7.4',
+			],
 		},
 		'api-scality': {
 			'suites': {
@@ -73,6 +79,9 @@ config = {
 			],
 			'databases': [
 				'mariadb:10.2',
+			],
+			'phpVersions': [
+				'7.4',
 			],
 			'scalityS3': True,
 			'extraSetup': [
@@ -95,7 +104,7 @@ config = {
 					'image': 'jankaritechnepal/clamavd',
 					'pull': 'always',
 				},
-			]
+			],
 		},
 		'api-ceph': {
 			'suites': {
@@ -107,6 +116,9 @@ config = {
 			],
 			'databases': [
 				'mariadb:10.2',
+			],
+			'phpVersions': [
+				'7.4',
 			],
 			'cephS3': True,
 			'extraSetup': [
@@ -142,13 +154,15 @@ config = {
 				'daily-master-qa',
 			],
 			'phpVersions': [
-				'7.2',
+				'7.4',
 			],
 			'runCoreTests': True,
 			'federatedServerNeeded': True,
-			'cron': 'nightly',
 			'runAllSuites': True,
 			'numberOfParts': 35,
+			'extraApps': {
+				'notifications': '',
+			},
 		},
 		'core-cli-acceptance': {
 			'suites': {
@@ -161,13 +175,15 @@ config = {
 				'daily-master-qa',
 			],
 			'phpVersions': [
-				'7.2',
+				'7.4',
 			],
 			'runCoreTests': True,
-			'cron': 'nightly',
 			'runAllSuites': True,
 			'numberOfParts': 3,
 			'emailNeeded': True,
+			'extraApps': {
+				'notifications': '',
+			},
 		},
 		'core-webui-acceptance': {
 			'suites': {
@@ -180,15 +196,17 @@ config = {
 				'daily-master-qa',
 			],
 			'phpVersions': [
-				'7.2',
+				'7.4',
 			],
 			'emailNeeded': True,
 			'runCoreTests': True,
 			'federatedServerNeeded': True,
-			'cron': 'nightly',
 			'runAllSuites': True,
 			'numberOfParts': 5,
 			'filterTags': '@smokeTest&&~@skip',
+			'extraApps': {
+				'notifications': '',
+			},
 		}
 	},
 
@@ -1369,7 +1387,7 @@ def installCore(version, db, useBundledApp):
 		'image': 'owncloudci/core',
 		'pull': 'always',
 		'settings': {
-			'version': version,
+			'git_reference': 'php7.4-20200310',
 			'core_path': '/var/www/owncloud/server',
 			'db_type': dbType,
 			'db_name': database,
@@ -1556,7 +1574,7 @@ def installFederated(federatedServerVersion, phpVersion, logLevel, db, dbSuffix 
 			'image': 'owncloudci/core',
 			'pull': 'always',
 			'settings': {
-				'version': federatedServerVersion,
+				'git_reference': 'php7.4-20200310',
 				'core_path': '/var/www/owncloud/federated',
 				'db_type': 'mysql',
 				'db_name': database,
@@ -1573,6 +1591,8 @@ def installFederated(federatedServerVersion, phpVersion, logLevel, db, dbSuffix 
 				'echo "export TEST_SERVER_FED_URL=http://federated" > /var/www/owncloud/saved-settings.sh',
 				'cd /var/www/owncloud/federated',
 				'php occ a:l',
+				'git clone https://github.com/owncloud/notifications.git /var/www/owncloud/federated/apps/notifications',
+				'php occ a:e notifications',
 				'php occ a:e testing',
 				'php occ a:l',
 				'php occ config:system:set trusted_domains 1 --value=federated',
