@@ -19,7 +19,7 @@ class ItemTest extends TestBase {
 
 	protected $view;
 
-	public static function setUpBeforeClass() {
+	public static function setUpBeforeClass(): void {
 		parent::setUpBeforeClass();
 		\OC_User::clearBackends();
 		\OC_User::useBackend(new \Test\Util\User\Dummy());
@@ -53,7 +53,7 @@ class ItemTest extends TestBase {
 		$this->assertEquals(self::CONTENT, $chunk);
 	}
 
-	public static function tearDownAfterClass() {
+	public static function tearDownAfterClass(): void {
 		parent::tearDownAfterClass();
 		\OC_Util::tearDownFS();
 		\OC::$server->getUserManager()->get(self::UID)->delete();
