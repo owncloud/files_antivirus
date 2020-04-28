@@ -23,7 +23,7 @@ class ChunkUploadTest extends TestBase {
 
 	protected $isWrapperRegistered = false;
 
-	public static function setUpBeforeClass() {
+	public static function setUpBeforeClass(): void {
 		parent::setUpBeforeClass();
 		\OC_User::clearBackends();
 		\OC_User::useBackend(new Dummy());
@@ -89,7 +89,7 @@ class ChunkUploadTest extends TestBase {
 		}
 	}
 
-	public static function tearDownAfterClass() {
+	public static function tearDownAfterClass(): void {
 		parent::tearDownAfterClass();
 		Filesystem::getLoader()->removeStorageWrapper('oc_avir_test_chunk');
 		\OC::$server->getUserManager()->get(self::UID)->delete();

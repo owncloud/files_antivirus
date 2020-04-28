@@ -33,7 +33,7 @@ class AvirWrapperTest extends TestBase {
 	 */
 	protected $skeletonDirectory;
 
-	public static function setUpBeforeClass() {
+	public static function setUpBeforeClass(): void {
 		parent::setUpBeforeClass();
 		\OC_User::clearBackends();
 		\OC_User::useBackend(new Dummy());
@@ -122,7 +122,7 @@ class AvirWrapperTest extends TestBase {
 		return $wrapper;
 	}
 
-	public static function tearDownAfterClass() {
+	public static function tearDownAfterClass(): void {
 		parent::tearDownAfterClass();
 		\OC::$server->getUserManager()->get(self::UID)->delete();
 		\OC_User::clearBackends();
