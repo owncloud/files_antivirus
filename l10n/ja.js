@@ -7,6 +7,7 @@ OC.L10N.register(
     "Scanner exit status" : "スキャナーの終了ステータス",
     "Scanner output" : "スキャナーの出力",
     "Saving..." : "保存中...",
+    "Test scan was unsuccessful. Please recheck antivirus settings." : "テストスキャンに失敗しました。アンチウイルスの設定を再確認してください。",
     "<strong>Infected file</strong> has been <strong>found</strong>" : "<strong>ウィルスに感染しているファイル</strong> が <strong>発見されました。</strong>",
     "File %s is infected with %s" : "ファイル %s は %s に感染しています",
     "It is going to be deleted" : "削除されます",
