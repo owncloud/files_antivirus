@@ -84,7 +84,7 @@ config = {
 					'pull': 'always',
 					'commands': [
 						'cd /var/www/owncloud/server',
-						'wait-for-it -t 300 clamav:3310',
+						'wait-for-it -t 600 clamav:3310',
 						'php occ config:app:set --value "clamav" files_antivirus av_host',
 						'php occ config:app:set --value "daemon" files_antivirus av_mode',
 						'php occ config:app:set --value "3310" files_antivirus av_port',
@@ -118,7 +118,7 @@ config = {
 					'pull': 'always',
 					'commands': [
 						'cd /var/www/owncloud/server',
-						'wait-for-it -t 300 clamav:3310',
+						'wait-for-it -t 600 clamav:3310',
 						'php occ config:app:set --value "clamav" files_antivirus av_host',
 						'php occ config:app:set --value "daemon" files_antivirus av_mode',
 						'php occ config:app:set --value "3310" files_antivirus av_port',
@@ -233,7 +233,7 @@ config = {
 					'pull': 'always',
 					'commands': [
 						'cd /var/www/owncloud/server',
-						'wait-for-it -t 300 clamav:3310',
+						'wait-for-it -t 600 clamav:3310',
 						'php occ config:app:set --value "clamav" files_antivirus av_host',
 						'php occ config:app:set --value "daemon" files_antivirus av_mode',
 						'php occ config:app:set --value "3310" files_antivirus av_port',
