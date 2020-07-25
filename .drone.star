@@ -94,7 +94,7 @@ config = {
 			'extraServices': [
 				{
 					'name': 'clamav',
-					'image': 'jankaritechnepal/clamavd',
+					'image': 'owncloudci/clamavd',
 					'pull': 'always',
 				},
 			]
@@ -128,7 +128,7 @@ config = {
 			'extraServices': [
 				{
 					'name': 'clamav',
-					'image': 'jankaritechnepal/clamavd',
+					'image': 'owncloudci/clamavd',
 					'pull': 'always',
 				},
 			]
@@ -243,7 +243,7 @@ config = {
 			'extraServices': [
 				{
 					'name': 'clamav',
-					'image': 'jankaritechnepal/clamavd',
+					'image': 'owncloudci/clamavd',
 					'pull': 'always',
 				}
 			]
