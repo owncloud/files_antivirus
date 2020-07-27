@@ -252,14 +252,19 @@ class AvirWrapper extends Wrapper {
 		return $matchesLimit;
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	public function unlink($path) {
-		$ret = $this->getWrapperStorage()->unlink($path);
+		$storage = $this->getWrapperStorage();
+		$ret = $storage->unlink($path);
 		if (!$ret) {
-			$storage = $this->getWrapperStorage();
 			while ($storage instanceof Wrapper) {
 				$storage = $storage->getWrapperStorage();
 			}
-			$storage->unlink($path);
+			$ret = $storage->unlink($path);
 		}
+
+		return $ret;
 	}
 }

@@ -8,7 +8,9 @@
 
 namespace OCA\Files_Antivirus\Tests\unit;
 
+use OC\Files\Storage\Storage;
 use OC\Files\Storage\Temporary;
+use OC\Files\Storage\Wrapper\Wrapper;
 use OCA\Files_Antivirus\AvirWrapper;
 use OCA\Files_Antivirus\RequestHelper;
 use OCA\Files_Antivirus\Tests\util\DummyClam;
@@ -126,6 +128,25 @@ class AvirWrapperTest extends TestBase {
 		parent::tearDownAfterClass();
 		\OC::$server->getUserManager()->get(self::UID)->delete();
 		\OC_User::clearBackends();
+	}
+
+	public function testUnlink() {
+		$storage = $this->createMock(Storage::class);
+		$storage->expects($this->once())
+			->method('unlink')
+			->willReturn(true);
+		$wrapper = $this->createMock(Wrapper::class);
+		$wrapper->method('unlink')->willReturn(false);
+		$wrapper->method('getWrapperStorage')->willReturn($storage);
+		$avirWrapper = $this->getMockBuilder(AvirWrapper::class)
+			->disableOriginalConstructor()
+			->setMethods(['getWrapperStorage'])
+		->getMock();
+		$avirWrapper->method('getWrapperStorage')
+			->willReturn($wrapper);
+
+		$result = $avirWrapper->unlink('/some/infected/path');
+		$this->assertTrue($result);
 	}
 
 	protected function tearDown(): void {
