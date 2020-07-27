@@ -44,12 +44,12 @@ class AvirWrapper extends Wrapper {
 	 * @var \OCA\Files_Antivirus\ScannerFactory
 	 */
 	protected $scannerFactory;
-	
+
 	/**
 	 * @var IL10N
 	 */
 	protected $l10n;
-	
+
 	/**
 	 * @var ILogger;
 	 */
@@ -104,7 +104,7 @@ class AvirWrapper extends Wrapper {
 
 		return false;
 	}
-	
+
 	/**
 	 * Asynchronously scan data that are written to the file
 	 *
@@ -200,7 +200,7 @@ class AvirWrapper extends Wrapper {
 			);
 		}
 	}
-	
+
 	/**
 	 * Checks whether passed mode is suitable for writing
 	 *
@@ -250,5 +250,16 @@ class AvirWrapper extends Wrapper {
 			]
 		);
 		return $matchesLimit;
+	}
+
+	public function unlink($path) {
+		$ret = $this->getWrapperStorage()->unlink($path);
+		if (!$ret) {
+			$storage = $this->getWrapperStorage();
+			while ($storage instanceof Wrapper) {
+				$storage = $storage->getWrapperStorage();
+			}
+			$storage->unlink($path);
+		}
 	}
 }
