@@ -37,6 +37,7 @@ OC.L10N.register(
     "Stream Length" : "串流長度",
     "ClamAV StreamMaxLength value in bytes" : "ClamAV StreamMaxLength值以字節為單位",
     "bytes" : "個字節",
+    "File size limit, -1 means no limit" : "檔案容量極限，-1表示沒有極限",
     "Only log" : "僅做記錄",
     "Delete file" : "刪除檔案",
     "Save" : "儲存",
