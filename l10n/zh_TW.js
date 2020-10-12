@@ -39,6 +39,7 @@ OC.L10N.register(
     "bytes" : "個字節",
     "File size limit, -1 means no limit" : "檔案容量極限，-1表示沒有極限",
     "File size limit in bytes, -1 means no limit" : "檔案容量限制以字節為單位，-1表示無限制",
+    "When infected files were found during a background scan" : "在後台掃描期間發現受感染文件時",
     "Only log" : "僅做記錄",
     "Delete file" : "刪除檔案",
     "Save" : "儲存",
