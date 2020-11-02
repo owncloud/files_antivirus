@@ -7,10 +7,10 @@ When talking about file sharing, one aspect is key: Security. But security not o
 The ownCloud Anti-Virus application forwards files that are being uploaded to the ownCloud server to an external malware scanning engine before they are written to the storage. When a file is identified to be malicious, it can either be logged or be prevented from being uploaded to the server to ensure that files in ownCloud are free of malware.
 Additionally more sophisticated rules may be specified in 'Advanced' mode. ownCloud administrators can find the configuration options in the 'Security' settings section.
 
-ClamAV is the officially supported virus scanner available for use with ownCloud. It detects all forms of malware including trojans, viruses, and worms and scans compressed files, executables, image files, PDF, as well as many other file types. 
-The ownCloud Anti-Virus application relies on the underlying ClamAV virus scanning engine, which the admin points ownCloud to when configuring the application. The ClamAV virus definitions should always be kept up to date in order to provide effective protection. 
+ClamAV is the officially supported virus scanner available for use with ownCloud. It detects all forms of malware including trojans, viruses, and worms and scans compressed files, executables, image files, PDF, as well as many other file types.
+The ownCloud Anti-Virus application relies on the underlying ClamAV virus scanning engine, which the admin points ownCloud to when configuring the application. The ClamAV virus definitions should always be kept up to date in order to provide effective protection.
 
-Please note that enabling this application will impact system performance as additional processing is required for every file upload. 
+Please note that enabling this application will impact system performance as additional processing is required for every file upload.
 More information is available in the Anti-Virus documentation.
 	</description>
 	<bugs>https://github.com/owncloud/files_antivirus/issues</bugs>
@@ -32,7 +32,7 @@ More information is available in the Anti-Virus documentation.
 	<use-migrations>true</use-migrations>
 	<namespace>Files_Antivirus</namespace>
 	<dependencies>
-		<owncloud min-version="10.2.0" max-version="10" />
+		<owncloud min-version="10.3" max-version="10" />
 	</dependencies>
 	<settings>
 		<admin>OCA\Files_Antivirus\AdminPanel</admin>
