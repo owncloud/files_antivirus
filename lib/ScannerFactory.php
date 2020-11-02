@@ -20,22 +20,22 @@ class ScannerFactory {
 	// We split it in two parts in order to prevent reports from av scanners
 	const EICAR_PART_1 = 'X5O!P%@AP[4\PZX54(P^)7CC)7}$';
 	const EICAR_PART_2 = 'EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*';
-	
+
 	/**
 	 * @var \OCA\Files_Antivirus\AppConfig
 	 */
 	protected $appConfig;
-	
+
 	/**
 	 * @var ILogger;
 	 */
 	protected $logger;
-	
+
 	/**
 	 * @var string
 	 */
 	protected $scannerClass;
-	
+
 	public function __construct(AppConfig $appConfig, ILogger $logger) {
 		$this->appConfig = $appConfig;
 		$this->logger = $logger;
@@ -54,6 +54,11 @@ class ScannerFactory {
 	 * @throws InitException
 	 */
 	protected function getScannerClass() {
+		$class = $this->appConfig->getExternalScannerClass();
+		if ($class) {
+			$this->scannerClass = $class;
+			return;
+		}
 		switch ($this->appConfig->getAvMode()) {
 			case 'daemon':
 				$this->scannerClass = 'OCA\Files_Antivirus\Scanner\Daemon';
@@ -73,7 +78,7 @@ class ScannerFactory {
 				);
 		}
 	}
-	
+
 	/**
 	 * Produce a scanner instance
 	 *

@@ -14,7 +14,7 @@
 namespace OCA\Files_Antivirus;
 
 class Status {
-	
+
 	/*
 	 *  The file was not checked (e.g. because the AV daemon wasn't running).
 	 */
@@ -29,24 +29,38 @@ class Status {
 	 *  The file was checked and found to be infected.
 	 */
 	const SCANRESULT_INFECTED = 1;
-	
+
 	/*
 	 * Should be SCANRESULT_UNCHECKED | SCANRESULT_INFECTED | SCANRESULT_CLEAN
 	 */
 	protected $numericStatus;
-	
+
 	/*
 	 * Virus name or error message
 	 */
 	protected $details = "";
-	
+
 	protected $ruleMapper;
-	
+
 	public function __construct() {
 		$this->numericStatus = self::SCANRESULT_UNCHECKED;
 		$this->ruleMapper = new Db\RuleMapper(\OC::$server->getDb());
 	}
-	
+
+	/**
+	 * Creates an instance of class Status with given status code and optional detailed information.
+	 * External scanner implementations are using this to create a status.
+	 * @param int $status
+	 * @param string $details
+	 * @return static
+	 */
+	public static function create(int $status, string $details = '') {
+		$s = new static();
+		$s->numericStatus = $status;
+		$s->details = $details;
+		return $s;
+	}
+
 	/**
 	 * Get scan status as integer
 	 *
@@ -55,7 +69,7 @@ class Status {
 	public function getNumericStatus() {
 		return $this->numericStatus;
 	}
-	
+
 	/**
 	 * Get scan status as string
 	 *
@@ -64,7 +78,7 @@ class Status {
 	public function getDetails() {
 		return $this->details;
 	}
-	
+
 	/**
 	 * @param string $rawResponse
 	 * @param integer $result
@@ -83,7 +97,7 @@ class Status {
 				);
 				return;
 			}
-			
+
 			$isMatched = false;
 			foreach ($allRules as $rule) {
 				if (\preg_match($rule->getMatch(), $rawResponse, $matches)) {
@@ -97,7 +111,7 @@ class Status {
 					break;
 				}
 			}
-			
+
 			if (!$isMatched) {
 				$this->numericStatus = self::SCANRESULT_UNCHECKED;
 				$this->details = 'No matching rules. Please check antivirus rules.';
@@ -108,19 +122,19 @@ class Status {
 				$this->numericStatus = \intval($scanStatus[0]->getStatus());
 				$this->details = $scanStatus[0]->getDescription();
 			}
-			
+
 			switch ($this->numericStatus) {
 				case self::SCANRESULT_INFECTED:
 					$report = [];
 					$rawResponse = \explode("\n", $rawResponse);
-					
+
 					foreach ($rawResponse as $line) {
 						if (\preg_match('/.*: (.*) FOUND\s*$/', $line, $matches)) {
 							$report[] = $matches[1];
 						}
 					}
 					$this->details = \implode(', ', $report);
-					
+
 					break;
 				case self::SCANRESULT_UNCHECKED:
 					if (!$this->details) {
@@ -129,21 +143,21 @@ class Status {
 			}
 		}
 	}
-	
+
 	protected function getResponseRules() {
 		$infectedRules = $this->ruleMapper->findAllMatchedByStatus(self::SCANRESULT_INFECTED);
 		$uncheckedRules = $this->ruleMapper->findAllMatchedByStatus(self::SCANRESULT_UNCHECKED);
 		$cleanRules = $this->ruleMapper->findAllMatchedByStatus(self::SCANRESULT_CLEAN);
-		
+
 		$infectedRules = $infectedRules ? $infectedRules : [];
 		$uncheckedRules = $uncheckedRules ? $uncheckedRules : [];
 		$cleanRules = $cleanRules ? $cleanRules : [];
-		
+
 		// order: clean, infected, try to guess error
 		$allRules = \array_merge($cleanRules, $infectedRules, $uncheckedRules);
 		return $allRules;
 	}
-	
+
 	public function dispatch($item, $isBackground = false) {
 		switch ($this->getNumericStatus()) {
 			case self::SCANRESULT_UNCHECKED:
