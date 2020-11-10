@@ -15,19 +15,21 @@ use OCA\Files_Antivirus\Tests\unit\TestBase;
 use OCA\Files_Antivirus\Controller\SettingsController;
 use OCP\IRequest;
 use OCP\IL10N;
+use PHPUnit\Framework\MockObject\MockObject;
 
-class AvirWrapperTest extends TestBase {
+class SettingsControllerTest extends TestBase {
 
-	/** @var IRequest | \PHPUnit\Framework\MockObject\MockObject */
+	/** @var IRequest | MockObject
+	 */
 	protected $request;
 
-	/** @var IL10N | \PHPUnit\Framework\MockObject\MockObject */
+	/** @var IL10N | MockObject */
 	protected $l10n;
 
-	/** @var AppConfig | \PHPUnit\Framework\MockObject\MockObject */
+	/** @var AppConfig | MockObject */
 	protected $config;
 
-	/** @var ScannerFactory | \PHPUnit\Framework\MockObject\MockObject */
+	/** @var ScannerFactory | MockObject */
 	protected $scannerFactory;
 
 	public function setUp(): void {
@@ -42,7 +44,7 @@ class AvirWrapperTest extends TestBase {
 
 		$this->config = $this->getMockBuilder(AppConfig::class)
 			->disableOriginalConstructor()
-			->setMethods(['setter', 'getAppValue'])
+			->setMethods(['setter', 'getAppValue', 'getExternalScannerClass'])
 			->getMock();
 
 		$this->scannerFactory = $this->getMockBuilder(ScannerFactory::class)
@@ -50,8 +52,8 @@ class AvirWrapperTest extends TestBase {
 			->getMock();
 	}
 
-	public function testSaveExecutable() {
-		$this->config->expects($this->atLeast(1))
+	public function testSaveExecutable(): void {
+		$this->config->expects(self::atLeast(1))
 			->method('setter')
 			->withConsecutive(
 				['av_mode', ['executable']],
@@ -74,8 +76,8 @@ class AvirWrapperTest extends TestBase {
 		);
 	}
 
-	public function testSaveSocket() {
-		$this->config->expects($this->atLeast(1))
+	public function testSaveSocket(): void {
+		$this->config->expects(self::atLeast(1))
 			->method('setter')
 			->withConsecutive(
 				['av_mode', ['socket']],
@@ -97,12 +99,12 @@ class AvirWrapperTest extends TestBase {
 		);
 	}
 
-	public function testSaveDaemon() {
+	public function testSaveDaemon(): void {
 		$avirHost = \getenv('AVIR_HOST');
 		if ($avirHost === false) {
 			$avirHost = '127.0.0.1';
 		}
-		$this->config->expects($this->atLeast(1))
+		$this->config->expects(self::atLeast(1))
 			->method('setter')
 			->withConsecutive(
 				['av_mode', ['daemon']],
