@@ -74,7 +74,22 @@ class AppConfig {
 		// and \OC_Helper::streamCopy
 		return 8192;
 	}
-	
+
+	/**
+	 * Returns the class of an external scanner implementation.
+	 * System config key 'files-antivirus.scanner-class' defines the class.
+	 * @return mixed|string
+	 */
+	public function getExternalScannerClass() {
+		$cls = $this->config->getSystemValue('files-antivirus.scanner-class', null);
+		if ($cls) {
+			if (!\class_exists($cls)) {
+				throw new \RuntimeException("Unknown scanner class $cls");
+			}
+		}
+		return $cls;
+	}
+
 	/**
 	 * Get full commandline
 	 *
@@ -82,7 +97,7 @@ class AppConfig {
 	 */
 	public function getCmdline() {
 		$avCmdOptions = $this->getAvCmdOptions();
-		
+
 		$shellArgs = [];
 		if ($avCmdOptions) {
 			$shellArgs = \explode(',', $avCmdOptions);
@@ -93,14 +108,14 @@ class AppConfig {
 				$shellArgs
 			);
 		}
-		
+
 		$preparedArgs = '';
 		if (\count($shellArgs)) {
 			$preparedArgs = \implode(' ', $shellArgs);
 		}
 		return $preparedArgs;
 	}
-	
+
 	/**
 	 * Get all setting values as an array
 	 *
@@ -110,9 +125,11 @@ class AppConfig {
 		$keys = \array_keys($this->defaults);
 		$values = \array_map([$this, 'getAppValue'], $keys);
 		$preparedKeys = \array_map([$this, 'camelCase'], $keys);
-		return \array_combine($preparedKeys, $values);
+		$data = \array_combine($preparedKeys, $values);
+		$data['files-antivirus.scanner-class'] = $this->getExternalScannerClass();
+		return $data;
 	}
-	
+
 	/**
 	 * Get a value by key
 	 *
@@ -139,7 +156,7 @@ class AppConfig {
 	public function setAppValue($key, $value) {
 		return $this->config->setAppValue($this->appName, $key, $value);
 	}
-	
+
 	/**
 	 * Set a value with magic __call invocation
 	 *
@@ -172,7 +189,7 @@ class AppConfig {
 			throw new \BadFunctionCallException($key . ' is not a valid key');
 		}
 	}
-	
+
 	/**
 	 * Translates property_name into propertyName
 	 *
@@ -186,7 +203,7 @@ class AppConfig {
 		$camelCase = \lcfirst($ucFirst);
 		return $camelCase;
 	}
-	
+
 	/**
 	 * Does all the someConfig to some_config magic
 	 *
@@ -208,7 +225,7 @@ class AppConfig {
 
 		return $column;
 	}
-	
+
 	/**
 	 * Get/set an option value by calling getSomeOption method
 	 *
