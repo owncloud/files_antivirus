@@ -51,6 +51,7 @@ OC.L10N.register(
     "Scanner exit status or signature to search" : "Gjendje daljeje kontrolluesi ose nënshkrim për t’u kërkuar",
     "Description" : "Përshkrim",
     "Mark as" : "Shënoje si",
-    "Add a rule" : "Shtoni rregull"
+    "Add a rule" : "Shtoni rregull",
+    "An external scanner implementation is used. Please lookup in the docs on how to configure %s" : "Është përdorur një sendërtim i jashtëm kontrollesh. Ju lutemi, shihni te dokumentimi si të formësohet %s"
 },
 "nplurals=2; plural=(n != 1);");
