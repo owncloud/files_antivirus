@@ -51,6 +51,7 @@ OC.L10N.register(
     "Scanner exit status or signature to search" : "Scanner exit statusหรือค้นหาลายเซ็น",
     "Description" : "คำอธิบาย",
     "Mark as" : "ทำเครื่องหมายเป็น",
-    "Add a rule" : "เพิ่มกฎ"
+    "Add a rule" : "เพิ่มกฎ",
+    "An external scanner implementation is used. Please lookup in the docs on how to configure %s" : "ใช้การใช้งานสแกนเนอร์ภายนอก โปรดค้นหาในเอกสารเกี่ยวกับวิธีกำหนดค่า %s"
 },
 "nplurals=1; plural=0;");
