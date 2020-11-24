@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 ## [unreleased]
 
+## [0.16.0] - 202?-??-??
+
+### Added
+
+- Support for external scanner classes for e.g. ICAP integration.
+
+
 ## [0.15.2] - 2020-07-27
 
 ### Fixed
