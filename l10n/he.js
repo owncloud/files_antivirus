@@ -51,6 +51,7 @@ OC.L10N.register(
     "Scanner exit status or signature to search" : "סטטוס יציאת סורק או חתימה לחיפוש",
     "Description" : "תיאור",
     "Mark as" : "סמן כ-",
-    "Add a rule" : "הוספת חוק"
+    "Add a rule" : "הוספת חוק",
+    "An external scanner implementation is used. Please lookup in the docs on how to configure %s" : "נעשה שימוש ביישום סורק חיצוני. אנא בדוק במסמכים איך להגדיר אותו %s"
 },
 "nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n == 2 && n % 1 == 0) ? 1: (n % 10 == 0 && n % 1 == 0 && n > 10) ? 2 : 3;");
