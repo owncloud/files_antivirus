@@ -55,3 +55,6 @@ nbproject
   
 # Mac OS
 .DS_Store
+
+# SonarCloud scanner
+.scannerwork
