@@ -45,7 +45,7 @@ OC.L10N.register(
     "Save" : "Ruaje",
     "Advanced" : "Të mëtejshme",
     "Rules" : "Rregulla",
-    "Clear All" : "Pastroji Krejt",
+    "Clear All" : "Spastroji Krejt",
     "Reset to defaults" : "Riktheje te parazgjedhjet",
     "Match by" : "Përputhje sipas",
     "Scanner exit status or signature to search" : "Gjendje daljeje kontrolluesi ose nënshkrim për t’u kërkuar",
