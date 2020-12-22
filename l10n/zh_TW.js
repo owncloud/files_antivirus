@@ -51,6 +51,7 @@ OC.L10N.register(
     "Scanner exit status or signature to search" : "掃描儀退出狀態或要搜尋的簽章",
     "Description" : "描述",
     "Mark as" : "標記為",
-    "Add a rule" : "添加規則"
+    "Add a rule" : "添加規則",
+    "An external scanner implementation is used. Please lookup in the docs on how to configure %s" : "使用外部掃描儀實施。 請在文檔中查找有關如何配置的信息%s"
 },
 "nplurals=1; plural=0;");
