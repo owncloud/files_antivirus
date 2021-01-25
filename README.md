@@ -10,9 +10,9 @@ remove the file if it's infected.
 ## QA metrics on master branch:
 
 [![Build Status](https://drone.owncloud.com/api/badges/owncloud/files_antivirus/status.svg?branch=master)](https://drone.owncloud.com/owncloud/files_antivirus)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/owncloud/files_antivirus/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/owncloud/files_antivirus/?branch=master)
-[![Code Coverage](https://scrutinizer-ci.com/g/owncloud/files_antivirus/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/owncloud/files_antivirus/?branch=master)
-
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=owncloud_files_antivirus&metric=alert_status)](https://sonarcloud.io/dashboard?id=owncloud_files_antivirus)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=owncloud_files_antivirus&metric=security_rating)](https://sonarcloud.io/dashboard?id=owncloud_files_antivirus)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=owncloud_files_antivirus&metric=coverage)](https://sonarcloud.io/dashboard?id=owncloud_files_antivirus)
 
 ## Status
 
