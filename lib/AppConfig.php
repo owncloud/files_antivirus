@@ -7,7 +7,7 @@
  *
  * @author Viktar Dubiniuk <dubiniuk@owncloud.com>
  *
- * @copyright Viktar Dubiniuk 2015-2018
+ * @copyright Viktar Dubiniuk 2021
  * @license AGPL-3.0
  */
 
@@ -54,8 +54,8 @@ class AppConfig {
 	private $defaults = [
 		'av_mode' => 'executable',
 		'av_socket' => '/var/run/clamav/clamd.ctl',
-		'av_host' => '',
-		'av_port' => '',
+		'av_host' => 'localhost',
+		'av_port' => '3310',
 		'av_cmd_options' => '',
 		'av_path' => '/usr/bin/clamscan',
 		'av_max_file_size' => -1,
