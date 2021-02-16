@@ -59,8 +59,7 @@ config = {
 			],
 			'databases': [
 				'mariadb:10.2',
-				'mysql:5.5',
-				'mysql:5.7',
+				'mysql:8.0',
 				'postgres:9.4',
 				'oracle'
 			],
@@ -138,7 +137,7 @@ config = {
 				'apiAll': 'core-apiAll',
 			},
 			'databases': [
-				'mysql:5.7',
+				'mysql:8.0',
 			],
 			'servers': [
 				'daily-master-qa',
@@ -158,7 +157,7 @@ config = {
 				'cliAll': 'core-cliAll',
 			},
 			'databases': [
-				'mysql:5.7',
+				'mysql:8.0',
 			],
 			'servers': [
 				'daily-master-qa',
@@ -178,7 +177,7 @@ config = {
 				'webUIall': 'core-webUI',
 			},
 			'databases': [
-				'mysql:5.7',
+				'mysql:8.0',
 			],
 			'servers': [
 				'daily-master-qa',
