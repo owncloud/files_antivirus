@@ -2,7 +2,7 @@
 Feature: log activities of blocked files
 
   Background:
-    Given these users have been created with skeleton files:
+    Given these users have been created without skeleton files:
       | username |
       | Brian    |
     And user "Brian" has logged in using the webUI
