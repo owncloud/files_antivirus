@@ -253,7 +253,12 @@ class AvirWrapper extends Wrapper {
 	}
 
 	/**
-	 * @inheritDoc
+	 * Objectstore implementations do no use part files, so PermissionsMask wrapper
+	 * cannot delete the infected file. To bypass this, antivirus will ignore
+	 * all wrappers and delete directly on the physical storage.
+	 *
+	 * @param string $path
+	 * @return bool
 	 */
 	public function unlink($path) {
 		$storage = $this->getWrapperStorage();
