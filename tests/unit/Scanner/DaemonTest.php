@@ -9,99 +9,92 @@
 namespace OCA\Files_Antivirus\Tests\unit\Scanner;
 
 use OCA\Files_Antivirus\AppConfig;
+use OCA\Files_Antivirus\Scanner\InitException;
 use OCA\Files_Antivirus\ScannerFactory;
 use OCA\Files_Antivirus\Tests\unit\TestBase;
+use OCP\IL10N;
 
 class DaemonTest extends TestBase {
-	/**
-	 */
-	public function testWrongAntivirusHost() {
-		$this->expectException(\OCA\Files_Antivirus\Scanner\InitException::class);
+	public function testWrongAntivirusHost(): void {
+		$this->expectException(InitException::class);
 
 		$config = $this->getMockBuilder(AppConfig::class)
 			->disableOriginalConstructor()
 			->getMock()
 		;
 		$config->method('__call')
-			->will($this->returnCallback(
-				function ($methodName) {
-					switch ($methodName) {
-						case 'getAvHost':
-							return  'localhost';
-						case 'getAvPort':
-							return  '9999';
-						case 'getAvMode':
-							return 'daemon';
-					}
+			->willReturnCallback(function ($methodName) {
+				switch ($methodName) {
+					case 'getAvHost':
+						return 'localhost';
+					case 'getAvPort':
+						return '9999';
+					case 'getAvMode':
+						return 'daemon';
 				}
-			))
+			})
 		;
 		$scannerFactory = new ScannerFactory(
 			$config,
-			$this->container->query('Logger')
+			$this->container->query('Logger'),
+			$this->container->query(IL10N::class)
 		);
 
 		$scanner = $scannerFactory->getScanner();
 		$scanner->initScanner();
 	}
 
-	/**
-	 */
-	public function testEmptyAntivirusHost() {
-		$this->expectException(\OCA\Files_Antivirus\Scanner\InitException::class);
+	public function testEmptyAntivirusHost(): void {
+		$this->expectException(InitException::class);
 
 		$config = $this->getMockBuilder(AppConfig::class)
 			->disableOriginalConstructor()
 			->getMock()
 		;
 		$config->method('__call')
-			->will($this->returnCallback(
-				function ($methodName) {
-					switch ($methodName) {
-						case 'getAvHost':
-							return  '';
-						case 'getAvPort':
-							return  '9999';
-						case 'getAvMode':
-							return 'daemon';
-					}
+			->willReturnCallback(function ($methodName) {
+				switch ($methodName) {
+					case 'getAvHost':
+						return '';
+					case 'getAvPort':
+						return '9999';
+					case 'getAvMode':
+						return 'daemon';
 				}
-			))
+			})
 		;
 		$scannerFactory = new ScannerFactory(
 			$config,
-			$this->container->query('Logger')
+			$this->container->query('Logger'),
+			$this->container->query(IL10N::class)
 		);
 
 		$scannerFactory->getScanner();
 	}
 
-	/**
-	 */
-	public function testEmptyAntivirusPort() {
-		$this->expectException(\OCA\Files_Antivirus\Scanner\InitException::class);
+	public function testEmptyAntivirusPort(): void {
+		$this->expectException(InitException::class);
 
 		$config = $this->getMockBuilder(AppConfig::class)
 			->disableOriginalConstructor()
 			->getMock()
 		;
 		$config->method('__call')
-			->will($this->returnCallback(
-				function ($methodName) {
-					switch ($methodName) {
-						case 'getAvHost':
-							return  'localhost';
-						case 'getAvPort':
-							return  '';
-						case 'getAvMode':
-							return 'daemon';
-					}
+			->willReturnCallback(function ($methodName) {
+				switch ($methodName) {
+					case 'getAvHost':
+						return 'localhost';
+					case 'getAvPort':
+						return '';
+					case 'getAvMode':
+						return 'daemon';
 				}
-			))
+			})
 		;
 		$scannerFactory = new ScannerFactory(
 			$config,
-			$this->container->query('Logger')
+			$this->container->query('Logger'),
+			$this->container->query(IL10N::class)
 		);
 
 		$scannerFactory->getScanner();

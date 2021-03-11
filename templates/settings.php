@@ -1,6 +1,8 @@
 <?php
 style('files_antivirus', 'settings');
 script('files_antivirus', 'settings');
+/** @var \OCP\IL10N $l */
+/** @var array $_ */
 ?>
 <?php if ($_['files-antivirus.scanner-class'] === null) { ?>
 <div class="section section-antivirus">
@@ -10,7 +12,12 @@ script('files_antivirus', 'settings');
 			<p class="av_mode">
 				<label for="av_mode"><?php p($l->t('Mode'));?></label>
 				<select id="av_mode" name="avMode">
-					<?php print_unescaped(html_select_options(['executable' => $l->t('Executable'), 'daemon' => $l->t('Daemon'), 'socket' => $l->t('Daemon (Socket)')], $_['avMode'])) ?>
+					<?php print_unescaped(html_select_options([
+						'executable' => $l->t('Executable'),
+						'daemon' => $l->t('Daemon'),
+						'socket' => $l->t('Daemon (Socket)'),
+						'icap' => $l->t('Daemon (ICAP)'),
+					], $_['avMode'])) ?>
 				</select>
 			</p>
 		    <p class="av_socket">
@@ -48,6 +55,14 @@ script('files_antivirus', 'settings');
 					   title="<?php p($l->t('File size limit in bytes, -1 means no limit'));?>"
 				/>
 				<label for="av_max_file_size" class="a-left"><?php p($l->t('bytes'))?></label>
+			</p>
+			<p class="av_req_service">
+				<label for="av_request_service"><?php p($l->t('ICAP request service. Possible values: "avscan" for clamav or "req" for Kaspersky ScanEngine'));?></label>
+				<input type="text" id="av_request_service" name="avRequestService" value="<?php p($_['avRequestService']); ?>" />
+			</p>
+			<p class="av_response_header">
+				<label for="av_response_header"><?php p($l->t('ICAP response header holding the virus information. Possible values: X-Virus-ID or X-Infection-Found'));?></label>
+				<input type="text" id="av_response_header" name="avResponseHeader" value="<?php p($_['avResponseHeader']); ?>" />
 			</p>
 			<p class="infected_action">
 				<label for="av_infected_action"><?php p($l->t('When infected files were found during a background scan'));?></label>

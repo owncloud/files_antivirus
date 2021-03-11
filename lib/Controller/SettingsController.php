@@ -50,6 +50,7 @@ class SettingsController extends Controller {
 	public function __construct(IRequest $request,
 		AppConfig $appConfig, ScannerFactory $scannerFactory, IL10N $l10n
 	) {
+		parent::__construct('files_antivirus', $request);
 		$this->settings = $appConfig;
 		$this->scannerFactory = $scannerFactory;
 		$this->l10n = $l10n;
@@ -77,11 +78,14 @@ class SettingsController extends Controller {
 	 * @param string $avInfectedAction - action performed on infected files
 	 * @param int $avStreamMaxLength - reopen socket after bytes
 	 * @param int $avMaxFileSize - file size limit
+	 * @param string $avRequestService
+	 * @param string $avResponseHeader
 	 *
 	 * @return JSONResponse
 	 */
 	public function save($avMode, $avSocket, $avHost, $avPort,
-		$avCmdOptions, $avPath, $avInfectedAction, $avStreamMaxLength, $avMaxFileSize
+		$avCmdOptions, $avPath, $avInfectedAction, $avStreamMaxLength,
+						 $avMaxFileSize, $avRequestService, $avResponseHeader
 	) {
 		$this->settings->setAvMode($avMode);
 		if ($avMode === 'executable') {
@@ -92,15 +96,18 @@ class SettingsController extends Controller {
 			$this->settings->setAvHost($avHost);
 		} elseif ($avMode === 'socket') {
 			$this->settings->setAvSocket($avSocket);
+		} elseif ($avMode === 'icap') {
+			$this->settings->setAvPort($avPort);
+			$this->settings->setAvHost($avHost);
+			$this->settings->setAvRequestService($avRequestService);
+			$this->settings->setAvResponseHeader($avResponseHeader);
 		}
 
 		$this->settings->setAvInfectedAction($avInfectedAction);
 		$this->settings->setAvStreamMaxLength($avStreamMaxLength);
 		$this->settings->setAvMaxFileSize($avMaxFileSize);
 
-		$connectionStatus = \intval(
-			$this->scannerFactory->testConnection($this->settings)
-		);
+		$connectionStatus = (int)$this->scannerFactory->testConnection($this->settings);
 
 		return new JSONResponse(
 			['data' =>

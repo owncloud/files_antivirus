@@ -14,8 +14,7 @@ use OCA\Files_Antivirus\Tests\unit\Mock\Config as ConfigMock;
 use OCA\Files_Antivirus\Tests\unit\Mock\ScannerFactory as ScannerMock;
 use OCA\Files_Antivirus\Tests\unit\TestBase;
 use Doctrine\DBAL\Driver\Statement;
-use OCP\Files\IRootFolder;
-use OCP\IUser;
+use OCP\IL10N;
 
 class TaskTest extends TestBase {
 	/** @var  ScannerFactory */
@@ -32,7 +31,8 @@ class TaskTest extends TestBase {
 		}
 		$this->scannerFactory = new ScannerFactory(
 			$this->config,
-			$this->container->query('Logger')
+			$this->container->query('Logger'),
+			$this->container->query(IL10N::class)
 		);
 	}
 	
@@ -57,7 +57,8 @@ class TaskTest extends TestBase {
 	public function testGetFilesForScan() {
 		$scannerFactory = new ScannerMock(
 			new ConfigMock($this->container->query('CoreConfig')),
-			$this->container->query('Logger')
+			$this->container->query('Logger'),
+			$this->container->query(IL10N::class)
 		);
 
 		$cronMock = $this->getMockBuilder(Task::class)
@@ -76,6 +77,6 @@ class TaskTest extends TestBase {
 		$method = $class->getMethod('getFilesForScan');
 		$method->setAccessible(true);
 		$result = $method->invokeArgs($cronMock, []);
-		$this->assertInstanceOf(Statement::class, $result);
+		self::assertInstanceOf(Statement::class, $result);
 	}
 }

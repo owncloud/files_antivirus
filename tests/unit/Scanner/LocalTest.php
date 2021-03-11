@@ -11,13 +11,15 @@ namespace OCA\Files_Antivirus\Tests\unit\Scanner;
 use OCA\Files_Antivirus\AppConfig;
 use OCA\Files_Antivirus\Db\RuleMapper;
 use OCA\Files_Antivirus\Item;
+use OCA\Files_Antivirus\Scanner\InitException;
 use OCA\Files_Antivirus\ScannerFactory;
 use OCA\Files_Antivirus\Status;
 use OCA\Files_Antivirus\Tests\unit\TestBase;
+use OCP\IL10N;
 
 class LocalTest extends TestBase {
-	const TEST_CLEAN_FILENAME = 'foo.txt';
-	const TEST_INFECTED_FILENAME = 'kitten.inf';
+	public const TEST_CLEAN_FILENAME = 'foo.txt';
+	public const TEST_INFECTED_FILENAME = 'kitten.inf';
 
 	protected $ruleMapper;
 	protected $view;
@@ -52,21 +54,22 @@ class LocalTest extends TestBase {
 		}
 		$this->scannerFactory = new ScannerFactory(
 				$this->config,
-				$this->container->query('Logger')
+				$this->container->query('Logger'),
+				$this->container->query(IL10N::class)
 		);
 	}
 
 	/**
 	 */
-	public function testWrongAntivirusPath() {
-		$this->expectException(\OCA\Files_Antivirus\Scanner\InitException::class);
+	public function testWrongAntivirusPath(): void {
+		$this->expectException(InitException::class);
 
 		$config = $this->getMockBuilder(AppConfig::class)
 			->disableOriginalConstructor()
 			->getMock()
 		;
 		$config->method('__call')
-			->will($this->returnCallback(
+			->will(self::returnCallback(
 				function ($methodName) {
 					switch ($methodName) {
 						case 'getAvPath':
@@ -80,26 +83,27 @@ class LocalTest extends TestBase {
 
 		$scannerFactory = new ScannerFactory(
 			$config,
-			$this->container->query('Logger')
+			$this->container->query('Logger'),
+			$this->container->query(IL10N::class)
 		);
 
 		$scannerFactory->getScanner();
 	}
 	
-	public function testCleanFile() {
-		$handle = \fopen($this->getTestDataDirItem('foo.txt'), 'r');
+	public function testCleanFile(): void {
+		$handle = \fopen($this->getTestDataDirItem('foo.txt'), 'rb');
 		$this->view->method('fopen')->willReturn($handle);
-		$this->assertTrue($this->cleanItem->isValid());
+		self::assertTrue($this->cleanItem->isValid());
 		
 		$scanner = $this->scannerFactory->getScanner();
 		
 		$scanner->scan($this->cleanItem);
 		$cleanStatus = $scanner->getStatus();
-		$this->assertInstanceOf('\OCA\Files_Antivirus\Status', $cleanStatus);
-		$this->assertEquals(Status::SCANRESULT_CLEAN, $cleanStatus->getNumericStatus());
+		self::assertInstanceOf('\OCA\Files_Antivirus\Status', $cleanStatus);
+		self::assertEquals(Status::SCANRESULT_CLEAN, $cleanStatus->getNumericStatus());
 	}
 	
-	public function testNotExisting() {
+	public function testNotExisting(): void {
 		$this->expectException('RuntimeException');
 		
 		$fileView = new \OC\Files\View('');
@@ -107,18 +111,18 @@ class LocalTest extends TestBase {
 		$scanner = $this->scannerFactory->getScanner();
 		$scanner->scan($nonExistingItem);
 		$unknownStatus = $scanner->scan($nonExistingItem);
-		$this->assertInstanceOf('\OCA\Files_Antivirus\Status', $unknownStatus);
-		$this->assertEquals(Status::SCANRESULT_UNCHECKED, $unknownStatus->getNumericStatus());
+		self::assertInstanceOf('\OCA\Files_Antivirus\Status', $unknownStatus);
+		self::assertEquals(Status::SCANRESULT_UNCHECKED, $unknownStatus->getNumericStatus());
 	}
 	
-	public function testInfected() {
-		$handle = \fopen($this->getTestDataDirItem('kitten.inf'), 'r');
+	public function testInfected(): void {
+		$handle = \fopen($this->getTestDataDirItem('kitten.inf'), 'rb');
 		$this->view->method('fopen')->willReturn($handle);
-		$this->assertTrue($this->infectedItem->isValid());
+		self::assertTrue($this->infectedItem->isValid());
 		$scanner = $this->scannerFactory->getScanner();
 		$scanner->scan($this->infectedItem);
 		$infectedStatus = $scanner->getStatus();
-		$this->assertInstanceOf('\OCA\Files_Antivirus\Status', $infectedStatus);
-		$this->assertEquals(Status::SCANRESULT_INFECTED, $infectedStatus->getNumericStatus());
+		self::assertInstanceOf('\OCA\Files_Antivirus\Status', $infectedStatus);
+		self::assertEquals(Status::SCANRESULT_INFECTED, $infectedStatus->getNumericStatus());
 	}
 }

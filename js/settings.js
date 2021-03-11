@@ -130,22 +130,32 @@ var antivirusSettings = antivirusSettings || {
 
 
 function av_mode_show_options(str){
-	if ( str == 'daemon'){
+	if ( str === 'daemon'){
 		$('p.av_socket, p.av_path').hide('slow');
 		$('#av_socket, #av_path').attr('disabled', true);
 		$('#av_host, #av_port').attr('disabled', false);
 		$('p.av_host, p.av_port').show('slow');
-	} else if ( str == 'socket' ) {
+		return;
+	}
+	if ( str === 'socket' ) {
 		$('#av_socket').attr('disabled', false);
 		$('p.av_socket').show('slow');
 		$('p.av_path, p.av_host, p.av_port').hide('slow');
 		$('#av_path, #av_host, #av_port').attr('disabled', true);
-	} else if (str == 'executable'){
+		return;
+	}
+	if (str === 'executable') {
 		$('p.av_socket, p.av_host, p.av_port').hide('slow');
 		$('#av_socket, #av_host, #av_port').attr('disabled', true);
 		$('#av_path').attr('disabled', false);
 		$('p.av_path').show('slow');
+		return;
 	}
+	// icap below
+	$('p.av_socket, p.av_path').hide('slow');
+	$('#av_socket, #av_path').attr('disabled', true);
+	$('#av_host, #av_port').attr('disabled', false);
+	$('p.av_host, p.av_port').show('slow');
 }
 $(document).ready(function() {
 	$('#av_submit').on('click', function(event){

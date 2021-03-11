@@ -44,7 +44,7 @@ class SettingsControllerTest extends TestBase {
 
 		$this->config = $this->getMockBuilder(AppConfig::class)
 			->disableOriginalConstructor()
-			->setMethods(['setter', 'getAppValue', 'getExternalScannerClass'])
+			->setMethods(['setter', 'getAppValue'])
 			->getMock();
 
 		$this->scannerFactory = $this->getMockBuilder(ScannerFactory::class)
@@ -72,7 +72,7 @@ class SettingsControllerTest extends TestBase {
 			'/usr/bin/clamav',
 			'delete',
 			100,
-			800
+			800, '', ''
 		);
 	}
 
@@ -95,7 +95,7 @@ class SettingsControllerTest extends TestBase {
 			null,
 			'delete',
 			100,
-			800
+			800, '', ''
 		);
 	}
 
@@ -123,7 +123,7 @@ class SettingsControllerTest extends TestBase {
 			null,
 			'delete',
 			100,
-			800
+			800, '', ''
 		);
 	}
 }
