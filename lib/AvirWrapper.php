@@ -253,7 +253,7 @@ class AvirWrapper extends Wrapper {
 	}
 
 	/**
-	 * Objectstore implementations do no use part files, so PermissionsMask wrapper
+	 * Objectstore implementations do not use part files, so PermissionsMask wrapper
 	 * cannot delete the infected file. To bypass this, antivirus will ignore
 	 * all wrappers and delete directly on the physical storage.
 	 *
