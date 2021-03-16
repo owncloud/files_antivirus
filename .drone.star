@@ -1163,6 +1163,8 @@ def acceptance(ctx):
 	return pipelines
 
 def sonarAnalysis(ctx, phpVersion = '7.4'):
+	repo_slug = ctx.build.source_repo if ctx.build.source_repo else ctx.repo.slug
+
 	result = {
 		'kind': 'pipeline',
 		'type': 'docker',
@@ -1171,11 +1173,33 @@ def sonarAnalysis(ctx, phpVersion = '7.4'):
 			'base': '/var/www/owncloud',
 			'path': 'server/apps/%s' % config['app']
 		},
-		'steps':
+		'clone': {
+			'disable': True, # Sonarcloud does not apply issues on already merged branch
+		},
+		'steps': [
+			{
+				'name': 'clone',
+				'image': 'plugins/git-action:1',
+				'pull': 'always',
+				'settings': {
+					'actions': [
+						'clone',
+					],
+					'remote': 'https://github.com/%s' % (repo_slug),
+					'branch': ctx.build.source if ctx.build.event == 'pull_request' else 'master',
+					'path': '/drone/src',
+					'netrc_machine': 'github.com',
+					'netrc_username': {
+						'from_secret': 'github_username',
+					},
+					'netrc_password': {
+						'from_secret': 'github_token',
+					},
+				},
+			}] +
 			cacheRestore() +
 			composerInstall(phpVersion) +
-			installCore('daily-master-qa', 'sqlite', False) +
-		[
+			installCore('daily-master-qa', 'sqlite', False) + [
 			{
 				'name': 'sync-from-cache',
 				'image': 'minio/mc:RELEASE.2020-12-18T10-53-53Z',
