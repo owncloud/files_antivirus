@@ -1187,7 +1187,7 @@ def sonarAnalysis(ctx, phpVersion = '7.4'):
 					],
 					'remote': 'https://github.com/%s' % (repo_slug),
 					'branch': ctx.build.source if ctx.build.event == 'pull_request' else 'master',
-					'path': '/drone/src',
+					'path': '/var/www/owncloud/server/apps/%s' % config['app'],
 					'netrc_machine': 'github.com',
 					'netrc_username': {
 						'from_secret': 'github_username',
