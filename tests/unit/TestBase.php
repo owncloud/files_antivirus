@@ -10,8 +10,9 @@
 namespace OCA\Files_Antivirus\Tests\unit;
 
 use OCA\Files_Antivirus\AppInfo\Application;
+use PHPUnit\Framework\TestCase;
 
-abstract class TestBase extends \PHPUnit\Framework\TestCase {
+abstract class TestBase extends TestCase {
 	protected $db;
 	protected $application;
 	protected $container;

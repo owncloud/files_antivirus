@@ -9,34 +9,35 @@
 namespace OCA\Files_Antivirus\Tests\unit\Scanner;
 
 use OCA\Files_Antivirus\AppConfig;
+use OCA\Files_Antivirus\Scanner\InitException;
 use OCA\Files_Antivirus\ScannerFactory;
 use OCA\Files_Antivirus\Tests\unit\TestBase;
+use OCP\IL10N;
 
 class SocketTest extends TestBase {
 	/**
 	 */
-	public function testWrongAntivirusSocket() {
-		$this->expectException(\OCA\Files_Antivirus\Scanner\InitException::class);
+	public function testWrongAntivirusSocket(): void {
+		$this->expectException(InitException::class);
 
 		$config = $this->getMockBuilder(AppConfig::class)
 			->disableOriginalConstructor()
 			->getMock()
 		;
 		$config->method('__call')
-			->will($this->returnCallback(
-				function ($methodName) {
-					switch ($methodName) {
-						case 'getAvSocket':
-							return  '/some/wrong/socket.sock';
-						case 'getAvMode':
-							return 'socket';
-					}
+			->willReturnCallback(function ($methodName) {
+				switch ($methodName) {
+					case 'getAvSocket':
+						return '/some/wrong/socket.sock';
+					case 'getAvMode':
+						return 'socket';
 				}
-			))
+			})
 		;
 		$scannerFactory = new ScannerFactory(
 			$config,
-			$this->container->query('Logger')
+			$this->container->query('Logger'),
+			$this->container->query(IL10N::class)
 		);
 
 		$scanner = $scannerFactory->getScanner();

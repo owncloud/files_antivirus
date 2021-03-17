@@ -26,6 +26,8 @@ use \OCP\IConfig;
  * @method string getAvPath()
  * @method string getAvInfectedAction()
  * @method string getAvScanBackground()
+ * @method string getAvRequestService()
+ * @method string getAvResponseHeader()
  *
  * @method null setAvMode(string $avMode)
  * @method null setAvSocket(string $avsocket)
@@ -37,6 +39,8 @@ use \OCP\IConfig;
  * @method null setAvPath(string $avPath)
  * @method null setAvInfectedAction(string $avInfectedAction)
  * @method null setAvScanBackground(string $scanBackground)
+ * @method null setAvRequestService($reqService)
+ * @method null setAvResponseHeader($respHeader)
  */
 
 class AppConfig {
@@ -58,6 +62,8 @@ class AppConfig {
 		'av_stream_max_length' => '26214400',
 		'av_infected_action' => 'only_log',
 		'av_scan_background' => 'true',
+		'av_request_service' => 'avscan',
+		'av_response_header' => 'X-Infection-Found',
 	];
 
 	/**
@@ -73,21 +79,6 @@ class AppConfig {
 		// See http://php.net/manual/en/function.stream-wrapper-register.php#74765
 		// and \OC_Helper::streamCopy
 		return 8192;
-	}
-
-	/**
-	 * Returns the class of an external scanner implementation.
-	 * System config key 'files-antivirus.scanner-class' defines the class.
-	 * @return mixed|string
-	 */
-	public function getExternalScannerClass() {
-		$cls = $this->config->getSystemValue('files-antivirus.scanner-class', null);
-		if ($cls) {
-			if (!\class_exists($cls)) {
-				throw new \RuntimeException("Unknown scanner class $cls");
-			}
-		}
-		return $cls;
 	}
 
 	/**
@@ -125,9 +116,7 @@ class AppConfig {
 		$keys = \array_keys($this->defaults);
 		$values = \array_map([$this, 'getAppValue'], $keys);
 		$preparedKeys = \array_map([$this, 'camelCase'], $keys);
-		$data = \array_combine($preparedKeys, $values);
-		$data['files-antivirus.scanner-class'] = $this->getExternalScannerClass();
-		return $data;
+		return \array_combine($preparedKeys, $values);
 	}
 
 	/**

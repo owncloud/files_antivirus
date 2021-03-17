@@ -13,16 +13,21 @@
 
 namespace OCA\Files_Antivirus;
 
+use OCA\Files_Antivirus\Scanner\ICAPScanner;
 use OCA\Files_Antivirus\Scanner\InitException;
+use OCP\IL10N;
 use \OCP\ILogger;
+use OCA\Files_Antivirus\Scanner\Local;
+use OCA\Files_Antivirus\Scanner\Socket;
+use OCA\Files_Antivirus\Scanner\Daemon;
 
 class ScannerFactory {
 	// We split it in two parts in order to prevent reports from av scanners
-	const EICAR_PART_1 = 'X5O!P%@AP[4\PZX54(P^)7CC)7}$';
-	const EICAR_PART_2 = 'EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*';
+	public const EICAR_PART_1 = 'X5O!P%@AP[4\PZX54(P^)7CC)7}$';
+	public const EICAR_PART_2 = 'EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*';
 
 	/**
-	 * @var \OCA\Files_Antivirus\AppConfig
+	 * @var AppConfig
 	 */
 	protected $appConfig;
 
@@ -35,8 +40,12 @@ class ScannerFactory {
 	 * @var string
 	 */
 	protected $scannerClass;
+	/**
+	 * @var IL10N
+	 */
+	private $l10N;
 
-	public function __construct(AppConfig $appConfig, ILogger $logger) {
+	public function __construct(AppConfig $appConfig, ILogger $logger, IL10N $l10N) {
 		$this->appConfig = $appConfig;
 		$this->logger = $logger;
 		try {
@@ -48,26 +57,30 @@ class ScannerFactory {
 			$message = 	\implode(' ', [ __CLASS__, __METHOD__, $e->getMessage()]);
 			$this->logger->warning($message, ['app' => 'files_antivirus']);
 		}
+		$this->l10N = $l10N;
 	}
 
 	/**
 	 * @throws InitException
 	 */
 	protected function getScannerClass() {
-		$class = $this->appConfig->getExternalScannerClass();
-		if ($class) {
-			$this->scannerClass = $class;
-			return;
-		}
 		switch ($this->appConfig->getAvMode()) {
 			case 'daemon':
-				$this->scannerClass = 'OCA\Files_Antivirus\Scanner\Daemon';
+				$this->scannerClass = Daemon::class;
 				break;
 			case 'socket':
-				$this->scannerClass = 'OCA\Files_Antivirus\Scanner\Socket';
+				$this->scannerClass = Socket::class;
 				break;
 			case 'executable':
-				$this->scannerClass = 'OCA\Files_Antivirus\Scanner\Local';
+				$this->scannerClass = Local::class;
+				break;
+			case 'icap':
+				$this->scannerClass = ICAPScanner::class;
+				if (!\OC::$server->getLicenseManager()->checkLicenseFor('icap')) {
+					\OC::$server->getLogger()->error('No valid license found for icap scanner');
+					throw new InitException("No valid license found for icap scanner");
+				}
+
 				break;
 			default:
 				throw new InitException(
@@ -85,7 +98,7 @@ class ScannerFactory {
 	 * @return \OCA\Files_Antivirus\Scanner\AbstractScanner
 	 */
 	public function getScanner() {
-		return new $this->scannerClass($this->appConfig, $this->logger);
+		return new $this->scannerClass($this->appConfig, $this->logger, $this->l10N);
 	}
 
 	/**
@@ -95,8 +108,8 @@ class ScannerFactory {
 	 */
 	public function testConnection(AppConfig $appConfig) {
 		$this->appConfig = $appConfig;
-		$this->getScannerClass();
 		try {
+			$this->getScannerClass();
 			$scanner = $this->getScanner();
 			$item = new Content(self::EICAR_PART_1 . self::EICAR_PART_2, 4096);
 			$status = $scanner->scan($item);

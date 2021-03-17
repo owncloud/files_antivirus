@@ -206,7 +206,12 @@ config = {
 						# dummy clamav required for unit tests
 						'php tests/util/avirserver.php',
 					]
-				}
+				},
+				{
+					'name': 'icap',
+					'image': 'deepdiver/icap-clamav-service',
+					'pull': 'always',
+				},
 			],
 			'extraEnvironment': {
 				'AVIR_HOST': 'dummy-clamav'

@@ -23,6 +23,7 @@ use OCA\Files_Antivirus\Db\FileCollection;
 use OCA\Files_Antivirus\RequestHelper;
 use OCA\Files_Antivirus\ScannerFactory;
 use OCP\AppFramework\App;
+use OCP\IL10N;
 
 class Application extends App {
 	public function __construct(array $urlParams = []) {
@@ -81,7 +82,8 @@ class Application extends App {
 			function ($c) {
 				return new ScannerFactory(
 					$c->query('AppConfig'),
-					$c->query('Logger')
+					$c->query('Logger'),
+					$c->query(IL10N::class)
 				);
 			}
 		);

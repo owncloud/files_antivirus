@@ -14,11 +14,12 @@ use OC\Files\Storage\Wrapper\Wrapper;
 use OCA\Files_Antivirus\AvirWrapper;
 use OCA\Files_Antivirus\RequestHelper;
 use OCA\Files_Antivirus\Tests\util\DummyClam;
+use OCP\IL10N;
 use Test\Util\User\Dummy;
 
 class AvirWrapperTest extends TestBase {
-	const UID = 'testo';
-	const PWD = 'test';
+	public const UID = 'testo';
+	public const PWD = 'test';
 
 	/**
 	 * @var  Mock\ScannerFactory
@@ -57,16 +58,17 @@ class AvirWrapperTest extends TestBase {
 
 		$this->scannerFactory = new Mock\ScannerFactory(
 			new Mock\Config($this->container->query('CoreConfig')),
-			$this->container->query('Logger')
+			$this->container->query('Logger'),
+			$this->container->query(IL10N::class)
 		);
 
 		$this->requestHelper = $this->getMockBuilder(RequestHelper::class)
 			->disableOriginalConstructor()
 			->getMock();
 
-		$this->requestHelper->expects($this->any())
+		$this->requestHelper
 			->method('getUploadSize')
-			->will($this->returnValue(1));
+			->willReturn(1);
 
 		\OC::$server->getUserSession()->login(self::UID, self::PWD);
 		\OC::$server->getSession()->set('user_id', self::UID);
@@ -108,7 +110,7 @@ class AvirWrapperTest extends TestBase {
 	public function testHealthFilePutContents() {
 		$wrapper = $this->getWrapper();
 		$result = $wrapper->file_put_contents('test_put_healthly', 'it works!');
-		$this->assertNotFalse($result);
+		self::assertNotFalse($result);
 	}
 
 	private function getWrapper() {
@@ -132,7 +134,7 @@ class AvirWrapperTest extends TestBase {
 
 	public function testUnlink() {
 		$storage = $this->createMock(Storage::class);
-		$storage->expects($this->once())
+		$storage->expects(self::once())
 			->method('unlink')
 			->willReturn(true);
 		$wrapper = $this->createMock(Wrapper::class);
@@ -146,7 +148,7 @@ class AvirWrapperTest extends TestBase {
 			->willReturn($wrapper);
 
 		$result = $avirWrapper->unlink('/some/infected/path');
-		$this->assertTrue($result);
+		self::assertTrue($result);
 	}
 
 	protected function tearDown(): void {

@@ -13,11 +13,13 @@ use OC\Files\Filesystem;
 use OC\Files\View;
 use OC\Files\Storage\Storage;
 use OCA\Files_Antivirus\AvirWrapper;
+use OCA\Files_Antivirus\ScannerFactory;
+use OCP\IL10N;
 use Test\Util\User\Dummy;
 
 class ChunkUploadTest extends TestBase {
-	const UID = 'testo';
-	const PWD = 'test';
+	public const UID = 'testo';
+	public const PWD = 'test';
 
 	protected $scannerFactory;
 
@@ -35,10 +37,11 @@ class ChunkUploadTest extends TestBase {
 			\OC::$server->getUserManager()->createUser(self::UID, self::PWD);
 		}
 		
-		$this->scannerFactory = $this->getMockBuilder(\OCA\Files_Antivirus\ScannerFactory::class)
+		$this->scannerFactory = $this->getMockBuilder(ScannerFactory::class)
 			->setConstructorArgs([
 				new Mock\Config($this->container->query('CoreConfig')),
-				$this->container->query('Logger')
+				$this->container->query('Logger'),
+				$this->container->query(IL10N::class)
 			])
 			->setMethods(['getScanner'])
 			->getMock();
@@ -57,7 +60,7 @@ class ChunkUploadTest extends TestBase {
 	}
 
 	public function testSkipIndividualChunks() {
-		$this->scannerFactory->expects($this->never())
+		$this->scannerFactory->expects(self::never())
 			->method('getScanner');
 
 		$path = '/' . self::UID . '/uploads';
@@ -84,9 +87,9 @@ class ChunkUploadTest extends TestBase {
 				'logger' => $this->container->query('Logger'),
 				'requestHelper' => $this->container->query('RequestHelper'),
 			]);
-		} else {
-			return $storage;
 		}
+
+		return $storage;
 	}
 
 	public static function tearDownAfterClass(): void {
