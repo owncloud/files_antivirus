@@ -26,8 +26,8 @@ class ICAPClient {
 	}
 
 	private function disconnect(): void {
-		\socket_shutdown($this->socket);
-		\socket_close($this->socket);
+		@\socket_shutdown($this->socket);
+		@\socket_close($this->socket);
 	}
 
 	public function getLastSocketError(): int {
