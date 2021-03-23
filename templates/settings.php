@@ -4,7 +4,6 @@ script('files_antivirus', 'settings');
 /** @var \OCP\IL10N $l */
 /** @var array $_ */
 ?>
-<?php if ($_['files-antivirus.scanner-class'] === null) { ?>
 <div class="section section-antivirus">
 	<form id="antivirus" action="#" method="post">
 		<fieldset class="personalblock">
@@ -97,14 +96,3 @@ script('files_antivirus', 'settings');
 		<button id="antivirus-add" class="icon-add"><?php p($l->t('Add a rule')) ?></button>
 	</div>
 </div>
-<?php } else { ?>
-<div class="section section-antivirus">
-	<form id="antivirus" action="#" method="post">
-	<fieldset class="personalblock">
-	<h2><?php p($l->t('Antivirus Configuration'));?></h2>
-		<p><?php p($l->t('An external scanner implementation is used. Please lookup in the docs on how to configure %s', [$_['files-antivirus.scanner-class']])); ?></p>
-	</fieldset>
-	</form>
-</div>
-
-<?php }
