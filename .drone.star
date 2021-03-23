@@ -53,6 +53,38 @@ config = {
 				'activity': ''
 			},
 		},
+		'webUI-icap': {
+			'suites': {
+				'webUIActivityList': 'webUIActListICAP',
+			},
+			'browsers': [
+				'chrome',
+			],
+			'extraApps': {
+				'activity': ''
+			},
+			'extraSetup': [
+				{
+					'name': 'configure-app',
+					'image': 'owncloudci/php:7.2',
+					'pull': 'always',
+					'commands': [
+						'cd /var/www/owncloud/server',
+						'wait-for-it -t 600 icap:1344',
+						'php occ config:app:set --value "icap" files_antivirus av_host',
+						'php occ config:app:set --value "icap" files_antivirus av_mode',
+						'php occ config:app:set --value "1344" files_antivirus av_port',
+					]
+				}
+			],
+			'extraServices': [
+				{
+					'name': 'icap',
+					'image': 'deepdiver/icap-clamav-service',
+					'pull': 'always',
+				}
+			]
+		},
 		'api': {
 			'suites': [
 				'apiAntivirus'
@@ -63,6 +95,35 @@ config = {
 				'postgres:9.4',
 				'oracle'
 			],
+		},
+		'api-icap': {
+			'suites': {
+				'apiAntivirus': 'apiAvICAP',
+			},
+			'databases': [
+				'mariadb:10.2',
+			],
+			'extraSetup': [
+				{
+					'name': 'configure-app',
+					'image': 'owncloudci/php:7.2',
+					'pull': 'always',
+					'commands': [
+						'cd /var/www/owncloud/server',
+						'wait-for-it -t 600 icap:1344',
+						'php occ config:app:set --value "icap" files_antivirus av_host',
+						'php occ config:app:set --value "icap" files_antivirus av_mode',
+						'php occ config:app:set --value "1344" files_antivirus av_port',
+					]
+				}
+			],
+			'extraServices': [
+				{
+					'name': 'icap',
+					'image': 'deepdiver/icap-clamav-service',
+					'pull': 'always',
+				}
+			]
 		},
 		'api-scality': {
 			'suites': {
