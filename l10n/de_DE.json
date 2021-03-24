@@ -49,7 +49,6 @@
     "Scanner exit status or signature to search" : "Status beim Beenden der Suche oder zu suchende Signatur",
     "Description" : "Beschreibung",
     "Mark as" : "Markiert als",
-    "Add a rule" : "Regel hinzufügen",
-    "An external scanner implementation is used. Please lookup in the docs on how to configure %s" : "Es wird eine externe Scanner-Implementierung verwendet. Bitte lesen Sie in der Dokumentation nach wie Sie %s konfigurieren"
+    "Add a rule" : "Regel hinzufügen"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

@@ -51,7 +51,6 @@ OC.L10N.register(
     "Scanner exit status or signature to search" : "حالة خروج الفاحص توقيع البحث",
     "Description" : "الوصف",
     "Mark as" : "تمييز كـ",
-    "Add a rule" : "أضف قاعدة",
-    "An external scanner implementation is used. Please lookup in the docs on how to configure %s" : "يتم استخدام ماسح ضوئي خارجي. يرجى البحث في المستندات حول كيفية الإعداد%s"
+    "Add a rule" : "أضف قاعدة"
 },
 "nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;");

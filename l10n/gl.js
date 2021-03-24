@@ -55,7 +55,6 @@ OC.L10N.register(
     "Scanner exit status or signature to search" : "Estado da saída da análise ou sinatura para buscar",
     "Description" : "Descrición",
     "Mark as" : "Marcar como",
-    "Add a rule" : "Engadir unha regra",
-    "An external scanner implementation is used. Please lookup in the docs on how to configure %s" : "Estase a utilizar unha implementación de escáner externo. Busque na documentación como configurar %s"
+    "Add a rule" : "Engadir unha regra"
 },
 "nplurals=2; plural=(n != 1);");
