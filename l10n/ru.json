@@ -14,6 +14,7 @@
     "Saved" : "Сохранено",
     "Virus detected! Can't upload the file %s" : "Обнаружен вирус! Невозможно загрузить файл %s",
     "Malware detected" : "Обнаружена вредоносная программа",
+    "A malware or virus was detected, your upload was deleted. In doubt or for details please contact your system administrator" : "Была обнаружена вредоносная программа или вирус, загруженный файл был удален. В случае сомнений или для получения более подробной информации, пожалуйста, свяжитесь с вашим системным администратором.",
     "Greetings {user}," : "Приветствуем, {user},",
     "Sorry, but a malware was detected in a file you tried to upload and it had to be deleted." : "В файле, который вы пытаетесь скачать, обнаружена вредоносная программа, файл удалён.",
     "This email is a notification from {host}. Please, do not reply." : "Это письмо - уведомление от {host}. Пожалуйста, не отвечайте на него.",
