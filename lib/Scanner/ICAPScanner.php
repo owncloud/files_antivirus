@@ -52,9 +52,9 @@ class ICAPScanner {
 				return Status::create(Status::SCANRESULT_INFECTED, $virus);
 			}
 
-			// kaspersky handling
+			// kaspersky(pre 2020 product editions) and McAfee handling
 			$respHeader = $response['body']['res-hdr'] ?? '';
-			if (\strpos($respHeader, '403 Forbidden')) {
+			if (\strpos($respHeader, '403 Forbidden') || \strpos($respHeader, '403 VirusFound')) {
 				$message = $this->l10n->t('A malware or virus was detected, your upload was deleted. In doubt or for details please contact your system administrator');
 				return Status::create(Status::SCANRESULT_INFECTED, $message);
 			}
