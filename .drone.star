@@ -284,6 +284,8 @@ config = {
 					'pull': 'always',
 					'commands': [
 						'wait-for-it dummy-clamav:5555',
+						'wait-for-it -t 600 icap:1344',
+						'sleep 10'
 					]
 				}
 			],
