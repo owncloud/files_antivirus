@@ -212,7 +212,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 ### Fixed
 
 - Removed old non-existing background job
-- Do not send email to gues users
+- Do not send email to guest users
 - Fixed public upload
 - Do not execute background job when app is disabled
 - Renamed table files_antivirus_status into files_avir_status: key name was too long for Oracle

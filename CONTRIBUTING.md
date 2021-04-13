@@ -9,7 +9,7 @@ If you have questions about how to install or use ownCloud, please direct these 
 ### Guidelines
 * Please search the existing issues first, it's likely that your issue was already reported or even fixed.
   - Go to one of the repositories, click "issues" and type any word in the top search/command bar.
-  - You can also filter by appending e. g. "state:open" to the search string.
+  - You can also filter by appending e.g. "state:open" to the search string.
   - More info on [search syntax within github](https://help.github.com/articles/searching-issues)
 * This repository ([files_antivirus](https://github.com/owncloud/files_antivirus/issues)) is *only* for issues within the ownCloud files_antivirus code.
 * __SECURITY__: Report any potential security bug to security@owncloud.com following our [security policy](https://owncloud.org/security/) instead of filing an issue in our bug tracker
