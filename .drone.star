@@ -52,6 +52,9 @@ config = {
 			'extraApps': {
 				'activity': ''
 			},
+			'servers': [
+			    'daily-master-qa',
+			],
 		},
 		'webUI-icap': {
 			'suites': {
@@ -63,6 +66,9 @@ config = {
 			'extraApps': {
 				'activity': ''
 			},
+			'servers': [
+			    'daily-master-qa',
+			],
 			'extraSetup': [
 				{
 					'name': 'configure-app',
