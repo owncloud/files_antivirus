@@ -2,7 +2,7 @@
 
 files_antivirus is an antivirus app for [ownCloud](https://github.com/owncloud) based on [ClamAV](http://www.clamav.net).
 
-Trigger CI to investigate issue 420 (2)
+Trigger CI to investigate issue 420 (3)
 
 ## Details
 
