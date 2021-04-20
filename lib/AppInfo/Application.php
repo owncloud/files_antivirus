@@ -7,7 +7,7 @@
  *
  * @author Viktar Dubiniuk <dubiniuk@owncloud.com>
  *
- * @copyright Viktar Dubiniuk 2014-2018
+ * @copyright Viktar Dubiniuk 2021
  * @license AGPL-3.0
  */
 
@@ -28,7 +28,7 @@ use OCP\IL10N;
 class Application extends App {
 	public function __construct(array $urlParams = []) {
 		parent::__construct('files_antivirus', $urlParams);
-		
+
 		$container = $this->getContainer();
 		$container->registerService(
 			'RuleController',
@@ -115,7 +115,7 @@ class Application extends App {
 				);
 			}
 		);
-		
+
 		/**
 		 * Core
 		 */
@@ -138,7 +138,7 @@ class Application extends App {
 			}
 		);
 	}
-	
+
 	/**
 	 * Add wrapper for local storages
 	 *
@@ -173,5 +173,26 @@ class Application extends App {
 			},
 			1
 		);
+	}
+
+	/**
+	 * Probing all modes in a sane order
+	 */
+	public function autoProbe() {
+		$appConfig = $this->getContainer()->query('AppConfig');
+		$scannerFactory = $this->getContainer()->query('ScannerFactory');
+		$set = false;
+		foreach (['daemon', 'socket'] as $mode) {
+			$appConfig->setAvMode($mode);
+			if ($scannerFactory->testConnection($appConfig) === true) {
+				$set = true;
+				break;
+			}
+		}
+
+		if ($set === false) {
+			$appConfig->setAvMode('executable');
+		}
+		$appConfig->setAppValue('autoprobe', true);
 	}
 }

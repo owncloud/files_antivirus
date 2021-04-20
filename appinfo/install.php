@@ -7,12 +7,12 @@
  *
  * @author Viktar Dubiniuk <dubiniuk@owncloud.com>
  *
- * @copyright Viktar Dubiniuk 2014-2018
+ * @copyright Viktar Dubiniuk 2021
  * @license AGPL-3.0
  */
 
-\OC::$server->getConfig()->setAppValue(
-	'files_antivirus',
-	'av_path',
-	'/usr/bin/clamscan'
-);
+$passed = \OC::$server->getConfig()->getAppValue('files_antivirus', 'autoprobe', false);
+if ($passed === false) {
+	$app = new \OCA\Files_Antivirus\AppInfo\Application();
+	$app->autoProbe();
+}
