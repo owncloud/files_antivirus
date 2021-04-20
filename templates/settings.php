@@ -29,7 +29,7 @@ script('files_antivirus', 'settings');
 			</p>
 			<p class="av_port">
 				<label for="av_port"><?php p($l->t('Port'));?></label>
-				<input pattern="[1-9][0-9]{0,4}" type="text" id="av_port" name="avPort" value="<?php p($_['avPort']); ?>" title="<?php p($l->t('Port number of Antivirus Host, 1-65535'));?>">
+				<input pattern="[1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5]" type="text" id="av_port" name="avPort" value="<?php p($_['avPort']); ?>" title="<?php p($l->t('Port number of Antivirus Host, 1-65535'));?>">
 			</p>
 			<p class="av_path">
 				<label for="av_path"><?php p($l->t('Path to clamscan'));?></label>
