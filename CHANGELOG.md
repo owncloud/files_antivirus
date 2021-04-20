@@ -24,7 +24,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 - Do not depend on the sockets PHP extension [#428](https://github.com/owncloud/files_antivirus/pull/428)
 - Move executable options into config.php [#442](https://github.com/owncloud/files_antivirus/pull/442)
 
-
 ## [0.16.0] - 2021-02-01
 
 ### Added
