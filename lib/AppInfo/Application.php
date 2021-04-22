@@ -15,8 +15,6 @@ namespace OCA\Files_Antivirus\AppInfo;
 
 use OCA\Files_Antivirus\AppConfig;
 use OCA\Files_Antivirus\AvirWrapper;
-use OCA\Files_Antivirus\Controller\RuleController;
-use OCA\Files_Antivirus\Controller\SettingsController;
 use OCA\Files_Antivirus\Cron\Task;
 use OCA\Files_Antivirus\Db\RuleMapper;
 use OCA\Files_Antivirus\Db\FileCollection;
@@ -30,29 +28,6 @@ class Application extends App {
 		parent::__construct('files_antivirus', $urlParams);
 
 		$container = $this->getContainer();
-		$container->registerService(
-			'RuleController',
-			function ($c) {
-				return new RuleController(
-					$c->query('AppName'),
-					$c->query('Request'),
-					$c->query('Logger'),
-					$c->query('L10N'),
-					$c->query('RuleMapper')
-				);
-			}
-		);
-		$container->registerService(
-			'SettingsController',
-			function ($c) {
-				return new SettingsController(
-					$c->query('Request'),
-					$c->query('AppConfig'),
-					$c->query('ScannerFactory'),
-					$c->query('L10N')
-				);
-			}
-		);
 		$container->registerService(
 			'AppConfig',
 			function ($c) {
@@ -135,6 +110,25 @@ class Application extends App {
 			'L10N',
 			function ($c) {
 				return $c->query('ServerContainer')->getL10N($c->query('AppName'));
+			}
+		);
+	}
+
+	/**
+	 * Initial app setup
+	 *
+	 * @return void
+	 */
+	public function init() {
+		\OCP\Util::connectHook('OC_Filesystem', 'preSetup', $this, 'setupWrapper');
+		$server = $this->getContainer()->getServer();
+
+		$server->getActivityManager()->registerExtension(
+			function () use ($server) {
+				return new \OCA\Files_Antivirus\Activity(
+					$server->query('L10NFactory'),
+					$server->getURLGenerator()
+				);
 			}
 		);
 	}
