@@ -147,7 +147,14 @@ class AppConfig {
 		if (\array_key_exists($key, $this->defaults)) {
 			$defaultValue = $this->defaults[$key];
 		}
-		return $this->config->getAppValue($this->appName, $key, $defaultValue);
+		$value = $this->config->getAppValue($this->appName, $key, $defaultValue);
+		try {
+			$this->validateValue($key, $value);
+		} catch (\UnexpectedValueException $e) {
+			$this->logger->error('No valid license found for icap scanner, resetting mode to executable');
+			$value = 'executable';
+		}
+		return  $value;
 	}
 
 	/**
@@ -170,11 +177,9 @@ class AppConfig {
 	 * @return void
 	 */
 	public function validateValue($key, $value) {
-		if ($key === 'av_mode' && $value === 'icap') {
-			if (!$this->licenseManager->checkLicenseFor('icap')) {
-				$this->logger->error('No valid license found for icap scanner');
-				throw new \UnexpectedValueException("No valid license found for icap scanner mode");
-			}
+		if ($key === 'av_mode' && $value === 'icap'&& !$this->licenseManager->checkLicenseFor('icap')) {
+			$this->logger->error('No valid license found for icap scanner');
+			throw new \UnexpectedValueException("No valid license found for icap scanner mode");
 		}
 	}
 
