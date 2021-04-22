@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (c) 2015 Viktar Dubiniuk <dubiniuk@owncloud.com>
+ * Copyright (c) 2021 Viktar Dubiniuk <dubiniuk@owncloud.com>
  * This file is licensed under the Affero General Public License version 3 or
  * later.
  * See the COPYING-README file.
@@ -35,7 +35,7 @@ class TaskTest extends TestBase {
 			$this->container->query(IL10N::class)
 		);
 	}
-	
+
 	public function testRun() {
 		$cronMock = new Task(
 			$this->container->getServer()->getUserSession(),
@@ -56,7 +56,11 @@ class TaskTest extends TestBase {
 
 	public function testGetFilesForScan() {
 		$scannerFactory = new ScannerMock(
-			new ConfigMock($this->container->query('CoreConfig')),
+			new ConfigMock(
+				$this->container->query('CoreConfig'),
+				$this->container->query('ServerContainer')->getLicenseManager(),
+				$this->container->query('ServerContainer')->getLogger()
+			),
 			$this->container->query('Logger'),
 			$this->container->query(IL10N::class)
 		);

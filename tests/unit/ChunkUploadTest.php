@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright (c) 2017 Viktar Dubiniuk <dubiniuk@owncloud.com>
+ * Copyright (c) 2021 Viktar Dubiniuk <dubiniuk@owncloud.com>
  * This file is licensed under the Affero General Public License version 3 or
  * later.
  * See the COPYING-README file.
@@ -30,16 +30,20 @@ class ChunkUploadTest extends TestBase {
 		\OC_User::clearBackends();
 		\OC_User::useBackend(new Dummy());
 	}
-	
+
 	public function setUp(): void {
 		parent::setUp();
 		if (!\OC::$server->getUserManager()->get(self::UID)) {
 			\OC::$server->getUserManager()->createUser(self::UID, self::PWD);
 		}
-		
+
 		$this->scannerFactory = $this->getMockBuilder(ScannerFactory::class)
 			->setConstructorArgs([
-				new Mock\Config($this->container->query('CoreConfig')),
+				new Mock\Config(
+					$this->container->query('CoreConfig'),
+					$this->container->query('ServerContainer')->getLicenseManager(),
+					$this->container->query('ServerContainer')->getLogger()
+				),
 				$this->container->query('Logger'),
 				$this->container->query(IL10N::class)
 			])
@@ -73,7 +77,7 @@ class ChunkUploadTest extends TestBase {
 		@\fwrite($fd, 'abcdead');
 		@\fclose($fd);
 	}
-	
+
 	public function wrapperCallback($mountPoint, $storage) {
 		/**
 		 * @var Storage $storage

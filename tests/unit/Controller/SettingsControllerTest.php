@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright (c) 2016 Viktar Dubiniuk <dubiniuk@owncloud.com>
+ * Copyright (c) 2021 Viktar Dubiniuk <dubiniuk@owncloud.com>
  * This file is licensed under the Affero General Public License version 3 or
  * later.
  * See the COPYING-README file.
@@ -56,13 +56,15 @@ class SettingsControllerTest extends TestBase {
 		$this->config->expects(self::atLeast(1))
 			->method('setter')
 			->withConsecutive(
-				['av_mode', ['executable']],
 				['av_cmd_options', ['--fdpass']],
-				['av_path', ['/usr/bin/clamav']]
+				['av_path', ['/usr/bin/clamav']],
+				['av_infected_action', ['delete']],
+				['av_stream_max_length', [100]],
+				['av_max_file_size', [800]],
+				['av_mode', ['executable']]
 			);
 
 		$settings = new SettingsController($this->request, $this->config, $this->scannerFactory, $this->l10n);
-
 		$settings->save(
 			'executable',
 			null,
@@ -80,8 +82,11 @@ class SettingsControllerTest extends TestBase {
 		$this->config->expects(self::atLeast(1))
 			->method('setter')
 			->withConsecutive(
-				['av_mode', ['socket']],
-				['av_socket', ['/var/run/clamd.sock']]
+				['av_socket', ['/var/run/clamd.sock']],
+				['av_infected_action', ['delete']],
+				['av_stream_max_length', [100]],
+				['av_max_file_size', [800]],
+				['av_mode', ['socket']]
 			);
 
 		$settings = new SettingsController($this->request, $this->config, $this->scannerFactory, $this->l10n);
@@ -107,13 +112,15 @@ class SettingsControllerTest extends TestBase {
 		$this->config->expects(self::atLeast(1))
 			->method('setter')
 			->withConsecutive(
-				['av_mode', ['daemon']],
 				['av_port', ['90']],
-				['av_host', [$avirHost]]
+				['av_host', [$avirHost]],
+				['av_infected_action', ['delete']],
+				['av_stream_max_length', [100]],
+				['av_max_file_size', [800]],
+				['av_mode', ['daemon']]
 			);
 
 		$settings = new SettingsController($this->request, $this->config, $this->scannerFactory, $this->l10n);
-
 		$settings->save(
 			'daemon',
 			null,

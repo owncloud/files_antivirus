@@ -32,7 +32,9 @@ class Application extends App {
 			'AppConfig',
 			function ($c) {
 				return new AppConfig(
-					$c->query('CoreConfig')
+					$c->query('CoreConfig'),
+					$c->query('ServerContainer')->getLicenseManager(),
+					$c->query('ServerContainer')->getLogger()
 				);
 			}
 		);

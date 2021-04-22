@@ -14,6 +14,8 @@
 namespace OCA\Files_Antivirus;
 
 use \OCP\IConfig;
+use OCP\ILogger;
+use OCP\License\ILicenseManager;
 
 /**
  * @method string getAvMode()
@@ -51,6 +53,16 @@ class AppConfig {
 	 */
 	private $config;
 
+	/**
+	 * @var ILicenseManager
+	 */
+	private $licenseManager;
+
+	/**
+	 * @var ILogger
+	 */
+	private $logger;
+
 	private $defaults = [
 		'av_mode' => 'executable',
 		'av_socket' => '/var/run/clamav/clamd.ctl',
@@ -70,9 +82,13 @@ class AppConfig {
 	 * AppConfig constructor.
 	 *
 	 * @param IConfig $config
+	 * @param ILicenseManager $licenseManager
+	 * @param ILogger $logger
 	 */
-	public function __construct(IConfig $config) {
+	public function __construct(IConfig $config, ILicenseManager $licenseManager, ILogger $logger) {
 		$this->config = $config;
+		$this->licenseManager = $licenseManager;
+		$this->logger = $logger;
 	}
 
 	public function getAvChunkSize() {
@@ -140,10 +156,26 @@ class AppConfig {
 	 * @param string $key
 	 * @param string $value
 	 *
-	 * @return string
+	 * @return void
 	 */
 	public function setAppValue($key, $value) {
-		return $this->config->setAppValue($this->appName, $key, $value);
+		$this->validateValue($key, $value);
+		$this->config->setAppValue($this->appName, $key, $value);
+	}
+
+	/**
+	 * @param string $key
+	 * @param string $value
+	 *
+	 * @return void
+	 */
+	public function validateValue($key, $value) {
+		if ($key === 'av_mode' && $value === 'icap') {
+			if (!$this->licenseManager->checkLicenseFor('icap')) {
+				$this->logger->error('No valid license found for icap scanner');
+				throw new \UnexpectedValueException("No valid license found for icap scanner mode");
+			}
+		}
 	}
 
 	/**

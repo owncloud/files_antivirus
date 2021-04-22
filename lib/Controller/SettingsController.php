@@ -7,7 +7,7 @@
  *
  * @author Viktar Dubiniuk <dubiniuk@owncloud.com>
  *
- * @copyright Viktar Dubiniuk 2015-2018
+ * @copyright Viktar Dubiniuk 2015-2021
  * @license AGPL-3.0
  */
 
@@ -33,7 +33,7 @@ class SettingsController extends Controller {
 	 * @var ScannerFactory
 	 */
 	private $scannerFactory;
-	
+
 	/**
 	 * @var IL10N
 	 */
@@ -55,7 +55,7 @@ class SettingsController extends Controller {
 		$this->scannerFactory = $scannerFactory;
 		$this->l10n = $l10n;
 	}
-	
+
 	/**
 	 * Print config section
 	 *
@@ -87,37 +87,47 @@ class SettingsController extends Controller {
 		$avCmdOptions, $avPath, $avInfectedAction, $avStreamMaxLength,
 						 $avMaxFileSize, $avRequestService, $avResponseHeader
 	) {
-		$this->settings->setAvMode($avMode);
-		if ($avMode === 'executable') {
-			$this->settings->setAvCmdOptions($avCmdOptions);
-			$this->settings->setAvPath($avPath);
-		} elseif ($avMode === 'daemon') {
-			$this->settings->setAvPort($avPort);
-			$this->settings->setAvHost($avHost);
-		} elseif ($avMode === 'socket') {
-			$this->settings->setAvSocket($avSocket);
-		} elseif ($avMode === 'icap') {
-			$this->settings->setAvPort($avPort);
-			$this->settings->setAvHost($avHost);
-			$this->settings->setAvRequestService($avRequestService);
-			$this->settings->setAvResponseHeader($avResponseHeader);
-		}
+		try {
+			if ($avMode === 'executable') {
+				$this->settings->setAvCmdOptions($avCmdOptions);
+				$this->settings->setAvPath($avPath);
+			} elseif ($avMode === 'daemon') {
+				$this->settings->setAvPort($avPort);
+				$this->settings->setAvHost($avHost);
+			} elseif ($avMode === 'socket') {
+				$this->settings->setAvSocket($avSocket);
+			} elseif ($avMode === 'icap') {
+				$this->settings->setAvPort($avPort);
+				$this->settings->setAvHost($avHost);
+				$this->settings->setAvRequestService($avRequestService);
+				$this->settings->setAvResponseHeader($avResponseHeader);
+			}
 
-		$this->settings->setAvInfectedAction($avInfectedAction);
-		$this->settings->setAvStreamMaxLength($avStreamMaxLength);
-		$this->settings->setAvMaxFileSize($avMaxFileSize);
+			$this->settings->setAvInfectedAction($avInfectedAction);
+			$this->settings->setAvStreamMaxLength($avStreamMaxLength);
+			$this->settings->setAvMaxFileSize($avMaxFileSize);
+			$this->settings->setAvMode($avMode);
 
-		$connectionStatus = (int)$this->scannerFactory->testConnection($this->settings);
-
-		return new JSONResponse(
-			['data' =>
-				['message' =>
-					(string) $this->l10n->t('Saved')
+			$connectionStatus = (int)$this->scannerFactory->testConnection($this->settings);
+			$response = [
+				'data' => [
+					'message' => (string) $this->l10n->t('Saved')
 				],
 				'connection' => $connectionStatus,
 				'status' => 'success',
 				'settings' => $this->settings->getAllValues()
-			]
-		);
+			];
+		} catch (\UnexpectedValueException $e) {
+			$response = [
+				'data' => [
+					'message' => $e->getMessage()
+				],
+				'connection' => 1,
+				'status' => 'error',
+				'settings' => $this->settings->getAllValues()
+			];
+		}
+
+		return new JSONResponse($response);
 	}
 }
