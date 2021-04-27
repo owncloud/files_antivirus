@@ -6,7 +6,7 @@ use RuntimeException;
 class ICAPClient {
 	private $host;
 	private $port;
-	private $socket;
+	private $writeHandle;
 
 	public $userAgent = 'ownCloud-icap-client/0.1.0';
 
@@ -15,28 +15,29 @@ class ICAPClient {
 		$this->port = $port;
 	}
 
-	private function connect(): bool {
-		$this->socket = \socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+	private function connect(): void {
+		$this->writeHandle = @\stream_socket_client(
+			"tcp://{$this->host}:{$this->port}",
+			$errorCode,
+			$errorMessage,
+			5
+		);
 
-		if (!\socket_connect($this->socket, $this->host, $this->port)) {
-			return false;
+		if (!$this->writeHandle) {
+			throw new InitException(
+				\sprintf(
+					'Cannot connect to "tcp://%s:%s": %s (code %d)',
+					$this->host,
+					$this->port,
+					$errorMessage,
+					$errorCode
+				)
+			);
 		}
-
-		# McAfee seems to not properly close the socket once all response bytes are sent to the client
-		# we use a 5 sec time out on receiving data
-		if (!\socket_set_option($this->socket, SOL_SOCKET, SO_RCVTIMEO, ["sec" => 5, "usec" => 0])) {
-			return false;
-		}
-		return true;
 	}
 
 	private function disconnect(): void {
-		@\socket_shutdown($this->socket);
-		@\socket_close($this->socket);
-	}
-
-	public function getLastSocketError(): int {
-		return \socket_last_error($this->socket);
+		@\fclose($this->writeHandle);
 	}
 
 	public function getRequest(string $method, string $service, array $body = [], array $headers = []): string {
@@ -121,14 +122,18 @@ class ICAPClient {
 	}
 
 	private function send(string $request): string {
-		if (!$this->connect()) {
-			throw new RuntimeException("Cannot connect to icap://{$this->host}:{$this->port} (Socket error: " . $this->getLastSocketError() . ")");
+		$this->connect();
+		if (@\fwrite($this->writeHandle, $request) === false) {
+			throw new InitException(
+				\sprintf('Writing to "%s:%s" failed', $this->host, $this->port)
+			);
 		}
 
-		\socket_write($this->socket, $request);
-
+		# McAfee seems to not properly close the socket once all response bytes are sent to the client
+		# we use a 5 sec time out on receiving data
+		\stream_set_timeout($this->writeHandle, 5, 0);
 		$response = '';
-		while ($buffer = \socket_read($this->socket, 2048)) {
+		while ($buffer = \fread($this->writeHandle, 2048)) {
 			$response .= $buffer;
 		}
 
