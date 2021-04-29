@@ -24,7 +24,7 @@ class ICAPClient {
 
 		# McAfee seems to not properly close the socket once all response bytes are sent to the client
 		# we use a 5 sec time out on receiving data
-		if (!\socket_set_option($this->socket, SOL_SOCKET, SO_RCVTIMEO, ["sec" => 5, "usec" => 0])) {
+		if (!\socket_set_option($this->socket, SOL_SOCKET, SO_RCVTIMEO, ["sec" => 2, "usec" => 0])) {
 			return false;
 		}
 		return true;
