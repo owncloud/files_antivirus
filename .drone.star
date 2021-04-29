@@ -33,7 +33,7 @@ config = {
 				'mariadb:10.2',
 				'postgres:9.4'
 			],
-			'coverage': False
+			'coverage': True
 		},
 	},
 
