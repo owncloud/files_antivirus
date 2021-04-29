@@ -34,7 +34,7 @@ config = {
 				'mysql:8.0',
 				'postgres:9.4'
 			],
-			'coverage': False
+			'coverage': True
 		},
 	},
 
