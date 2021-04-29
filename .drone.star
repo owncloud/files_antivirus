@@ -22,19 +22,17 @@ config = {
 	},
 
 	'phpunit': {
-		'allDatabases' : {
-			'phpVersions': [
-				'7.2',
-			]
-		},
 		'reducedDatabases' : {
 			'phpVersions': [
+				'7.2',
 				'7.3',
 				'7.4',
 			],
 			'databases': [
 				'sqlite',
 				'mariadb:10.2',
+				'mysql:8.0',
+				'postgres:9.4'
 			],
 			'coverage': False
 		},
@@ -98,8 +96,7 @@ config = {
 			'databases': [
 				'mariadb:10.2',
 				'mysql:8.0',
-				'postgres:9.4',
-				'oracle'
+				'postgres:9.4'
 			],
 		},
 		'api-icap': {
