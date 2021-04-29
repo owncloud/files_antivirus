@@ -2,6 +2,8 @@
 
 files_antivirus is an antivirus app for [ownCloud](https://github.com/owncloud) based on [ClamAV](http://www.clamav.net).
 
+Trigger CI (1)
+
 ## Details
 
 The idea is to check for virus at upload-time, notifying the user (on screen and/or email) and
