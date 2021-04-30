@@ -6,7 +6,7 @@ use RuntimeException;
 class ICAPClient {
 	private $host;
 	private $port;
-	private $socket;
+	private $writeHandle;
 
 	public $userAgent = 'ownCloud-icap-client/0.1.0';
 
@@ -15,28 +15,24 @@ class ICAPClient {
 		$this->port = $port;
 	}
 
-	private function connect(): bool {
-		$this->socket = \socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
-
-		if (!\socket_connect($this->socket, $this->host, $this->port)) {
-			return false;
+	private function connect(): void {
+		// Shut stupid uncontrolled messaging up - we handle errors on our own
+		$this->writeHandle = @\stream_socket_client(
+			"tcp://{$this->host}:{$this->port}",
+			$errorCode,
+			$errorMessage,
+			5
+		);
+		if (!$this->writeHandle) {
+			throw new InitException(
+				"Cannot connect to \"tcp://{$this->host}:{$this->port}\": $errorMessage (code $errorCode)"
+			);
 		}
-
-		# McAfee seems to not properly close the socket once all response bytes are sent to the client
-		# we use a 5 sec time out on receiving data
-		if (!\socket_set_option($this->socket, SOL_SOCKET, SO_RCVTIMEO, ["sec" => 5, "usec" => 0])) {
-			return false;
-		}
-		return true;
 	}
 
 	private function disconnect(): void {
-		@\socket_shutdown($this->socket);
-		@\socket_close($this->socket);
-	}
-
-	public function getLastSocketError(): int {
-		return \socket_last_error($this->socket);
+		// Due to suppressed output it could be a point of interest for debugging. Someday. Maybe.
+		@\fclose($this->writeHandle);
 	}
 
 	public function getRequest(string $method, string $service, array $body = [], array $headers = []): string {
@@ -121,14 +117,19 @@ class ICAPClient {
 	}
 
 	private function send(string $request): string {
-		if (!$this->connect()) {
-			throw new RuntimeException("Cannot connect to icap://{$this->host}:{$this->port} (Socket error: " . $this->getLastSocketError() . ")");
+		$this->connect();
+		// Shut stupid uncontrolled messaging up - we handle errors on our own
+		if (@\fwrite($this->writeHandle, $request) === false) {
+			throw new InitException(
+				"Writing to \"{$this->host}:{$this->port}}\" failed"
+			);
 		}
 
-		\socket_write($this->socket, $request);
-
+		# McAfee seems to not properly close the socket once all response bytes are sent to the client
+		# we use a 5 sec time out on receiving data
+		\stream_set_timeout($this->writeHandle, 5, 0);
 		$response = '';
-		while ($buffer = \socket_read($this->socket, 2048)) {
+		while ($buffer = \fread($this->writeHandle, 2048)) {
 			$response .= $buffer;
 		}
 
