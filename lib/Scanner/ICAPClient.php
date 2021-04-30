@@ -16,13 +16,13 @@ class ICAPClient {
 	}
 
 	private function connect(): void {
+		// Shut stupid uncontrolled messaging up - we handle errors on our own
 		$this->writeHandle = @\stream_socket_client(
 			"tcp://{$this->host}:{$this->port}",
 			$errorCode,
 			$errorMessage,
 			5
 		);
-
 		if (!$this->writeHandle) {
 			throw new InitException(
 				"Cannot connect to \"tcp://{$this->host}:{$this->port}\": $errorMessage (code $errorCode)"
@@ -31,6 +31,7 @@ class ICAPClient {
 	}
 
 	private function disconnect(): void {
+		// Due to suppressed output it could be a point of interest for debugging. Someday. Maybe.
 		@\fclose($this->writeHandle);
 	}
 
@@ -117,6 +118,7 @@ class ICAPClient {
 
 	private function send(string $request): string {
 		$this->connect();
+		// Shut stupid uncontrolled messaging up - we handle errors on our own
 		if (@\fwrite($this->writeHandle, $request) === false) {
 			throw new InitException(
 				"Writing to \"{$this->host}:{$this->port}}\" failed"
