@@ -25,13 +25,7 @@ class ICAPClient {
 
 		if (!$this->writeHandle) {
 			throw new InitException(
-				\sprintf(
-					'Cannot connect to "tcp://%s:%s": %s (code %d)',
-					$this->host,
-					$this->port,
-					$errorMessage,
-					$errorCode
-				)
+				"Cannot connect to \"tcp://{$this->host}:{$this->port}\": $errorMessage (code $errorCode)"
 			);
 		}
 	}
@@ -125,7 +119,7 @@ class ICAPClient {
 		$this->connect();
 		if (@\fwrite($this->writeHandle, $request) === false) {
 			throw new InitException(
-				\sprintf('Writing to "%s:%s" failed', $this->host, $this->port)
+				"Writing to \"{$this->host}:{$this->port}}\" failed"
 			);
 		}
 
