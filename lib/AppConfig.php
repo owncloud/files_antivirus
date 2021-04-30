@@ -164,6 +164,8 @@ class AppConfig {
 	 * @param string $value
 	 *
 	 * @return void
+	 *
+	 * @throws \UnexpectedValueException
 	 */
 	public function setAppValue($key, $value) {
 		$this->validateValue($key, $value);
@@ -175,9 +177,15 @@ class AppConfig {
 	 * @param string $value
 	 *
 	 * @return void
+	 *
+	 * @throws \UnexpectedValueException
 	 */
 	public function validateValue($key, $value) {
-		if ($key === 'av_mode' && $value === 'icap'&& !$this->licenseManager->checkLicenseFor('icap')) {
+		if (
+			$key === 'av_mode'
+			&& $value === 'icap'
+			&& !$this->licenseManager->checkLicenseFor($this->appName, ["disableApp" => false])
+		) {
 			$this->logger->error('No valid license found for icap scanner');
 			throw new \UnexpectedValueException("No valid license found for icap scanner mode");
 		}
