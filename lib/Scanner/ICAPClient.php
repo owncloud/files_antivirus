@@ -148,7 +148,7 @@ class ICAPClient {
 		foreach (\preg_split('/\r?\n/', $response) as $line) {
 			if ($responseArray['protocol'] === []) {
 				if (\strpos($line, 'ICAP/') !== 0) {
-					throw new RuntimeException('Unknown ICAP response');
+					throw new RuntimeException("Unknown ICAP response: \"$response\"");
 				}
 
 				$parts = \preg_split('/\ +/', $line, 3);

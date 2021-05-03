@@ -14,6 +14,8 @@
 namespace OCA\Files_Antivirus;
 
 use \OCP\IConfig;
+use OCP\ILogger;
+use OCP\License\ILicenseManager;
 
 /**
  * @method string getAvMode()
@@ -51,6 +53,16 @@ class AppConfig {
 	 */
 	private $config;
 
+	/**
+	 * @var ILicenseManager
+	 */
+	private $licenseManager;
+
+	/**
+	 * @var ILogger
+	 */
+	private $logger;
+
 	private $defaults = [
 		'av_mode' => 'executable',
 		'av_socket' => '/var/run/clamav/clamd.ctl',
@@ -70,9 +82,13 @@ class AppConfig {
 	 * AppConfig constructor.
 	 *
 	 * @param IConfig $config
+	 * @param ILicenseManager $licenseManager
+	 * @param ILogger $logger
 	 */
-	public function __construct(IConfig $config) {
+	public function __construct(IConfig $config, ILicenseManager $licenseManager, ILogger $logger) {
 		$this->config = $config;
+		$this->licenseManager = $licenseManager;
+		$this->logger = $logger;
 	}
 
 	public function getAvChunkSize() {
@@ -131,7 +147,14 @@ class AppConfig {
 		if (\array_key_exists($key, $this->defaults)) {
 			$defaultValue = $this->defaults[$key];
 		}
-		return $this->config->getAppValue($this->appName, $key, $defaultValue);
+		$value = $this->config->getAppValue($this->appName, $key, $defaultValue);
+		try {
+			$this->validateValue($key, $value);
+		} catch (\UnexpectedValueException $e) {
+			$this->logger->error('No valid license found for icap scanner, resetting mode to executable');
+			$value = 'executable';
+		}
+		return  $value;
 	}
 
 	/**
@@ -140,10 +163,32 @@ class AppConfig {
 	 * @param string $key
 	 * @param string $value
 	 *
-	 * @return string
+	 * @return void
+	 *
+	 * @throws \UnexpectedValueException
 	 */
 	public function setAppValue($key, $value) {
-		return $this->config->setAppValue($this->appName, $key, $value);
+		$this->validateValue($key, $value);
+		$this->config->setAppValue($this->appName, $key, $value);
+	}
+
+	/**
+	 * @param string $key
+	 * @param string $value
+	 *
+	 * @return void
+	 *
+	 * @throws \UnexpectedValueException
+	 */
+	public function validateValue($key, $value) {
+		if (
+			$key === 'av_mode'
+			&& $value === 'icap'
+			&& !$this->licenseManager->checkLicenseFor($this->appName, ["disableApp" => false])
+		) {
+			$this->logger->error('No valid license found for icap scanner');
+			throw new \UnexpectedValueException("No valid license found for icap scanner mode");
+		}
 	}
 
 	/**

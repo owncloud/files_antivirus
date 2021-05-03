@@ -6,7 +6,7 @@
  * @author Viktar Dubiniuk <dubiniuk@owncloud.com>
  *
  * @copyright 2012 Manuel Deglado manuel.delgado@ucr.ac.cr
- * @copyright 2014-2018 Viktar Dubiniuk
+ * @copyright 2014-2021 Viktar Dubiniuk
  * @license AGPL-3.0
  *
  * This library is free software; you can redistribute it and/or
@@ -24,14 +24,4 @@
  *
  */
 
-$app = new \OCA\Files_Antivirus\AppInfo\Application();
-OCP\Util::connectHook('OC_Filesystem', 'preSetup', $app, 'setupWrapper');
-
-\OC::$server->getActivityManager()->registerExtension(
-	function () {
-		return new \OCA\Files_Antivirus\Activity(
-			\OC::$server->query('L10NFactory'),
-			\OC::$server->getURLGenerator()
-		);
-	}
-);
+(new \OCA\Files_Antivirus\AppInfo\Application())->init();

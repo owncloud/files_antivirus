@@ -7,7 +7,7 @@
  *
  * @author Viktar Dubiniuk <dubiniuk@owncloud.com>
  *
- * @copyright Viktar Dubiniuk 2014-2018
+ * @copyright Viktar Dubiniuk 2014-2021
  * @license AGPL-3.0
  */
 
@@ -76,11 +76,6 @@ class ScannerFactory {
 				break;
 			case 'icap':
 				$this->scannerClass = ICAPScanner::class;
-				if (!\OC::$server->getLicenseManager()->checkLicenseFor('icap')) {
-					\OC::$server->getLogger()->error('No valid license found for icap scanner');
-					throw new InitException("No valid license found for icap scanner");
-				}
-
 				break;
 			default:
 				throw new InitException(

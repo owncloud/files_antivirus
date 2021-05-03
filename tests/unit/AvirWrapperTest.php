@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (c) 2016 Viktar Dubiniuk <dubiniuk@owncloud.com>
+ * Copyright (c) 2021 Viktar Dubiniuk <dubiniuk@owncloud.com>
  * This file is licensed under the Affero General Public License version 3 or
  * later.
  * See the COPYING-README file.
@@ -57,7 +57,11 @@ class AvirWrapperTest extends TestBase {
 		}
 
 		$this->scannerFactory = new Mock\ScannerFactory(
-			new Mock\Config($this->container->query('CoreConfig')),
+			new Mock\Config(
+				$this->container->query('CoreConfig'),
+				$this->container->query('ServerContainer')->getLicenseManager(),
+				$this->container->query('ServerContainer')->getLogger()
+			),
 			$this->container->query('Logger'),
 			$this->container->query(IL10N::class)
 		);
