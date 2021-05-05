@@ -103,10 +103,8 @@ Feature: Antivirus file size
       | --   | files_antivirus | PUT    | Infected file deleted |
     And as "Alice" file "/FOLDER/eicar.com" should not exist
 
-  @skip @issue-334
   Scenario: Files smaller than the upload threshold are checked for viruses when uploaded via new public upload
-    Given the administrator has enabled DAV tech_preview
-    And as user "Alice"
+    Given as user "Alice"
     And user "Alice" has created a public link share of folder "FOLDER" with change permissions
     And parameter "av_max_file_size" of app "files_antivirus" has been set to "100"
     When the public uploads file "eicar.com" from the antivirus test data folder using the new WebDAV API

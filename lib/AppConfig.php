@@ -218,7 +218,11 @@ class AppConfig {
 	 */
 	protected function getter($key) {
 		if (\array_key_exists($key, $this->defaults)) {
-			return $this->getAppValue($key);
+			$value = $this->getAppValue($key);
+			if ($key === 'av_max_file_size') {
+				return (int) $value;
+			}
+			return $value;
 		} else {
 			throw new \BadFunctionCallException($key . ' is not a valid key');
 		}

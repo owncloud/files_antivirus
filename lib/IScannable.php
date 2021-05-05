@@ -17,6 +17,8 @@ interface IScannable {
 	/**
 	 * Return av_chunk_size bytes of something
 	 * or false when there is no more bytes left
+	 *
+	 * @return string|false
 	 */
 	public function fread();
 }

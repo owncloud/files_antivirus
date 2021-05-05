@@ -6,7 +6,7 @@
  * @author Viktar Dubiniuk <dubiniuk@owncloud.com>
  *
  * @copyright 2012 Manuel Deglado manuel.delgado@ucr.ac.cr
- * @copyright 2014-2018 Viktar Dubiniuk
+ * @copyright 2014-2021 Viktar Dubiniuk
  * @license AGPL-3.0
  *
  * This library is free software; you can redistribute it and/or
@@ -32,7 +32,6 @@ use OCA\Files_Antivirus\Status;
 use OCP\ILogger;
 
 abstract class AbstractScanner {
-	
 	/**
 	 * Scan result
 	 *
@@ -122,14 +121,21 @@ abstract class AbstractScanner {
 	public function scan(IScannable $item) {
 		$this->initScanner();
 
-		while (($chunk = $item->fread()) !== false) {
+		$sizeLimit = $this->appConfig->getAvMaxFileSize();
+		$hasNoSizeLimit = $sizeLimit === -1;
+		$scannedBytes = 0;
+		while (($chunk = $item->fread()) !== false && ($hasNoSizeLimit || $scannedBytes <= $sizeLimit)) {
+			if ($hasNoSizeLimit === false && $scannedBytes + \strlen($chunk) > $sizeLimit) {
+				$chunk = \substr($chunk, 0, $sizeLimit - $scannedBytes);
+			}
 			$this->writeChunk($chunk);
+			$scannedBytes += \strlen($chunk);
 		}
-		
+
 		$this->shutdownScanner();
 		return $this->getStatus();
 	}
-	
+
 	/**
 	 * Async scan - new portion of data is available
 	 *
@@ -138,7 +144,7 @@ abstract class AbstractScanner {
 	public function onAsyncData($data) {
 		$this->writeChunk($data);
 	}
-	
+
 	/**
 	 * Async scan - resource is closed
 	 *
@@ -148,7 +154,7 @@ abstract class AbstractScanner {
 		$this->shutdownScanner();
 		return $this->getStatus();
 	}
-	
+
 	/**
 	 * Get write handle here.
 	 * Do NOT open connection in constructor because this method
