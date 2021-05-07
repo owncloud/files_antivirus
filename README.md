@@ -7,7 +7,7 @@ files_antivirus is an antivirus app for [ownCloud](https://github.com/owncloud) 
 The idea is to check for virus at upload-time, notifying the user (on screen and/or email) and
 remove the file if it's infected.
 
-Trigger CI (4)
+Trigger CI (5)
 
 ## QA metrics on master branch:
 
