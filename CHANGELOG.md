@@ -4,7 +4,15 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
-## [0.16.0] - 2021-02-01
+## [1.0.0] - 2021-05-10
+
+### Fixed
+
+- Prevent from crashing on missing or expired license - [#426](https://github.com/owncloud/files_antivirus/issues/426)
+- Do not depend on the sockets PHP extension - [#428](https://github.com/owncloud/files_antivirus/issues/428)
+- Improve validation pattern to check whether port number is in [1, 65535] range - [#423](https://github.com/owncloud/files_antivirus/issues/423)
+- Prefer daemon or socket to executable mode to if any of those is available - [#399](https://github.com/owncloud/files_antivirus/issues/399)
+- docs: fix icap setup - [#417](https://github.com/owncloud/files_antivirus/issues/417)
 
 ### Added
 
@@ -300,9 +308,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 - Initial implementation
 
-
-[unreleased]: https://github.com/owncloud/files_antivirus/compare/v0.16.0...master
-[0.16.0]: https://github.com/owncloud/files_antivirus/compare/v0.15.2...v0.16.0
+[1.0.0]: https://github.com/owncloud/files_antivirus/compare/v0.15.2...v1.0.0
 [0.15.2]: https://github.com/owncloud/files_antivirus/compare/v0.15.1...v0.15.2
 [0.15.1]: https://github.com/owncloud/files_antivirus/compare/v0.15.0...v0.15.1
 [0.15.0]: https://github.com/owncloud/files_antivirus/compare/v0.14.0...v0.15.0
