@@ -149,3 +149,14 @@ Feature: Antivirus basic
       | user | app             | method | message               |
       | --   | files_antivirus | PUT    | Infected file deleted |
     And the content of file "/FOLDER/textfile.txt" for user "Alice" should be "Small text file without virus."
+
+  Scenario Outline: An empty file can be uploaded
+    Given using <dav-path-version> DAV path
+    When user "Alice" uploads file with content "" to "empty-file.txt" using the WebDAV API
+    Then the HTTP status code should be "201"
+    And as "Alice" file "/empty-file.txt" should exist
+    And the content of file "/empty-file.txt" for user "Alice" should be ""
+    Examples:
+      | dav-path-version |
+      | old              |
+      | new              |
