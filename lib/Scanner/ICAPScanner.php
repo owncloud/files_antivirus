@@ -12,25 +12,34 @@ class ICAPScanner {
 	/** @var IL10N */
 	private $l10n;
 
-	public function __construct(AppConfig $config, ILogger $logger, IL10N $l10n) {
-		$this->host = $config->getAvHost();
-		$this->port = $config->getAvPort();
-		$this->reqService = $config->getAvRequestService();
-		$this->virusHeader = $config->getAvResponseHeader();
-		$this->l10n = $l10n;
-	}
-
 	private $data = '';
 	private $host;
 	private $port;
 	private $reqService;
 	private $virusHeader;
+	private $sizeLimit;
+
+	public function __construct(AppConfig $config, ILogger $logger, IL10N $l10n) {
+		$this->host = $config->getAvHost();
+		$this->port = $config->getAvPort();
+		$this->reqService = $config->getAvRequestService();
+		$this->virusHeader = $config->getAvResponseHeader();
+		$this->sizeLimit = $config->getAvMaxFileSize();
+		$this->l10n = $l10n;
+	}
 
 	public function initScanner() {
 	}
 
 	public function onAsyncData($data) {
-		$this->data .= $data;
+		$hasNoSizeLimit = $this->sizeLimit === -1;
+		$scannedBytes = \strlen($this->data);
+		if ($hasNoSizeLimit || $scannedBytes <= $this->sizeLimit) {
+			if ($hasNoSizeLimit === false && $scannedBytes + \strlen($data) > $this->sizeLimit) {
+				$data = \substr($data, 0, $this->sizeLimit - $scannedBytes);
+			}
+			$this->data .= $data;
+		}
 	}
 
 	public function completeAsyncScan() {

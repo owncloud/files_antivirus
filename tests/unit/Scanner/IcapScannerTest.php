@@ -27,6 +27,7 @@ class IcapScannerTest extends TestCase {
 				'getAvPort',
 				'getAvRequestService',
 				'getAvResponseHeader',
+				'getAvMaxFileSize',
 			])
 			->getMock();
 
@@ -38,6 +39,7 @@ class IcapScannerTest extends TestCase {
 		$config->method('getAvPort')->willReturn(1344);
 		$config->method('getAvRequestService')->willReturn('avscan');
 		$config->method('getAvResponseHeader')->willReturn('X-Infection-Found');
+		$config->method('getAvMaxFileSize')->willReturn(-1);
 
 		$this->scanner = new ICAPScanner($config, $logger, $l10n);
 	}
