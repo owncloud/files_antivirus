@@ -20,7 +20,7 @@ class ICAPScanner {
 		$this->l10n = $l10n;
 	}
 
-	private $data;
+	private $data = '';
 	private $host;
 	private $port;
 	private $reqService;
