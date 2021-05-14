@@ -16,19 +16,19 @@ var antivirusSettings = antivirusSettings || {
 				}
 				for (var i = 0; i < response.statuses.length; i++) {
 					antivirusSettings.renderRow(response.statuses[i]);
-				}		
+				}
 			}
 		);
 	},
-	
+
 	renderRow : function(data){
 		var row = $('<tr />').data('id', data.id).appendTo($('#antivirus-statuses'));
 		$('<td class="icon-checkmark shaded" />').appendTo(row);
 		antivirusSettings.renderSelect(
-				$('<td class="status-type" />').appendTo(row), 
+				$('<td class="status-type" />').appendTo(row),
 				{options : antivirusSettings.types, current : data.status_type}
 		);
-		$('<td class="match editable" />').appendTo(row).text(  
+		$('<td class="match editable" />').appendTo(row).text(
 				(data.status_type == 1 ? data.result : data.match)
 		);
 		$('<td class="description editable" />').appendTo(row).text(data.description);
@@ -36,10 +36,10 @@ var antivirusSettings = antivirusSettings || {
 				$('<td class="scan-result" />').appendTo(row),
 				{ options : antivirusSettings.statuses, current : data.status }
 		);
-		
+
 		$('<td class="icon-delete" />').appendTo(row);
 	},
-	
+
 	onSave : function(){
 		var node = $(this),
 		row = $(node).parent(),
@@ -50,7 +50,7 @@ var antivirusSettings = antivirusSettings || {
 			description : row.children('.description').text(),
 			status : row.find('.scan-result select').val()
 		};
-		
+
 		$.post(OC.generateUrl('apps/files_antivirus/settings/rule/save'), data,
 			function onSuccess(response){
 				if (response && response.id){
@@ -60,7 +60,7 @@ var antivirusSettings = antivirusSettings || {
 			}
 		);
 	},
-	
+
 	onEdit : function(node){
 		if ($(node).find('input').length){
 			return;
@@ -96,9 +96,9 @@ var antivirusSettings = antivirusSettings || {
 			.appendTo(node)
 				.focus()
 		;
-		
+
 	},
-	
+
 	deleteRow : function(){
 		var row = $(this).parent();
 		row.hide();
@@ -108,7 +108,7 @@ var antivirusSettings = antivirusSettings || {
 			}
 		);
 	},
-	
+
 	renderSelect : function(parent, data){
 		var select = $('<select />')
 				.on('change', function(){
@@ -131,8 +131,8 @@ var antivirusSettings = antivirusSettings || {
 
 function av_mode_show_options(str){
 	if ( str === 'daemon'){
-		$('p.av_socket, p.av_path').hide('slow');
-		$('#av_socket, #av_path').attr('disabled', true);
+		$('p.av_socket, p.av_path, p.av_mode_icap').hide('slow');
+		$('#av_socket, #av_path, #av_request_service, #av_response_header').attr('disabled', true);
 		$('#av_host, #av_port').attr('disabled', false);
 		$('p.av_host, p.av_port').show('slow');
 		return;
@@ -140,13 +140,13 @@ function av_mode_show_options(str){
 	if ( str === 'socket' ) {
 		$('#av_socket').attr('disabled', false);
 		$('p.av_socket').show('slow');
-		$('p.av_path, p.av_host, p.av_port').hide('slow');
-		$('#av_path, #av_host, #av_port').attr('disabled', true);
+		$('p.av_path, p.av_host, p.av_port, p.av_mode_icap').hide('slow');
+		$('#av_path, #av_host, #av_port, #av_request_service, #av_response_header').attr('disabled', true);
 		return;
 	}
 	if (str === 'executable') {
-		$('p.av_socket, p.av_host, p.av_port').hide('slow');
-		$('#av_socket, #av_host, #av_port').attr('disabled', true);
+		$('p.av_socket, p.av_host, p.av_port, p.av_mode_icap').hide('slow');
+		$('#av_socket, #av_host, #av_port, #av_request_service, #av_response_header').attr('disabled', true);
 		$('#av_path').attr('disabled', false);
 		$('p.av_path').show('slow');
 		return;
@@ -154,8 +154,8 @@ function av_mode_show_options(str){
 	// icap below
 	$('p.av_socket, p.av_path').hide('slow');
 	$('#av_socket, #av_path').attr('disabled', true);
-	$('#av_host, #av_port').attr('disabled', false);
-	$('p.av_host, p.av_port').show('slow');
+	$('#av_host, #av_port, #av_request_service, #av_response_header').attr('disabled', false);
+	$('p.av_host, p.av_port, p.av_mode_icap').show('slow');
 }
 $(document).ready(function() {
 	$('#av_submit').on('click', function(event){
@@ -188,7 +188,7 @@ $(document).ready(function() {
 			);
 		}
 	});
-	
+
 	$('#antivirus-advanced').on('click', function () {
 		$('.section-antivirus .spoiler').toggle();
 		antivirusSettings.init();
@@ -209,7 +209,7 @@ $(document).ready(function() {
 				antivirusSettings.init();
 			});
 	});
-	
+
 	$('#antivirus-add').on('click', function (){
 		antivirusSettings.renderRow({
 			id : '',
@@ -220,7 +220,7 @@ $(document).ready(function() {
 		});
 		$('#antivirus-statuses tbody tr:last-child td.editable').first().trigger('click');
 	});
-	
+
 	$('#antivirus-statuses tbody').on('click', 'td.editable', function(){
 		console.log(this);
 		antivirusSettings.onEdit(this);
@@ -230,6 +230,6 @@ $(document).ready(function() {
 	$("#av_mode").change(function () {
 		var str = $("#av_mode").val();
 		av_mode_show_options(str);
-	});   
+	});
 	$("#av_mode").change();
 });
