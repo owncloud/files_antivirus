@@ -31,6 +31,14 @@ script('files_antivirus', 'settings');
 				<label for="av_port"><?php p($l->t('Port'));?></label>
 				<input pattern="[1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5]" type="text" id="av_port" name="avPort" value="<?php p($_['avPort']); ?>" title="<?php p($l->t('Port number of Antivirus Host, 1-65535'));?>">
 			</p>
+			<p class="av_req_service av_mode_icap">
+				<label for="av_request_service"><?php p($l->t('ICAP request service. Possible values: "avscan" for clamav or "req" for Kaspersky ScanEngine'));?></label>
+				<input type="text" id="av_request_service" name="avRequestService" value="<?php p($_['avRequestService']); ?>" />
+			</p>
+			<p class="av_response_header av_mode_icap">
+				<label for="av_response_header"><?php p($l->t('ICAP response header holding the virus information. Possible values: X-Virus-ID or X-Infection-Found'));?></label>
+				<input type="text" id="av_response_header" name="avResponseHeader" value="<?php p($_['avResponseHeader']); ?>" />
+			</p>
 			<p class="av_path">
 				<label for="av_path"><?php p($l->t('Path to clamscan'));?></label>
 				<input type="text" id="av_path" name="avPath" value="<?php p($_['avPath']); ?>" title="<?php p($l->t('Path to clamscan executable')); ?>" />
@@ -54,14 +62,6 @@ script('files_antivirus', 'settings');
 					   title="<?php p($l->t('File size limit in bytes, -1 means no limit'));?>"
 				/>
 				<label for="av_max_file_size" class="a-left"><?php p($l->t('bytes'))?></label>
-			</p>
-			<p class="av_req_service">
-				<label for="av_request_service"><?php p($l->t('ICAP request service. Possible values: "avscan" for clamav or "req" for Kaspersky ScanEngine'));?></label>
-				<input type="text" id="av_request_service" name="avRequestService" value="<?php p($_['avRequestService']); ?>" />
-			</p>
-			<p class="av_response_header">
-				<label for="av_response_header"><?php p($l->t('ICAP response header holding the virus information. Possible values: X-Virus-ID or X-Infection-Found'));?></label>
-				<input type="text" id="av_response_header" name="avResponseHeader" value="<?php p($_['avResponseHeader']); ?>" />
 			</p>
 			<p class="infected_action">
 				<label for="av_infected_action"><?php p($l->t('When infected files were found during a background scan'));?></label>
