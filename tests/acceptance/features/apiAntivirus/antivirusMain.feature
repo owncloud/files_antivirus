@@ -121,10 +121,8 @@ Feature: Antivirus basic
       | eicar_com.zip   |
       | eicarcom2.zip   |
 
-  @skip @issue-334
   Scenario Outline: A small file with a virus cannot be uploaded via new public upload
-    Given the administrator has enabled DAV tech_preview
-    And as user "Alice"
+    Given as user "Alice"
     And user "Alice" has created a public link share of folder "FOLDER" with change permissions
     When the public uploads file "<virus-file-name>" from the antivirus test data folder using the new WebDAV API
     Then the HTTP status code should be "403"
