@@ -148,7 +148,7 @@ class AppConfig {
 			$defaultValue = $this->defaults[$key];
 		}
 		if ($key === 'av_path' || $key === 'av_cmd_options') {
-		    return $this->config->getSystemValue($this->appName . "." . $key, $defaultValue);
+			return $this->config->getSystemValue($this->appName . "." . $key, $defaultValue);
 		}
 		$value = $this->config->getAppValue($this->appName, $key, $defaultValue);
 		try {

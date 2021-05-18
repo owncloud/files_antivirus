@@ -19,14 +19,12 @@ use OCP\Migration\ISqlMigration;
 /**
  * Cleans table before adding etag field
  */
-class Version20210413110050 implements ISqlMigration
-{
+class Version20210413110050 implements ISqlMigration {
 	/**
 	 * @param IDBConnection $connection
 	 * @return void
 	 */
-	public function sql(IDBConnection $conn)
-	{
+	public function sql(IDBConnection $conn) {
 		$conf = \OC::$server->getConfig();
 		$query = 'SELECT configkey, configvalue FROM `*PREFIX*appconfig` WHERE `appid` = `files_antivirus` and (`configkey` = `av_path` or `configkey` = `av_cmd_options`)';
 		$result = $conn->executeQuery($query);
