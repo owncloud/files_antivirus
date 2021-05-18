@@ -147,6 +147,9 @@ class AppConfig {
 		if (\array_key_exists($key, $this->defaults)) {
 			$defaultValue = $this->defaults[$key];
 		}
+		if ($key === 'av_path' || $key === 'av_cmd_options') {
+		    return $this->config->getSystemValue($this->appName . "." . $key, $defaultValue);
+		}
 		$value = $this->config->getAppValue($this->appName, $key, $defaultValue);
 		try {
 			$this->validateValue($key, $value);
@@ -168,6 +171,9 @@ class AppConfig {
 	 * @throws \UnexpectedValueException
 	 */
 	public function setAppValue($key, $value) {
+		if ($key === 'av_path' || $key === 'av_cmd_options') {
+			return;
+		}
 		$this->validateValue($key, $value);
 		$this->config->setAppValue($this->appName, $key, $value);
 	}

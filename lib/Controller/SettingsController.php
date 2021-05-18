@@ -73,8 +73,6 @@ class SettingsController extends Controller {
 	 * @param string $avSocket - path to socket (Socket mode)
 	 * @param string $avHost - antivirus url
 	 * @param int $avPort - port
-	 * @param string $avCmdOptions - extra command line options
-	 * @param string $avPath - path to antivirus executable (Executable mode)
 	 * @param string $avInfectedAction - action performed on infected files
 	 * @param int $avStreamMaxLength - reopen socket after bytes
 	 * @param int $avMaxFileSize - file size limit
@@ -84,14 +82,11 @@ class SettingsController extends Controller {
 	 * @return JSONResponse
 	 */
 	public function save($avMode, $avSocket, $avHost, $avPort,
-		$avCmdOptions, $avPath, $avInfectedAction, $avStreamMaxLength,
+		$avInfectedAction, $avStreamMaxLength,
 						 $avMaxFileSize, $avRequestService, $avResponseHeader
 	) {
 		try {
-			if ($avMode === 'executable') {
-				$this->settings->setAvCmdOptions($avCmdOptions);
-				$this->settings->setAvPath($avPath);
-			} elseif ($avMode === 'daemon') {
+			if ($avMode === 'daemon') {
 				$this->settings->setAvPort($avPort);
 				$this->settings->setAvHost($avHost);
 			} elseif ($avMode === 'socket') {
