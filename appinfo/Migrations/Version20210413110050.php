@@ -26,7 +26,7 @@ class Version20210413110050 implements ISqlMigration {
 	 */
 	public function sql(IDBConnection $conn) {
 		$conf = \OC::$server->getConfig();
-		$query = 'SELECT configkey, configvalue FROM `*PREFIX*appconfig` WHERE `appid` = `files_antivirus` and (`configkey` = `av_path` or `configkey` = `av_cmd_options`)';
+		$query = 'SELECT `configkey`, `configvalue` FROM `*PREFIX*appconfig` WHERE `appid` = \'files_antivirus\' AND (`configkey` = \'av_path\' OR `configkey` = \'av_cmd_options\')';
 		$result = $conn->executeQuery($query);
 		while ($row = $result->fetch()) {
 			try {
@@ -38,7 +38,7 @@ class Version20210413110050 implements ISqlMigration {
 		}
 		$result->closeCursor();
 
-		$query = 'DELETE FROM `*PREFIX*appconfig` WHERE `appid` = `files_antivirus` and (`configkey` = `av_path` or `configkey` = `av_cmd_options`)';
+		$query = 'DELETE FROM `*PREFIX*appconfig` WHERE `appid` = \'files_antivirus\' AND (`configkey` = \'av_path\' OR `configkey` = \'av_cmd_options\')';
 		$result = $conn->executeQuery($query);
 		$result->closeCursor();
 	}
