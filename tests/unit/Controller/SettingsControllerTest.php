@@ -56,8 +56,6 @@ class SettingsControllerTest extends TestBase {
 		$this->config->expects(self::atLeast(1))
 			->method('setter')
 			->withConsecutive(
-				['av_cmd_options', ['--fdpass']],
-				['av_path', ['/usr/bin/clamav']],
 				['av_infected_action', ['delete']],
 				['av_stream_max_length', [100]],
 				['av_max_file_size', [800]],
@@ -70,8 +68,6 @@ class SettingsControllerTest extends TestBase {
 			null,
 			null,
 			null,
-			'--fdpass',
-			'/usr/bin/clamav',
 			'delete',
 			100,
 			800, '', ''
@@ -94,8 +90,6 @@ class SettingsControllerTest extends TestBase {
 		$settings->save(
 			'socket',
 			'/var/run/clamd.sock',
-			null,
-			null,
 			null,
 			null,
 			'delete',
@@ -126,8 +120,6 @@ class SettingsControllerTest extends TestBase {
 			null,
 			$avirHost,
 			'90',
-			null,
-			null,
 			'delete',
 			100,
 			800, '', ''
