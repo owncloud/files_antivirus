@@ -6,20 +6,19 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 ## [1.0.0] - 2021-05-18
 
-### Added
-
-- Prefer daemon or socket to executable mode if any of those is available [#399](https://github.com/owncloud/files_antivirus/pull/399)
-
 ### Fixed
 
 - Prevent upload virus file with new public WebDAV API - [#334](https://github.com/owncloud/files_antivirus/pull/334)
 - fix: handle McAfee response [#413](https://github.com/owncloud/files_antivirus/pull/413)
+- docs: fix icap setup - [#417](https://github.com/owncloud/files_antivirus/pull/417)
 - Improve validation pattern to check whether port number is in [1, 65535] range [423](https://github.com/owncloud/files_antivirus/pull/423)
 - Prevent from crashing on missing or expired license [#426](https://github.com/owncloud/files_antivirus/pull/426)
 
 ### Changed
 
+- Prefer daemon or socket to executable mode if any of those is available [#399](https://github.com/owncloud/files_antivirus/pull/399)
 - Do not depend on the sockets PHP extension [#428](https://github.com/owncloud/files_antivirus/pull/428)
+- Move executable options into config.php [#442](https://github.com/owncloud/files_antivirus/pull/442)
 
 
 ## [0.16.0] - 2021-02-01
