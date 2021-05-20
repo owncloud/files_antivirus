@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
+## [1.0.0] - 2021-05-18
+
+### Fixed
+
+- Prevent upload virus file with new public WebDAV API - [#334](https://github.com/owncloud/files_antivirus/pull/334)
+- Prevent from crashing on missing or expired license - [#426](https://github.com/owncloud/files_antivirus/pull/426)
+
+
 ## [0.16.0] - 2021-02-01
 
 ### Added
@@ -301,7 +309,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 - Initial implementation
 
 
-[unreleased]: https://github.com/owncloud/files_antivirus/compare/v0.16.0...master
+[unreleased]: https://github.com/owncloud/files_antivirus/compare/v1.0.0...master
+[1.0.0]: https://github.com/owncloud/files_antivirus/compare/v0.16.0...v1.0.0
 [0.16.0]: https://github.com/owncloud/files_antivirus/compare/v0.15.2...v0.16.0
 [0.15.2]: https://github.com/owncloud/files_antivirus/compare/v0.15.1...v0.15.2
 [0.15.1]: https://github.com/owncloud/files_antivirus/compare/v0.15.0...v0.15.1
