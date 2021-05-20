@@ -40,12 +40,14 @@ script('files_antivirus', 'settings');
 				<input type="text" id="av_response_header" name="avResponseHeader" value="<?php p($_['avResponseHeader']); ?>" />
 			</p>
 			<p class="av_path">
-				<label for="av_path"><?php p($l->t('Path to clamscan'));?></label>
-				<input type="text" id="av_path" name="avPath" value="<?php p($_['avPath']); ?>" title="<?php p($l->t('Path to clamscan executable')); ?>" />
+				<label for="av_path"><?php p($l->t('Path to clamscan')); ?></label>
+				<span id="av_path"><?php p($_['avPath']); ?></span>
+				<em>You can change this value in the <a target="_blank" rel="noreferrer" href="https://doc.owncloud.com/server/admin_manual/configuration/server/config_sample_php_parameters.html">system configuration ↗</a>.</em>
 			</p>
 			<p class="av_path">
-				<label for="av_cmd_options"><?php p($l->t('Extra command line options (comma-separated)'));?></label>
-				<input type="text" id="av_cmd_options" name="avCmdOptions" value="<?php p($_['avCmdOptions']); ?>" />
+				<label for="av_cmd_options"><?php p($l->t('Extra command line options (comma-separated)')); ?></label>
+				<span id="av_cmd_options"><?php p($_['avCmdOptions']); ?></span>
+				<em>You can change this value in the <a target="_blank" rel="noreferrer" href="https://doc.owncloud.com/server/admin_manual/configuration/server/config_sample_php_parameters.html">system configuration ↗</a>.</em>
 			</p>
 			<p class="av_stream_max_length">
 				<label for="av_stream_max_length">
