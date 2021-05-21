@@ -126,9 +126,9 @@ class ICAPClient {
 		}
 
 		# McAfee seems to not properly close the socket once all response bytes are sent to the client
-		# we use a 10 sec time out on receiving data
-		\stream_set_timeout($this->writeHandle, 10, 0);
-		$response = '';
+		# Use a timeout after(!) the first read.
+		$response = \fread($this->writeHandle, 2048);
+		\stream_set_timeout($this->writeHandle, 2, 0);
 		while ($buffer = \fread($this->writeHandle, 2048)) {
 			$response .= $buffer;
 		}
