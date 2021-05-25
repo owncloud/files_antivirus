@@ -95,28 +95,13 @@ class ICAPClient {
 		return $request;
 	}
 
-	public function options(string $service): array {
-		$request = $this->getRequest('OPTIONS', $service);
-		$response = $this->send($request);
-
-		return $this->parseResponse($response);
-	}
-
-	public function respmod(string $service, array $body = [], array $headers = []): array {
-		$request = $this->getRequest('RESPMOD', $service, $body, $headers);
-		$response = $this->send($request);
-
-		return $this->parseResponse($response);
-	}
-
 	public function reqmod(string $service, array $body = [], array $headers = []): array {
 		$request = $this->getRequest('REQMOD', $service, $body, $headers);
 		$response = $this->send($request);
-
-		return $this->parseResponse($response);
+		return $response;
 	}
 
-	private function send(string $request): string {
+	private function send(string $request): array {
 		$this->connect();
 		// Shut stupid uncontrolled messaging up - we handle errors on our own
 		if (@\fwrite($this->writeHandle, $request) === false) {
@@ -125,90 +110,99 @@ class ICAPClient {
 			);
 		}
 
-		# McAfee seems to not properly close the socket once all response bytes are sent to the client
-		# we use a 10 sec time out on receiving data
-		\stream_set_timeout($this->writeHandle, 10, 0);
-		$response = '';
-		while ($buffer = \fread($this->writeHandle, 2048)) {
-			$response .= $buffer;
+		// read header
+		$protocol = $this->readIcapStatusLine();
+		$headers = $this->readHeaders();
+		$resHdr = [];
+		if (isset($headers['Encapsulated'])) {
+			$resHdr = $this->parseResHdr($headers['Encapsulated']);
 		}
 
 		$this->disconnect();
-		return $response;
+		return [
+			'protocol' => $protocol,
+			'headers' => $headers,
+			'body' => ['res-hdr' => $resHdr]
+		];
 	}
 
-	private function parseResponse(string $response): array {
-		$responseArray = [
-			'protocol' => [],
-			'headers' => [],
-			'body' => [],
-			'rawBody' => ''
+	private function readIcapStatusLine(): array {
+		$icapHeader = \trim(\fgets($this->writeHandle));
+		$numValues = \sscanf($icapHeader, "ICAP/%d.%d %d %s", $v1, $v2, $code, $status);
+		if ($numValues !== 4) {
+			throw new RuntimeException("Unknown ICAP response: \"$icapHeader\"");
+		}
+		return [
+			'protocolVersion' => "$v1.$v2",
+			'code' => $code,
+			'status' => $status,
 		];
+	}
 
-		foreach (\preg_split('/\r?\n/', $response) as $line) {
-			if ($responseArray['protocol'] === []) {
-				if (\strpos($line, 'ICAP/') !== 0) {
-					throw new RuntimeException("Unknown ICAP response: \"$response\"");
-				}
-
-				$parts = \preg_split('/\ +/', $line, 3);
-
-				$responseArray['protocol'] = [
-					'icap' => $parts[0] ?? '',
-					'code' => $parts[1] ?? '',
-					'message' => $parts[2] ?? '',
-				];
-
+	private function parseResHdr(string $headerValue): array {
+		$encapsulatedHeaders = [];
+		$encapsulatedParts = \explode(",", $headerValue);
+		foreach ($encapsulatedParts as $encapsulatedPart) {
+			$pieces = \explode("=", \trim($encapsulatedPart));
+			if ($pieces[1] === "0") {
 				continue;
 			}
+			$rawEncapsulatedHeaders = \fread($this->writeHandle, $pieces[1]);
+			$encapsulatedHeaders = $this->parseEncapsulatedHeaders($rawEncapsulatedHeaders);
+			// According to the spec we have a single res-hdr part and are not interested in res-body content
+			break;
+		}
+		return $encapsulatedHeaders;
+	}
 
-			if ($line === '') {
+	private function readHeaders(): array {
+		$headers = [];
+		$prevString = "";
+		while ($headerString = \fgets($this->writeHandle)) {
+			$trimmedHeaderString = \trim($headerString);
+			if ($prevString === "" && $trimmedHeaderString === "") {
 				break;
 			}
+			list($headerName, $headerValue) = $this->parseHeader($trimmedHeaderString);
+			if ($headerName !== '') {
+				$headers[$headerName] = $headerValue;
+				if ($headerName == "Encapsulated") {
+					break;
+				}
+			}
+			$prevString = $trimmedHeaderString;
+		}
+		return $headers;
+	}
 
-			$parts = \preg_split('/:\ /', $line, 2);
-			if (isset($parts[0])) {
-				$responseArray['headers'][$parts[0]] = $parts[1] ?? '';
+	private function parseEncapsulatedHeaders(string $headerString) : array {
+		$headers = [];
+		$split = \preg_split('/\r?\n/', \trim($headerString));
+		$statusLine = \array_shift($split);
+		if ($statusLine !== null) {
+			$headers['HTTP_STATUS'] = $statusLine;
+		}
+		foreach (\preg_split('/\r?\n/', $headerString) as $line) {
+			if ($line === '') {
+				continue;
+			}
+			list($name, $value) = $this->parseHeader($line);
+			if ($name !== '') {
+				$headers[$name] = $value;
 			}
 		}
 
-		$body = \preg_split('/\r?\n\r?\n/', $response, 2);
-		if (isset($body[1])) {
-			$responseArray['rawBody'] = $body[1];
+		return $headers;
+	}
 
-			if (\array_key_exists('Encapsulated', $responseArray['headers'])) {
-				$encapsulated = [];
-				$params = \explode(", ", $responseArray['headers']['Encapsulated']);
-
-				foreach ($params as $param) {
-					$parts = \explode("=", $param);
-					if (\count($parts) !== 2) {
-						continue;
-					}
-
-					$encapsulated[$parts[0]] = $parts[1];
-				}
-
-				foreach ($encapsulated as $section => $offset) {
-					$data = \substr($body[1], (int)$offset);
-					switch ($section) {
-						case 'req-hdr':
-						case 'res-hdr':
-							$responseArray['body'][$section] = \preg_split('/\r?\n\r?\n/', $data, 2)[0];
-							break;
-
-						case 'req-body':
-						case 'res-body':
-							$parts = \preg_split('/\r?\n/', $data, 2);
-							if (\count($parts) === 2) {
-								$responseArray['body'][$section] = \substr($parts[1], 0, \hexdec($parts[0]));
-							}
-							break;
-					}
-				}
-			}
+	private function parseHeader(string $headerString): array {
+		$name = '';
+		$value = '';
+		$parts = \preg_split('/:\ /', $headerString, 2);
+		if (isset($parts[0])) {
+			$name = $parts[0];
+			$value = $parts[1] ?? '';
 		}
-
-		return $responseArray;
+		return [$name, $value];
 	}
 }
