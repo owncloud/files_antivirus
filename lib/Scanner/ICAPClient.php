@@ -110,12 +110,17 @@ class ICAPClient {
 			);
 		}
 
-		// read header
-		$protocol = $this->readIcapStatusLine();
-		$headers = $this->readHeaders();
+		$headers = [];
 		$resHdr = [];
-		if (isset($headers['Encapsulated'])) {
-			$resHdr = $this->parseResHdr($headers['Encapsulated']);
+		$protocol = $this->readIcapStatusLine();
+		
+		// McAfee seems to not properly close the socket once all response bytes are sent to the client
+		// So if ICAP status is 204 we just stop reading
+		if ($protocol['code'] !== 204) {
+			$headers = $this->readHeaders();
+			if (isset($headers['Encapsulated'])) {
+				$resHdr = $this->parseResHdr($headers['Encapsulated']);
+			}
 		}
 
 		$this->disconnect();
