@@ -33,6 +33,7 @@ class IcapScannerTest extends TestCase {
 
 		$logger = $this->createMock(ILogger::class);
 		$l10n = $this->createMock(IL10N::class);
+		$l10n->method('t')->will($this->returnArgument(0));
 
 		# for local testing replace 'icap' with the ip of the clamav instance
 		$config->method('getAvHost')->willReturn('icap');
