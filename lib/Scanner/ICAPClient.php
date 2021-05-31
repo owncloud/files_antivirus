@@ -103,6 +103,7 @@ class ICAPClient {
 
 	private function send(string $request): array {
 		$this->connect();
+		\stream_set_timeout($this->writeHandle, 300, 0);        // try extend the timeout to 5min. 
 		// Shut stupid uncontrolled messaging up - we handle errors on our own
 		if (@\fwrite($this->writeHandle, $request) === false) {
 			throw new InitException(
