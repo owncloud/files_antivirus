@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
-## [1.0.0] - 2021-05-18
+## [1.0.0] - 2021-05-31
 
 ### Fixed
 
@@ -13,6 +13,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 - docs: fix icap setup - [#417](https://github.com/owncloud/files_antivirus/pull/417)
 - Improve validation pattern to check whether port number is in [1, 65535] range [423](https://github.com/owncloud/files_antivirus/pull/423)
 - Prevent from crashing on missing or expired license [#426](https://github.com/owncloud/files_antivirus/pull/426)
+- fix: [ICAP] Stop reading the response after headers are read - [#445](https://github.com/owncloud/files_antivirus/pull/445)
 
 ### Changed
 
