@@ -5,7 +5,7 @@
 	<description>
 When sharing files, security is a key aspect. The ownCloud Anti-Virus extension helps by protecting against malicious software like trojans or viruses. It forwards files that are being uploaded to the ownCloud server to an external malware scanning engine before they are written to the storage. When a file is recognized as malicious, it can be logged and prevented from being uploaded to the server to ensure that files in ownCloud are free of malware. More sophisticated rules may be specified in 'Advanced' mode. ownCloud administrators can find the configuration options in the 'Security' settings.
 
-**Integrates enterprise-grade antivirus scanners through ICAP**
+**Integrates enterprise-grade anti-virus scanners through ICAP**
 
 From version 1.0.0, Anti-Virus brings an ICAP integration for Enterprise installations. This means that administrators can integrate their favorite enterprise-grade Anti-Virus scanners through the open standard Internet Content Adaptation Protocol (ICAP). With this set up, ownCloud can delegate the scanning of files on upload to another machine, the ICAP server. The ICAP server then checks it and either greenlights it or, if malicious code is found, treats it according to its settings and notifies the ownCloud server. ownCloud can then act accordingly, either accepting the file or rejecting the upload. Offloading the anti-virus scans to another dedicated server can greatly improve performance and scale.
 
