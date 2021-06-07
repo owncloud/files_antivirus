@@ -53,8 +53,8 @@ class ICAPScanner {
 		], [
 			'Allow' => 204
 		]);
-		$code = $response['protocol']['code'] ?? '500';
-		if ($code === '200' || $code === '204') {
+		$code = $response['protocol']['code'] ?? 500;
+		if ($code === 200 || $code === 204) {
 			// c-icap/clamav reports this header
 			$virus = $response['headers'][$this->virusHeader] ?? false;
 			if ($virus) {
@@ -62,7 +62,7 @@ class ICAPScanner {
 			}
 
 			// kaspersky(pre 2020 product editions) and McAfee handling
-			$respHeader = $response['body']['res-hdr'] ?? '';
+			$respHeader = $response['body']['res-hdr']['HTTP_STATUS'] ?? '';
 			if (\strpos($respHeader, '403 Forbidden') || \strpos($respHeader, '403 VirusFound')) {
 				$message = $this->l10n->t('A malware or virus was detected, your upload was deleted. In doubt or for details please contact your system administrator');
 				return Status::create(Status::SCANRESULT_INFECTED, $message);
