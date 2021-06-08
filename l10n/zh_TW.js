@@ -32,7 +32,6 @@ OC.L10N.register(
     "Port" : "連接埠",
     "Port number of Antivirus Host, 1-65535" : "防病毒主機的端口號，1-65535",
     "Path to clamscan" : "到 clamscan 的路徑",
-    "Path to clamscan executable" : "Clamscan可執行文件的路徑",
     "Extra command line options (comma-separated)" : "額外的命令行選項（以逗號分隔）",
     "Stream Length" : "串流長度",
     "ClamAV StreamMaxLength value in bytes" : "ClamAV StreamMaxLength值以字節為單位",

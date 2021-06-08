@@ -32,7 +32,6 @@ OC.L10N.register(
     "Port" : "Θύρα",
     "Port number of Antivirus Host, 1-65535" : "Αριθμός θύρας του συστήματος με το Αντιικό, 1-65535",
     "Path to clamscan" : "Διαδρομή για το clamscan",
-    "Path to clamscan executable" : "Διαδρομή για το εκτελέσιμο clamscan",
     "Extra command line options (comma-separated)" : "Επιπλέον επιλογές γραμμής εντολών (διαχωρισμένες με κόμμα)",
     "Stream Length" : "Διάρκεια της ροής δεδομένων",
     "ClamAV StreamMaxLength value in bytes" : "Τιμές σε bytes του ClamAV StreamMaxLength",

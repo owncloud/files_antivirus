@@ -30,7 +30,6 @@
     "Port" : "פורט",
     "Port number of Antivirus Host, 1-65535" : "מספר יציאת מחשב (port) של שרת האנטי וירוס, 1-65535",
     "Path to clamscan" : "נתיב אל clamscan",
-    "Path to clamscan executable" : "נתיב לקובץ ההפעלה של clamscan",
     "Extra command line options (comma-separated)" : "אפשרויות שורת פקודה נוספות (מופרד באמצעות פסיקים)",
     "Stream Length" : "אורך הזרם",
     "ClamAV StreamMaxLength value in bytes" : "ערך ClamAV StreamMaxLength בבייטים",

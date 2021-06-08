@@ -31,7 +31,6 @@ OC.L10N.register(
     "Hostname or IP address of Antivirus Host" : "Viirusetõrje hostinimi või IP-aadress",
     "Port" : "Port",
     "Path to clamscan" : "clamscani asukoht",
-    "Path to clamscan executable" : "Clamscan'i käivitus teekond",
     "Extra command line options (comma-separated)" : "Käsurea lisavalikud (eraldatuna komadega)",
     "Stream Length" : "Striimi pikkus",
     "bytes" : "baiti",

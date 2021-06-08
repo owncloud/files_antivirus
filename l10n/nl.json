@@ -30,7 +30,6 @@
     "Port" : "Poort",
     "Port number of Antivirus Host, 1-65535" : "Poortnummer van Antivirus Host, 1-65535",
     "Path to clamscan" : "Pad naar clamscan",
-    "Path to clamscan executable" : "Pad naar uitvoerbaarbestand clamscan",
     "Extra command line options (comma-separated)" : "Extra commandoregel opties (comma-gescheiden)",
     "Stream Length" : "Stroom lengte",
     "ClamAV StreamMaxLength value in bytes" : "ClamAV StreamMaxLength waarde in bytes",

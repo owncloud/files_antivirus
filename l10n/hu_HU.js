@@ -32,7 +32,6 @@ OC.L10N.register(
     "Port" : "Port",
     "Port number of Antivirus Host, 1-65535" : "Antivírus kiszolgáló Port száma, 1-65535",
     "Path to clamscan" : "A clamscan elérési útvonala",
-    "Path to clamscan executable" : "A clamscan elérési útvonala végrehajtható",
     "Extra command line options (comma-separated)" : "Extra parancssor (vesszővel elválasztva)",
     "Stream Length" : "Folyamhossz",
     "ClamAV StreamMaxLength value in bytes" : "ClamAV StreamMaxLength érték bájtokban",

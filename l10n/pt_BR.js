@@ -36,7 +36,6 @@ OC.L10N.register(
     "ICAP request service. Possible values: \"avscan\" for clamav or \"req\" for Kaspersky ScanEngine" : "Serviço de solicitação ICAP. Valores possíveis: \"avscan\" para clamav ou \"req\" para Kaspersky ScanEngine",
     "ICAP response header holding the virus information. Possible values: X-Virus-ID or X-Infection-Found" : "Cabeçalho de resposta ICAP segurando as informações do vírus. Valores possíveis: X-Virus-ID ou X-Infection-Found",
     "Path to clamscan" : "Caminho para clamscan",
-    "Path to clamscan executable" : "Caminho do executável clamscan",
     "Extra command line options (comma-separated)" : "Opções de linha de comando Extra (separados por vírgula)",
     "Stream Length" : "Duração do Fluxo",
     "ClamAV StreamMaxLength value in bytes" : "ClamAV StreamMaxLength valor em bytes",

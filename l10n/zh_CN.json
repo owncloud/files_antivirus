@@ -30,7 +30,6 @@
     "Port" : "端口",
     "Port number of Antivirus Host, 1-65535" : "反病毒服务器端口，1-65535",
     "Path to clamscan" : "clamscan路径",
-    "Path to clamscan executable" : "clamscan 可执行文件的路径",
     "Extra command line options (comma-separated)" : "其他命令行选项(逗号分隔)",
     "Stream Length" : "流长度",
     "ClamAV StreamMaxLength value in bytes" : "ClamAV StreamMaxLength 设定值（以字节表示）",

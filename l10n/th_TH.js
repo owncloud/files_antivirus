@@ -36,7 +36,6 @@ OC.L10N.register(
     "ICAP request service. Possible values: \"avscan\" for clamav or \"req\" for Kaspersky ScanEngine" : "CAP request service ค่าที่เป็นไปได้คือ: \"avscan\" สำหรับ clamav หรือ \"req\" สำหรับ Kaspersky ScanEngine",
     "ICAP response header holding the virus information. Possible values: X-Virus-ID or X-Infection-Found" : "ICAP response header ที่เก็บข้อมูลของไวรัส ค่าที่เป็นไปได้คือ: X-Virus-ID หรือ X-Infection-Found",
     "Path to clamscan" : "ตำแหน่งพาธของ clamscan",
-    "Path to clamscan executable" : "เส้นทางไปยัง clamscan executable",
     "Extra command line options (comma-separated)" : "เลือกบรรทัดคำสั่งพิเศษ (คั่นด้วยเครื่องหมายจุลภาค)",
     "Stream Length" : "Stream Length",
     "ClamAV StreamMaxLength value in bytes" : "ค่า ClamAV StreamMaxLength เป็นไบต์",

@@ -32,7 +32,6 @@ OC.L10N.register(
     "Port" : "Gátt",
     "Port number of Antivirus Host, 1-65535" : "Gáttarnúmer vírusvarnavélar, 1-65535",
     "Path to clamscan" : "Slóð að clamscan",
-    "Path to clamscan executable" : "Slóð að clamscan-keyrsluskránni",
     "Extra command line options (comma-separated)" : "Auka skipanalínurofar (aðskilið með kommu)",
     "Stream Length" : "Lengd streymis",
     "ClamAV StreamMaxLength value in bytes" : "Gildi ClamAV StreamMaxLength í bætum",

@@ -30,7 +30,6 @@
     "Port" : "Porta",
     "Port number of Antivirus Host, 1-65535" : "Numero porta del server Antivirus, 1-65535",
     "Path to clamscan" : "Percorso a clamscan",
-    "Path to clamscan executable" : "Percorso verso l'eseguibile clamscan",
     "Extra command line options (comma-separated)" : "Opzioni aggiuntive da riga di comando (separate da virgole)",
     "Stream Length" : "Lunghezza Stream",
     "ClamAV StreamMaxLength value in bytes" : "Valore di ClamAV SteamMaxLengh in bytes",

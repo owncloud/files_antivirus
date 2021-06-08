@@ -34,7 +34,6 @@
     "ICAP request service. Possible values: \"avscan\" for clamav or \"req\" for Kaspersky ScanEngine" : "ICAP request service. Mögliche Werte sind: \"avscan\" für ClamAV oder \"req\" für Kaspersky ScanEngine",
     "ICAP response header holding the virus information. Possible values: X-Virus-ID or X-Infection-Found" : "ICAP Antwort-Kopfzeile mit Informationen zum Virus. Mögliche Werte: X-Virus-ID oder X-Infection-Found",
     "Path to clamscan" : "Pfad zu clamscan",
-    "Path to clamscan executable" : "Pfad zum clamscan-Programm",
     "Extra command line options (comma-separated)" : "Zusätzliche Kommandozeilenoptionen (Kommata-getrennt)",
     "Stream Length" : "Übertragungslänge",
     "ClamAV StreamMaxLength value in bytes" : "ClamAV-Wert 'StreamMaxLength' in Bytes",

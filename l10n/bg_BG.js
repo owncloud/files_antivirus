@@ -32,7 +32,6 @@ OC.L10N.register(
     "Port" : "Порт",
     "Port number of Antivirus Host, 1-65535" : "Порт на Анитивирусният Сървър, 1-65535",
     "Path to clamscan" : "Път до clamscan",
-    "Path to clamscan executable" : "Път до изпълнимия файл на clamscan",
     "Extra command line options (comma-separated)" : "Допълнителни параметри за командата(разделени със запетая)",
     "Stream Length" : "Stream Length",
     "ClamAV StreamMaxLength value in bytes" : "ClamAV StreamMaxLength стойност в байтове.",
