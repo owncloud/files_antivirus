@@ -13,7 +13,10 @@ use OCA\DAV\Upload\FutureFile;
 use OCA\Files_Antivirus\AppInfo\Application;
 use OCA\Files_Antivirus\Dav\AntivirusPlugin;
 use OCA\Files_Antivirus\RequestHelper;
-use \OCP\IRequest;
+use OCP\ILogger;
+use OCP\IRequest;
+use OCP\IUser;
+use OCP\IUserSession;
 use Sabre\DAV\Tree;
 
 class RequestHelperTest extends TestBase {
@@ -112,7 +115,13 @@ class RequestHelperTest extends TestBase {
 		$server = $this->createMock(\Sabre\DAV\Server::class);
 		$server->tree = $tree;
 
-		$plugin = new AntivirusPlugin(new Application());
+		$user =$this->createMock(IUser::class);
+		$userSession = $this->createMock(IUserSession::class);
+		$userSession->method('getUser')->willReturn($user);
+
+		$logger = $this->createMock(ILogger::class);
+
+		$plugin = new AntivirusPlugin(new Application(), $userSession, $logger);
 		$plugin->initialize($server);
 		$plugin->beforeMove('/something/.file', $davPath);
 
