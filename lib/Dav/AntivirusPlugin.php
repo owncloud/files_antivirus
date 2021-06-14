@@ -17,6 +17,8 @@ use OCA\DAV\Upload\FutureFile;
 use OCA\Files_Antivirus\AppInfo\Application;
 use OCA\Files_Antivirus\Resource;
 use OCA\Files_Antivirus\Status;
+use OCP\ILogger;
+use OCP\IUserSession;
 use Sabre\DAV\Exception\Forbidden;
 use Sabre\DAV\INode;
 use Sabre\DAV\Server;
@@ -26,7 +28,7 @@ use Sabre\DAV\ServerPlugin;
  * Sabre plugin for the the antivirus
  */
 class AntivirusPlugin extends ServerPlugin {
-	const NS_OWNCLOUD = 'http://owncloud.org/ns';
+	public const NS_OWNCLOUD = 'http://owncloud.org/ns';
 
 	/**
 	 * @var \Sabre\DAV\Server $server
@@ -39,12 +41,24 @@ class AntivirusPlugin extends ServerPlugin {
 	private $application;
 
 	/**
+	 * @var IUserSession
+	 */
+	private $userSession;
+
+	/**
+	 * @var ILogger
+	 */
+	private $logger;
+
+	/**
 	 * Constructor
 	 *
 	 * @param Application $application
 	 */
-	public function __construct(Application $application) {
+	public function __construct(Application $application, IUserSession $userSession, ILogger $logger) {
 		$this->application = $application;
+		$this->userSession = $userSession;
+		$this->logger = $logger;
 	}
 
 	/**
@@ -63,6 +77,7 @@ class AntivirusPlugin extends ServerPlugin {
 		$this->davServer = $server;
 		$this->davServer->on('beforeMove', [$this, 'beforeMove'], 1);
 		$this->davServer->on('beforeCreateFile', [$this, 'beforeCreateFile']);
+		$this->davServer->on('beforeWriteContent', [$this, 'beforeWriteContent']);
 	}
 
 	/**
@@ -90,31 +105,61 @@ class AntivirusPlugin extends ServerPlugin {
 	 * @param INode $parentNode
 	 * @param bool $modified should be set to true, if this event handler
 	 *                           changed &$data
+	 * @return bool|null
+	 * @throws Forbidden
 	 */
 	public function beforeCreateFile($path, &$data, INode $parentNode, &$modified) {
-		$container = $this->application->getContainer();
-		$server = $container->getServer();
 		// Scan a public upload
-		if ($server->getUserSession()->getUser() === null) {
-			$appConfig = $container->query('AppConfig');
-			$scannerFactory = $container->query('ScannerFactory');
-			$scanner = $scannerFactory->getScanner();
-			$status = $scanner->scan(new Resource($data, $appConfig->getAvChunkSize()));
-			if (\intval($status->getNumericStatus()) === Status::SCANRESULT_INFECTED) {
-				$details = $status->getDetails();
-				$server->getLogger()->warning(
-					"Infected file deleted after uploading to the public folder. $details Path: $path",
-					['app' => 'files_antivirus']
-				);
-				throw new Forbidden(
-					$container->query('L10N')->t(
-						'Virus %s is detected in the file. Upload cannot be completed.',
-						$status->getDetails()
-					), false
-				);
-			}
+		if ($this->userSession->getUser() === null) {
+			$this->scanPublicUpload($path, $data);
 		}
 		\rewind($data);
 		return true;
+	}
+
+	/**
+	 * This method is triggered before a content written (but not for new files).
+	 *
+	 * @param string $path
+	 * @param INode $node
+	 * @param resource $data
+	 * @param bool $modified should be set to true, if this event handler
+	 *                           changed &$data
+	 * @return bool|null
+	 * @throws Forbidden
+	 */
+	public function beforeWriteContent($path, INode $node, &$data, &$modified) {
+		// Scan a public upload
+		if ($this->userSession->getUser() === null) {
+			$this->scanPublicUpload($path, $data);
+		}
+		\rewind($data);
+		return true;
+	}
+
+	/**
+	 * @param string $path
+	 * @param resource $data
+	 * @throws Forbidden
+	 */
+	private function scanPublicUpload($path, &$data) {
+		$container = $this->application->getContainer();
+		$appConfig = $container->query('AppConfig');
+		$scannerFactory = $container->query('ScannerFactory');
+		$scanner = $scannerFactory->getScanner();
+		$status = $scanner->scan(new Resource($data, $appConfig->getAvChunkSize()));
+		if (\intval($status->getNumericStatus()) === Status::SCANRESULT_INFECTED) {
+			$details = $status->getDetails();
+			$this->logger->warning(
+				"Infected file deleted after uploading to the public folder. $details Path: $path",
+				['app' => 'files_antivirus']
+			);
+			throw new Forbidden(
+				$container->query('L10N')->t(
+					'Virus %s is detected in the file. Upload cannot be completed.',
+					$status->getDetails()
+				), false
+			);
+		}
 	}
 }
