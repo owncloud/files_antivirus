@@ -26,12 +26,12 @@ class Rule extends Entity implements JsonSerializable {
 	/*
 	 * Rule needs to be validated by the exit code returned by scanner
 	 */
-	const RULE_TYPE_CODE = 1;
+	public const RULE_TYPE_CODE = 1;
 	
 	/*
 	 * Rule needs to be validated by parsing the scanner output with regexp
 	 */
-	const RULE_TYPE_MATCH = 2;
+	public const RULE_TYPE_MATCH = 2;
 
 	/**
 	 *

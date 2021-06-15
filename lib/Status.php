@@ -18,17 +18,17 @@ class Status {
 	/*
 	 *  The file was not checked (e.g. because the AV daemon wasn't running).
 	 */
-	const SCANRESULT_UNCHECKED = -1;
+	public const SCANRESULT_UNCHECKED = -1;
 
 	/*
 	 *  The file was checked and found to be clean.
 	 */
-	const SCANRESULT_CLEAN = 0;
+	public const SCANRESULT_CLEAN = 0;
 
 	/*
 	 *  The file was checked and found to be infected.
 	 */
-	const SCANRESULT_INFECTED = 1;
+	public const SCANRESULT_INFECTED = 1;
 
 	/*
 	 * Should be SCANRESULT_UNCHECKED | SCANRESULT_INFECTED | SCANRESULT_CLEAN

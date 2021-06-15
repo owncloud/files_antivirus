@@ -36,8 +36,8 @@ class RuleTest extends TestBase {
 		$this->assertArrayHasKey('id', $actual);
 		unset($actual['id']);
 		$this->assertEquals(
-				$expected,
-				$actual
+			$expected,
+			$actual
 		);
 	}
 }

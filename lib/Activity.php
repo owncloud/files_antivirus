@@ -18,27 +18,27 @@ use OCP\Activity\IExtension;
 use OCP\IURLGenerator;
 
 class Activity implements IExtension {
-	const APP_NAME = 'files_antivirus';
+	public const APP_NAME = 'files_antivirus';
 
 	/**
 	 * Filter with all app related activities
 	 */
-	const FILTER_AVIR = 'files_antivirus';
+	public const FILTER_AVIR = 'files_antivirus';
 
 	/**
 	 * Activity types known to this extension
 	 */
-	const TYPE_VIRUS_DETECTED = 'virus_detected';
+	public const TYPE_VIRUS_DETECTED = 'virus_detected';
 
 	/**
 	 * Subject keys for translation of the subjections
 	 */
-	const SUBJECT_VIRUS_DETECTED = 'virus_detected';
+	public const SUBJECT_VIRUS_DETECTED = 'virus_detected';
 	
 	/**
 	 * Infected file deletion notice
 	 */
-	const MESSAGE_FILE_DELETED = 'file_deleted';
+	public const MESSAGE_FILE_DELETED = 'file_deleted';
 
 	/**
 	 * @var Factory

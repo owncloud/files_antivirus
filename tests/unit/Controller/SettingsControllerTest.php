@@ -70,7 +70,9 @@ class SettingsControllerTest extends TestBase {
 			null,
 			'delete',
 			100,
-			800, '', ''
+			800,
+			'',
+			''
 		);
 	}
 
@@ -94,7 +96,9 @@ class SettingsControllerTest extends TestBase {
 			null,
 			'delete',
 			100,
-			800, '', ''
+			800,
+			'',
+			''
 		);
 	}
 
@@ -122,7 +126,9 @@ class SettingsControllerTest extends TestBase {
 			'90',
 			'delete',
 			100,
-			800, '', ''
+			800,
+			'',
+			''
 		);
 	}
 }

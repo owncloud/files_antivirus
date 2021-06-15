@@ -14,8 +14,8 @@
 namespace OCA\Files_Antivirus\Tests\util;
 
 class DummyClam {
-	const TEST_STREAM_SIZE = 524288; // 512K
-	const TEST_SIGNATURE = 'does the job';
+	public const TEST_STREAM_SIZE = 524288; // 512K
+	public const TEST_SIGNATURE = 'does the job';
 	private $chunkSize = 8192; // 8K
 	private $socketDN;
 	private $socket;

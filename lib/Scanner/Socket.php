@@ -52,7 +52,10 @@ class Socket extends External {
 	public function initScanner() {
 		parent::initScanner();
 		$this->writeHandle = @\stream_socket_client(
-			'unix://' . $this->socket, $errorCode, $errorMessage, 5
+			'unix://' . $this->socket,
+			$errorCode,
+			$errorMessage,
+			5
 		);
 		if (!$this->getWriteHandle()) {
 			throw new InitException(

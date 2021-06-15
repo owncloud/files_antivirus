@@ -12,9 +12,9 @@ use \OCA\Files_Antivirus\Db\RuleMapper;
 
 class StatusTest extends TestBase {
 	// See OCA\Files_Antivirus\Status::init for details
-	const TEST_CLEAN = 0;
-	const TEST_INFECTED = 1;
-	const TEST_ERROR = 40;
+	public const TEST_CLEAN = 0;
+	public const TEST_INFECTED = 1;
+	public const TEST_ERROR = 40;
 	
 	protected $ruleMapper;
 
