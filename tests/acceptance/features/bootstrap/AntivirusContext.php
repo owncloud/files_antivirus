@@ -79,7 +79,9 @@ class AntivirusContext implements Context {
 	 * @return void
 	 */
 	public function userUploadsFileFromAntivirusDataFolderTo(
-		$user, $source, $destination
+		$user,
+		$source,
+		$destination
 	) {
 		$source = $this->getRelativePathToTestDataFolder() . $source;
 		$this->featureContext->userUploadsAFileTo($user, $source, $destination);

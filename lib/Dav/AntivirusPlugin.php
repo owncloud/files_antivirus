@@ -158,7 +158,8 @@ class AntivirusPlugin extends ServerPlugin {
 				$container->query('L10N')->t(
 					'Virus %s is detected in the file. Upload cannot be completed.',
 					$status->getDetails()
-				), false
+				),
+				false
 			);
 		}
 	}

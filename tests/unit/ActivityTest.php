@@ -31,7 +31,7 @@ class ActivityTest extends TestBase {
 	
 	public function testGetTypeIcon() {
 		$this->assertFalse(
-				$this->activity->getTypeIcon(null)
+			$this->activity->getTypeIcon(null)
 		);
 		
 		$this->assertEquals('icon-info', $this->activity->getTypeIcon(Activity::TYPE_VIRUS_DETECTED));
@@ -39,13 +39,13 @@ class ActivityTest extends TestBase {
 	
 	public function testGetSpecialParameterList() {
 		$this->assertFalse(
-				$this->activity->getSpecialParameterList(null, null)
+			$this->activity->getSpecialParameterList(null, null)
 		);
 	}
 	
 	public function testGetGroupParameter() {
 		$this->assertFalse(
-				$this->activity->getGroupParameter(null)
+			$this->activity->getGroupParameter(null)
 		);
 	}
 }

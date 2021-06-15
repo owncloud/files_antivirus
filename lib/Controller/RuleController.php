@@ -35,8 +35,12 @@ class RuleController extends Controller {
 	 * @param IL10N $l10n
 	 * @param RuleMapper $ruleMapper
 	 */
-	public function __construct($appName, IRequest $request, $logger,
-		IL10N $l10n, RuleMapper $ruleMapper
+	public function __construct(
+		$appName,
+		IRequest $request,
+		$logger,
+		IL10N $l10n,
+		RuleMapper $ruleMapper
 	) {
 		parent::__construct($appName, $request);
 		$this->logger = $logger;

@@ -26,7 +26,7 @@ use OCP\Files\ForbiddenException;
 use Icewind\Streams\CallbackWrapper;
 
 class AvirWrapper extends Wrapper {
-	const AV_EXCEPTION_MESSAGE = 'Either the ownCloud antivirus app is misconfigured or the external antivirus service is not accessible. %s';
+	public const AV_EXCEPTION_MESSAGE = 'Either the ownCloud antivirus app is misconfigured or the external antivirus service is not accessible. %s';
 
 	/**
 	 * Modes that are used for writing
@@ -196,7 +196,8 @@ class AvirWrapper extends Wrapper {
 				$this->l10n->t(
 					'Virus %s is detected in the file. Upload cannot be completed.',
 					$status->getDetails()
-				), false
+				),
+				false
 			);
 		}
 	}

@@ -47,8 +47,11 @@ class SettingsController extends Controller {
 	 * @param ScannerFactory $scannerFactory
 	 * @param IL10N $l10n
 	 */
-	public function __construct(IRequest $request,
-		AppConfig $appConfig, ScannerFactory $scannerFactory, IL10N $l10n
+	public function __construct(
+		IRequest $request,
+		AppConfig $appConfig,
+		ScannerFactory $scannerFactory,
+		IL10N $l10n
 	) {
 		parent::__construct('files_antivirus', $request);
 		$this->settings = $appConfig;
@@ -81,9 +84,16 @@ class SettingsController extends Controller {
 	 *
 	 * @return JSONResponse
 	 */
-	public function save($avMode, $avSocket, $avHost, $avPort,
-		$avInfectedAction, $avStreamMaxLength,
-						 $avMaxFileSize, $avRequestService, $avResponseHeader
+	public function save(
+		$avMode,
+		$avSocket,
+		$avHost,
+		$avPort,
+		$avInfectedAction,
+		$avStreamMaxLength,
+		$avMaxFileSize,
+		$avRequestService,
+		$avResponseHeader
 	) {
 		try {
 			if ($avMode === 'daemon') {

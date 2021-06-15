@@ -24,15 +24,21 @@ require_once __DIR__ . '/../../../../../../tests/acceptance/features/bootstrap/b
 
 $classLoader = new \Composer\Autoload\ClassLoader();
 $classLoader->addPsr4(
-	"", __DIR__ . "/../../../../../../tests/acceptance/features/bootstrap", true
+	"",
+	__DIR__ . "/../../../../../../tests/acceptance/features/bootstrap",
+	true
 );
 
 // Some tests require Activity app
 $classLoader->addPsr4(
-	"", __DIR__ . "/../../../../../../apps/activity/tests/acceptance/features/bootstrap", true
+	"",
+	__DIR__ . "/../../../../../../apps/activity/tests/acceptance/features/bootstrap",
+	true
 );
 $classLoader->addPsr4(
-	"Page\\", __DIR__ . "/../../../../../../apps/activity/tests/acceptance/features/lib", true
+	"Page\\",
+	__DIR__ . "/../../../../../../apps/activity/tests/acceptance/features/lib",
+	true
 );
 
 $classLoader->register();

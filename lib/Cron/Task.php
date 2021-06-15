@@ -26,7 +26,7 @@ use OCP\IUser;
 use OCP\IUserSession;
 
 class Task extends TimedJob {
-	const BATCH_SIZE = 10;
+	public const BATCH_SIZE = 10;
 
 	/**
 	 * @var \OCP\IUserSession

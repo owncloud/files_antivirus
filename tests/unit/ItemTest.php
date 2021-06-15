@@ -13,9 +13,9 @@ use OC\Files\View;
 use OCA\Files_Antivirus\Item;
 
 class ItemTest extends TestBase {
-	const UID = 'testo';
-	const PWD = 'test';
-	const CONTENT = 'LoremIpsum';
+	public const UID = 'testo';
+	public const PWD = 'test';
+	public const CONTENT = 'LoremIpsum';
 
 	protected $view;
 

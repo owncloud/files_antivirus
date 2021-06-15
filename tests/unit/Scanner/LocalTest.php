@@ -53,9 +53,9 @@ class LocalTest extends TestBase {
 			\OC::$server->getUserManager()->createUser('test', 'test');
 		}
 		$this->scannerFactory = new ScannerFactory(
-				$this->config,
-				$this->container->query('Logger'),
-				$this->container->query(IL10N::class)
+			$this->config,
+			$this->container->query('Logger'),
+			$this->container->query(IL10N::class)
 		);
 	}
 
