@@ -337,6 +337,13 @@ def main(ctx):
 
 	dependsOn(before, coverageTests)
 
+	nonCoverageTests = nonCoveragePipelines(ctx)
+	if (nonCoverageTests == False):
+		print('Errors detected in nonCoveragePipelines. Review messages above.')
+		return []
+
+	dependsOn(before, nonCoverageTests)
+
 	stages = stagePipelines(ctx)
 	if (stages == False):
 		print('Errors detected. Review messages above.')
@@ -351,18 +358,28 @@ def main(ctx):
 		dependsOn(coverageTests, afterCoverageTests)
 
 	after = afterPipelines(ctx)
-	dependsOn(afterCoverageTests + stages, after)
+	dependsOn(afterCoverageTests + nonCoverageTests + stages, after)
 
-	return before + coverageTests + afterCoverageTests + stages + after
+	return before + coverageTests + afterCoverageTests + nonCoverageTests + stages + after
 
 def beforePipelines():
 	return codestyle() + jscodestyle() + phpstan() + phan()
 
 def coveragePipelines(ctx):
-	# All pipelines that might have coverage or other test analysis reported
-	jsPipelines = javascript(ctx)
-	phpUnitPipelines = phpTests(ctx, 'phpunit')
-	phpIntegrationPipelines = phpTests(ctx, 'phpintegration')
+	# All unit test pipelines that have coverage or other test analysis reported
+	jsPipelines = javascript(ctx, True)
+	phpUnitPipelines = phpTests(ctx, 'phpunit', True)
+	phpIntegrationPipelines = phpTests(ctx, 'phpintegration', True)
+	if (jsPipelines == False) or (phpUnitPipelines == False) or (phpIntegrationPipelines == False):
+		return False
+
+	return jsPipelines + phpUnitPipelines + phpIntegrationPipelines
+
+def nonCoveragePipelines(ctx):
+	# All unit test pipelines that do not have coverage or other test analysis reported
+	jsPipelines = javascript(ctx, False)
+	phpUnitPipelines = phpTests(ctx, 'phpunit', False)
+	phpIntegrationPipelines = phpTests(ctx, 'phpintegration', False)
 	if (jsPipelines == False) or (phpUnitPipelines == False) or (phpIntegrationPipelines == False):
 		return False
 
@@ -738,7 +755,7 @@ def build():
 
 	return pipelines
 
-def javascript(ctx):
+def javascript(ctx, withCoverage):
 	pipelines = []
 
 	if 'javascript' not in config:
@@ -774,6 +791,14 @@ def javascript(ctx):
 		params[item] = matrix[item] if item in matrix else default[item]
 
 	if params['skip']:
+		return pipelines
+
+	# if we only want pipelines with coverage, and this pipeline does not do coverage, then do not include it
+	if withCoverage and not params['coverage']:
+		return pipelines
+
+	# if we only want pipelines without coverage, and this pipeline does coverage, then do not include it
+	if not withCoverage and params['coverage']:
 		return pipelines
 
 	result = {
@@ -838,7 +863,7 @@ def javascript(ctx):
 
 	return [result]
 
-def phpTests(ctx, testType):
+def phpTests(ctx, testType, withCoverage):
 	pipelines = []
 
 	if testType not in config:
@@ -889,6 +914,14 @@ def phpTests(ctx, testType):
 			params[item] = matrix[item] if item in matrix else default[item]
 
 		if params['skip']:
+			continue
+
+		# if we only want pipelines with coverage, and this pipeline does not do coverage, then do not include it
+		if withCoverage and not params['coverage']:
+			continue
+
+		# if we only want pipelines without coverage, and this pipeline does coverage, then do not include it
+		if not withCoverage and params['coverage']:
 			continue
 
 		cephS3Params = params['cephS3']
@@ -1264,8 +1297,6 @@ def acceptance(ctx):
 	return pipelines
 
 def sonarAnalysis(ctx, phpVersion = '7.4'):
-	repo_slug = ctx.build.source_repo if ctx.build.source_repo else ctx.repo.slug
-
 	result = {
 		'kind': 'pipeline',
 		'type': 'docker',
@@ -1274,33 +1305,11 @@ def sonarAnalysis(ctx, phpVersion = '7.4'):
 			'base': '/var/www/owncloud',
 			'path': 'server/apps/%s' % config['app']
 		},
-		'clone': {
-			'disable': True, # Sonarcloud does not apply issues on already merged branch
-		},
-		'steps': [
-			{
-				'name': 'clone',
-				'image': 'plugins/git-action:1',
-				'pull': 'always',
-				'settings': {
-					'actions': [
-						'clone',
-					],
-					'remote': 'https://github.com/%s' % (repo_slug),
-					'branch': ctx.build.source if ctx.build.event == 'pull_request' else 'master',
-					'path': '/var/www/owncloud/server/apps/%s' % config['app'],
-					'netrc_machine': 'github.com',
-					'netrc_username': {
-						'from_secret': 'github_username',
-					},
-					'netrc_password': {
-						'from_secret': 'github_token',
-					},
-				},
-			}] +
+		'steps':
 			cacheRestore() +
 			composerInstall(phpVersion) +
-			installCore('daily-master-qa', 'sqlite', False) + [
+			installCore('daily-master-qa', 'sqlite', False) +
+		[
 			{
 				'name': 'sync-from-cache',
 				'image': 'minio/mc:RELEASE.2020-12-18T10-53-53Z',
@@ -1498,7 +1507,6 @@ def ldapService(ldapNeeded):
 				'LDAP_ORGANISATION': 'owncloud',
 				'LDAP_ADMIN_PASSWORD': 'admin',
 				'LDAP_TLS_VERIFY_CLIENT': 'never',
-				'HOSTNAME': 'ldap',
 			}
 		}]
 
