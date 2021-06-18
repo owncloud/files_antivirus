@@ -177,19 +177,7 @@ class AvirWrapper extends Wrapper {
 			);
 
 			if ($shouldDelete) {
-				//prevent from going to trashbin
-				if (App::isEnabled('files_trashbin')) {
-					\OCA\Files_Trashbin\Storage::preRenameHook(
-						[
-							Filesystem::signal_param_oldpath => '',
-							Filesystem::signal_param_newpath => ''
-						]
-					);
-				}
 				$this->unlink($path);
-				if (App::isEnabled('files_trashbin')) {
-					\OCA\Files_Trashbin\Storage::postRenameHook([]);
-				}
 			}
 
 			throw new FileContentNotAllowedException(
