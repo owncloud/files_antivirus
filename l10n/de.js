@@ -33,7 +33,7 @@ OC.L10N.register(
     "Hostname or IP address of Antivirus Host" : "Hostname oder IP-Adresse des Antivirus-Servers",
     "Port" : "Port",
     "Port number of Antivirus Host, 1-65535" : "Die Portnummer des Antivirus-Hosts, 1-65535",
-    "ICAP request service. Possible values: \"avscan\" for clamav or \"req\" for Kaspersky ScanEngine" : "ICAP request service. Mögliche Werte sind: \"avscan\" für ClamAV oder \"req\" für Kaspersky ScanEngine",
+    "ICAP request service. Possible values: \"avscan\" for clamav or \"req\" for Kaspersky ScanEngine" : "ICAP Dienstanforderung. Mögliche Werte sind: \"avscan\" für ClamAV oder \"req\" für Kaspersky ScanEngine",
     "ICAP response header holding the virus information. Possible values: X-Virus-ID or X-Infection-Found" : "ICAP Antwort-Kopfzeile mit Informationen zum Virus. Mögliche Werte: X-Virus-ID oder X-Infection-Found",
     "Path to clamscan" : "Pfad zu clamscan",
     "Extra command line options (comma-separated)" : "Zusätzliche Kommandozeilenoptionen (Kommata-getrennt)",
