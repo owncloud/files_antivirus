@@ -289,7 +289,7 @@ config = {
 					'image': 'owncloudci/php:7.2',
 					'pull': 'always',
 					'commands': [
-						'wait-for-it dummy-clamav:5555',
+						'wait-for-it -t 600 dummy-clamav:5555',
 						'wait-for-it -t 600 icap:1344',
 						'sleep 10'
 					]
@@ -327,7 +327,7 @@ config = {
 }
 
 def main(ctx):
-	
+
 	before = beforePipelines(ctx)
 
 	coverageTests = coveragePipelines(ctx)
