@@ -3,7 +3,7 @@
     "description": "files_antivirus is an antivirus app for ownCloud based on ClamAV",
     "config": {
         "platform": {
-            "php": "7.1"
+            "php": "7.3"
         }
     },
     "require": {
