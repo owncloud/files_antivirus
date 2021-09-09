@@ -127,7 +127,7 @@ Feature: Antivirus file size
       | new               |
       | old               |
 
-  @skip @files_primary_s3#69
+  @skip @files_primary_s3-issue-100
   Scenario: Files smaller than the upload threshold are checked for viruses when uploaded overwriting via public upload
     Given as user "Alice"
     And user "Alice" has created a public link share of folder "FOLDER" with change permissions

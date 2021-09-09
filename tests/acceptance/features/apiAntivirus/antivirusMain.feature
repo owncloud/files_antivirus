@@ -136,7 +136,7 @@ Feature: Antivirus basic
       | eicar_com.zip   |
       | eicarcom2.zip   |
 
-  @skip @files_primary_s3#69
+  @skip @files_primary_s3-issue-100
   Scenario: A file cannot be overwritten with a file containing a virus via public upload
     Given as user "Alice"
     And user "Alice" has created a public link share of folder "FOLDER" with change permissions
@@ -159,9 +159,9 @@ Feature: Antivirus basic
       | old              |
       | new              |
 
+
   Scenario: A file cannot be overwritten with a file containing a virus via public upload
     Given the administrator has enabled DAV tech_preview
-    And as user "Alice"
     And user "Alice" has created a public link share of folder "FOLDER" with change permissions
     When the public uploads file "textfile.txt" from the antivirus test data folder using the new WebDAV API
     And the public overwrites file "textfile.txt" with content "X5O!P%@AP[4\PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*" using the new WebDAV API
@@ -171,7 +171,7 @@ Feature: Antivirus basic
       | --   | files_antivirus | PUT    | Infected file deleted |
     And the content of file "/FOLDER/textfile.txt" for user "Alice" should be "Small text file without virus."
 
-  @skip @files_primary_s3#69
+  @skip @files_primary_s3-issue-100
   Scenario Outline: overwriting a file with virus is not possible
     Given using <dav-path-version> DAV path
     And user "Alice" has uploaded file "textfile.txt" from the antivirus test data folder to "/ok-textfile.txt"
@@ -186,7 +186,7 @@ Feature: Antivirus basic
       | old              |
       | new              |
 
-  @skip @files_primary_s3#69
+  @skip @files_primary_s3-issue-100
   Scenario Outline: overwriting a file with virus in a group share is not possible
     Given using <dav-path-version> DAV path
     And user "Brian" has been created with default attributes and without skeleton files
@@ -208,7 +208,7 @@ Feature: Antivirus basic
       | old              |
       | new              |
 
-  @skip @files_primary_s3#69
+  @skip @files_primary_s3-issue-100
   Scenario Outline: overwriting a file with virus in a share is not possible
     Given using <dav-path-version> DAV path
     And user "Brian" has been created with default attributes and without skeleton files
