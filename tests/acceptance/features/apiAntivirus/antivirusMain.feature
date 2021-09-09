@@ -136,7 +136,7 @@ Feature: Antivirus basic
       | eicar_com.zip   |
       | eicarcom2.zip   |
 
-  @skip @files_primary_s3#69
+  @skip @files_primary_s3-issue-100
   Scenario: A file cannot be overwritten with a file containing a virus via public upload
     Given as user "Alice"
     And user "Alice" has created a public link share of folder "FOLDER" with change permissions
@@ -154,6 +154,74 @@ Feature: Antivirus basic
     Then the HTTP status code should be "201"
     And as "Alice" file "/empty-file.txt" should exist
     And the content of file "/empty-file.txt" for user "Alice" should be ""
+    Examples:
+      | dav-path-version |
+      | old              |
+      | new              |
+
+
+  Scenario: A file cannot be overwritten with a file containing a virus via public upload
+    Given the administrator has enabled DAV tech_preview
+    And user "Alice" has created a public link share of folder "FOLDER" with change permissions
+    When the public uploads file "textfile.txt" from the antivirus test data folder using the new WebDAV API
+    And the public overwrites file "textfile.txt" with content "X5O!P%@AP[4\PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*" using the new WebDAV API
+    Then the HTTP status code should be "403"
+    And the last lines of the log file should contain log-entries containing these attributes:
+      | user | app             | method | message               |
+      | --   | files_antivirus | PUT    | Infected file deleted |
+    And the content of file "/FOLDER/textfile.txt" for user "Alice" should be "Small text file without virus."
+
+  @skip @files_primary_s3-issue-100
+  Scenario Outline: overwriting a file with virus is not possible
+    Given using <dav-path-version> DAV path
+    And user "Alice" has uploaded file "textfile.txt" from the antivirus test data folder to "/ok-textfile.txt"
+    When user "Alice" uploads file "eicar.com" from the antivirus test data folder to "/ok-textfile.txt" using the WebDAV API
+    Then the HTTP status code should be "403"
+    And the last lines of the log file should contain log-entries containing these attributes:
+      | user  | app             | method | message               |
+      | Alice | files_antivirus | PUT    | Infected file deleted |
+    And the content of file "/ok-textfile.txt" for user "Alice" should be "Small text file without virus."
+    Examples:
+      | dav-path-version |
+      | old              |
+      | new              |
+
+  @skip @files_primary_s3-issue-100
+  Scenario Outline: overwriting a file with virus in a group share is not possible
+    Given using <dav-path-version> DAV path
+    And user "Brian" has been created with default attributes and without skeleton files
+    And group "grp1" has been created
+    And user "Brian" has been added to group "grp1"
+    And user "Alice" has been added to group "grp1"
+    And user "Alice" has uploaded file "textfile.txt" from the antivirus test data folder to "/ok-textfile.txt"
+    And user "Alice" has shared file "/ok-textfile.txt" with group "grp1"
+    And user "Brian" has accepted share "/ok-textfile.txt" offered by user "Alice"
+    When user "Brian" uploads file "eicar.com" from the antivirus test data folder to "/ok-textfile.txt" using the WebDAV API
+    Then the HTTP status code should be "403"
+    And the last lines of the log file should contain log-entries containing these attributes:
+      | user  | app             | method | message               |
+      | Brian | files_antivirus | PUT    | Infected file deleted |
+    And the content of file "/ok-textfile.txt" for user "Alice" should be "Small text file without virus."
+    And the content of file "/ok-textfile.txt" for user "Brian" should be "Small text file without virus."
+    Examples:
+      | dav-path-version |
+      | old              |
+      | new              |
+
+  @skip @files_primary_s3-issue-100
+  Scenario Outline: overwriting a file with virus in a share is not possible
+    Given using <dav-path-version> DAV path
+    And user "Brian" has been created with default attributes and without skeleton files
+    And user "Alice" has uploaded file "textfile.txt" from the antivirus test data folder to "/ok-textfile.txt"
+    And user "Alice" has shared file "/ok-textfile.txt" with user "Brian"
+    And user "Brian" has accepted share "/ok-textfile.txt" offered by user "Alice"
+    When user "Brian" uploads file "eicar.com" from the antivirus test data folder to "/ok-textfile.txt" using the WebDAV API
+    Then the HTTP status code should be "403"
+    And the last lines of the log file should contain log-entries containing these attributes:
+      | user  | app             | method | message               |
+      | Brian | files_antivirus | PUT    | Infected file deleted |
+    And the content of file "/ok-textfile.txt" for user "Alice" should be "Small text file without virus."
+    And the content of file "/ok-textfile.txt" for user "Brian" should be "Small text file without virus."
     Examples:
       | dav-path-version |
       | old              |
