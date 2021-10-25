@@ -45,7 +45,7 @@ class AntivirusContext implements Context {
 	/**
 	 * @return string
 	 */
-	private function getRelativePathToTestDataFolder() {
+	private function getRelativePathToTestDataFolder():string {
 		$relativePath
 			= $this->featureContext->getPathFromCoreToAppAcceptanceTests(__DIR__);
 		return "$relativePath/data/";
@@ -60,7 +60,7 @@ class AntivirusContext implements Context {
 	 * @return void
 	 * @throws Exception
 	 */
-	public function theAdministratorEnablesTheAntivirusApp($enableDisable) {
+	public function theAdministratorEnablesTheAntivirusApp(string $enableDisable):void {
 		if (($enableDisable === "enables") || ($enableDisable === "has enabled")) {
 			$this->featureContext->runOcc(["app:enable files_antivirus"]);
 		} else {
@@ -79,10 +79,10 @@ class AntivirusContext implements Context {
 	 * @return void
 	 */
 	public function userUploadsFileFromAntivirusDataFolderTo(
-		$user,
-		$source,
-		$destination
-	) {
+		string $user,
+		string $source,
+		string $destination
+	):void {
 		$source = $this->getRelativePathToTestDataFolder() . $source;
 		$this->featureContext->userUploadsAFileTo($user, $source, $destination);
 	}
@@ -96,7 +96,10 @@ class AntivirusContext implements Context {
 	 *
 	 * @return void
 	 */
-	public function publicUploadsFileFromAntivirusDataFolder($source, $publicWebDavAPIVersion = "old") {
+	public function publicUploadsFileFromAntivirusDataFolder(
+		string $source,
+		string $publicWebDavAPIVersion = "old"
+	):void {
 		$source = $this->getRelativePathToTestDataFolder() . $source;
 		$this->publicWebDavContext->publiclyUploadingFile($source, $publicWebDavAPIVersion);
 	}
@@ -108,7 +111,7 @@ class AntivirusContext implements Context {
 	 *
 	 * @return void
 	 */
-	public function setUpScenario(BeforeScenarioScope $scope) {
+	public function setUpScenario(BeforeScenarioScope $scope):void {
 		// Get the environment
 		$environment = $scope->getEnvironment();
 		// Get all the contexts you need in this context
@@ -127,7 +130,7 @@ class AntivirusContext implements Context {
 	 *
 	 * @return void
 	 */
-	public function tearDownScenario() {
+	public function tearDownScenario():void {
 		AppConfigHelper::modifyAppConfigs(
 			$this->featureContext->getBaseUrl(),
 			$this->featureContext->getAdminUsername(),
