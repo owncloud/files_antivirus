@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * ownCloud
  *
@@ -140,7 +140,7 @@ class AntivirusContext implements Context {
 				'configkey' => 'av_max_file_size',
 				'value' => '-1'
 			]],
-			2
+			'2'
 		);
 	}
 }
