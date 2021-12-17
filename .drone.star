@@ -1,3 +1,8 @@
+OC_CI_ALPINE = "owncloudci/alpine:latest"
+OC_CI_WAIT_FOR = "owncloudci/wait-for:latest"
+OC_CI_NODEJS = "owncloudci/nodejs:14"
+OC_UBUNTU = "owncloud/ubuntu:20.04"
+
 dir = {
     "base": "/var/www/owncloud",
     "federated": "/var/www/owncloud/federated",
@@ -391,7 +396,7 @@ def codestyle(ctx):
         return pipelines
 
     default = {
-        "phpVersions": ["7.3"],
+        "phpVersions": ["7.4"],
     }
 
     if "defaults" in config:
@@ -475,7 +480,7 @@ def jscodestyle(ctx):
         "steps": [
             {
                 "name": "coding-standard-js",
-                "image": "owncloudci/nodejs:14",
+                "image": OC_CI_NODEJS,
                 "pull": "always",
                 "commands": [
                     "make test-js-style",
@@ -556,7 +561,7 @@ def phpstan(ctx):
         return pipelines
 
     default = {
-        "phpVersions": ["7.3"],
+        "phpVersions": ["7.4"],
         "logLevel": "2",
         "extraApps": {},
         "enableApp": True,
@@ -633,7 +638,7 @@ def phan(ctx):
         return pipelines
 
     default = {
-        "phpVersions": ["7.3", "7.4"],
+        "phpVersions": ["7.4"],
     }
 
     if "defaults" in config:
@@ -1356,8 +1361,10 @@ def acceptance(ctx):
                              setupScality(testConfig["scalityS3"]) +
                              setupElasticSearch(testConfig["esVersion"]) +
                              testConfig["extraSetup"] +
+                             waitForServer(testConfig["federatedServerNeeded"]) +
+                             waitForEmailService(testConfig["emailNeeded"]) +
                              fixPermissions(testConfig["phpVersion"], testConfig["federatedServerNeeded"], params["selUserNeeded"]) +
-                             waitForBrowserService(testConfig["phpVersion"], isWebUI) +
+                             waitForBrowserService(testConfig["browser"]) +
                              [
                                  ({
                                      "name": "acceptance-tests",
@@ -1444,7 +1451,7 @@ def sonarAnalysis(ctx, phpVersion = "7.4"):
         "steps": [
                      {
                          "name": "clone",
-                         "image": "owncloudci/alpine:latest",
+                         "image": OC_CI_ALPINE,
                          "commands": [
                              "git clone https://github.com/%s.git ." % repo_slug,
                              "git checkout $DRONE_COMMIT",
@@ -1632,16 +1639,16 @@ def browserService(browser):
 
     return []
 
-def waitForBrowserService(phpVersion, isWebUi):
-    if isWebUi:
+def waitForBrowserService(browser):
+    if browser in ["chrome", "firefox"]:
         return [{
             "name": "wait-for-selenium",
-            "image": "owncloudci/php:%s" % phpVersion,
-            "pull": "always",
+            "image": OC_CI_WAIT_FOR,
             "commands": [
-                "wait-for-it -t 600 selenium:4444",
+                "wait-for -it selenium:4444 -t 600",
             ],
         }]
+
     return []
 
 def emailService(emailNeeded):
@@ -1650,6 +1657,18 @@ def emailService(emailNeeded):
             "name": "email",
             "image": "mailhog/mailhog",
             "pull": "always",
+        }]
+
+    return []
+
+def waitForEmailService(emailNeeded):
+    if emailNeeded:
+        return [{
+            "name": "wait-for-email",
+            "image": OC_CI_WAIT_FOR,
+            "commands": [
+                "wait-for -it email:8025 -t 600",
+            ],
         }]
 
     return []
@@ -1882,7 +1901,7 @@ def installTestrunner(ctx, phpVersion, useBundledApp):
         "pull": "always",
         "commands": [
             "mkdir /tmp/testrunner",
-            "git clone -b master --depth=1 https://github.com/owncloud/core.git /tmp/testrunner",
+            "git clone -b acceptance-test-changes-waiting-2021-11 --depth=1 https://github.com/owncloud/core.git /tmp/testrunner",
             "rsync -aIX /tmp/testrunner %s" % dir["base"],
         ] + ([
             "cp -r %s/apps/%s %s/apps/" % (dir["testrunner"], ctx.repo.name, dir["server"]),
@@ -1987,20 +2006,28 @@ def setupCeph(serviceParams):
 
     createFirstBucket = serviceParams["createFirstBucket"] if "createFirstBucket" in serviceParams else True
     setupCommands = serviceParams["setupCommands"] if "setupCommands" in serviceParams else [
-        "wait-for-it -t 600 ceph:80",
         "cd %s/apps/files_primary_s3" % dir["server"],
         "cp tests/drone/ceph.config.php %s/config" % dir["server"],
         "cd %s" % dir["server"],
     ]
 
-    return [{
-        "name": "setup-ceph",
-        "image": "owncloudci/php:7.4",
-        "pull": "always",
-        "commands": setupCommands + ([
-            "./apps/files_primary_s3/tests/drone/create-bucket.sh",
-        ] if createFirstBucket else []),
-    }]
+    return [
+        {
+            "name": "wait-for-ceph",
+            "image": OC_CI_WAIT_FOR,
+            "commands": [
+                "wait-for -it ceph:80 -t 600",
+            ],
+        },
+        {
+            "name": "setup-ceph",
+            "image": "owncloudci/php:7.4",
+            "pull": "always",
+            "commands": setupCommands + ([
+                "./apps/files_primary_s3/tests/drone/create-bucket.sh",
+            ] if createFirstBucket else []),
+        },
+    ]
 
 def setupScality(serviceParams):
     if type(serviceParams) == "bool":
@@ -2015,37 +2042,65 @@ def setupScality(serviceParams):
     createFirstBucket = serviceParams["createFirstBucket"] if "createFirstBucket" in serviceParams else True
     createExtraBuckets = serviceParams["createExtraBuckets"] if "createExtraBuckets" in serviceParams else False
     setupCommands = serviceParams["setupCommands"] if "setupCommands" in serviceParams else [
-        "wait-for-it -t 600 scality:8000",
         "cd %s/apps/files_primary_s3" % dir["server"],
         "cp tests/drone/%s %s/config" % (configFile, dir["server"]),
         "cd %s" % dir["server"],
     ]
 
-    return [{
-        "name": "setup-scality",
-        "image": "owncloudci/php:7.4",
-        "pull": "always",
-        "commands": setupCommands + ([
-            "php occ s3:create-bucket owncloud --accept-warning",
-        ] if createFirstBucket else []) + ([
-            "for I in $(seq 1 9); do php ./occ s3:create-bucket owncloud$I --accept-warning; done",
-        ] if createExtraBuckets else []),
-    }]
+    return [
+        {
+            "name": "wait-for-scality",
+            "image": OC_CI_WAIT_FOR,
+            "commands": [
+                "wait-for -it scality:8000 -t 600",
+            ],
+        },
+        {
+            "name": "setup-scality",
+            "image": "owncloudci/php:7.4",
+            "pull": "always",
+            "commands": setupCommands + ([
+                "php occ s3:create-bucket owncloud --accept-warning",
+            ] if createFirstBucket else []) + ([
+                "for I in $(seq 1 9); do php ./occ s3:create-bucket owncloud$I --accept-warning; done",
+            ] if createExtraBuckets else []),
+        },
+    ]
 
 def setupElasticSearch(esVersion):
     if esVersion == "none":
         return []
 
+    return [
+        {
+            "name": "wait-for-es",
+            "image": OC_CI_WAIT_FOR,
+            "commands": [
+                "wait-for -it elasticsearch:9200 -t 600",
+            ],
+        },
+        {
+            "name": "setup-es",
+            "image": "owncloudci/php:7.4",
+            "pull": "always",
+            "commands": [
+                "cd %s" % dir["server"],
+                "php occ config:app:set search_elastic servers --value elasticsearch",
+                "php occ search:index:reset --force",
+            ],
+        },
+    ]
+
+def waitForServer(federatedServerNeeded):
     return [{
-        "name": "setup-es",
-        "image": "owncloudci/php:7.4",
+        "name": "wait-for-server",
+        "image": OC_CI_WAIT_FOR,
         "pull": "always",
         "commands": [
-            "cd %s" % dir["server"],
-            "php occ config:app:set search_elastic servers --value elasticsearch",
-            "wait-for-it -t 600 elasticsearch:9200",
-            "php occ search:index:reset --force",
-        ],
+            "wait-for -it server:80 -t 600",
+        ] + ([
+            "wait-for -it federated:80 -t 600",
+        ] if federatedServerNeeded else []),
     }]
 
 def fixPermissions(phpVersion, federatedServerNeeded, selUserNeeded = False):
@@ -2055,10 +2110,8 @@ def fixPermissions(phpVersion, federatedServerNeeded, selUserNeeded = False):
         "pull": "always",
         "commands": [
             "chown -R www-data %s" % dir["server"],
-            "wait-for-it -t 600 server:80",
         ] + ([
             "chown -R www-data %s" % dir["federated"],
-            "wait-for-it -t 600 federated:80",
         ] if federatedServerNeeded else []) + ([
             "chmod 777 /home/seluser/Downloads/",
         ] if selUserNeeded else []),
@@ -2071,7 +2124,7 @@ def fixPermissions(phpVersion, federatedServerNeeded, selUserNeeded = False):
 def owncloudLog(server):
     return [{
         "name": "owncloud-log-%s" % server,
-        "image": "owncloud/ubuntu:18.04",
+        "image": OC_UBUNTU,
         "pull": "always",
         "detach": True,
         "commands": [
@@ -2202,7 +2255,7 @@ def buildGithubCommentForBuildStopped(alternateSuiteName, earlyFail):
     if (earlyFail):
         return [{
             "name": "build-github-comment-buildStop",
-            "image": "owncloud/ubuntu:16.04",
+            "image": OC_UBUNTU,
             "pull": "always",
             "commands": [
                 "echo ':boom: Acceptance tests pipeline <strong>%s</strong> failed. The build has been cancelled.\\n\\n${DRONE_BUILD_LINK}/${DRONE_JOB_NUMBER}${DRONE_STAGE_NUMBER}/1\\n' >> %s/comments.file" % (alternateSuiteName, dir["base"]),
