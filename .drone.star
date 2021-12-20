@@ -1901,7 +1901,7 @@ def installTestrunner(ctx, phpVersion, useBundledApp):
         "pull": "always",
         "commands": [
             "mkdir /tmp/testrunner",
-            "git clone -b acceptance-test-changes-waiting-2021-11 --depth=1 https://github.com/owncloud/core.git /tmp/testrunner",
+            "git clone -b master --depth=1 https://github.com/owncloud/core.git /tmp/testrunner",
             "rsync -aIX /tmp/testrunner %s" % dir["base"],
         ] + ([
             "cp -r %s/apps/%s %s/apps/" % (dir["testrunner"], ctx.repo.name, dir["server"]),
