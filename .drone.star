@@ -228,7 +228,7 @@ config = {
             "runAllSuites": True,
             "numberOfParts": 3,
             "emailNeeded": True,
-            "filterTags": "~@skip&&~@app-required",
+            "filterTags": "~@skip&&~@app-required&&~@dbConversion",
         },
         "core-webui-acceptance": {
             "suites": {
