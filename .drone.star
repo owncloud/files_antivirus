@@ -224,6 +224,7 @@ config = {
                 "daily-master-qa",
             ],
             "runCoreTests": True,
+            "federatedServerNeeded": True,
             "cron": "nightly",
             "runAllSuites": True,
             "numberOfParts": 3,
