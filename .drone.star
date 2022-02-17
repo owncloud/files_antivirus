@@ -225,7 +225,6 @@ config = {
             ],
             "runCoreTests": True,
             "federatedServerNeeded": True,
-            "cron": "nightly",
             "runAllSuites": True,
             "numberOfParts": 3,
             "emailNeeded": True,
