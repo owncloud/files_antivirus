@@ -17,7 +17,7 @@ use \OCP\AppFramework\Controller;
 use \OCP\IRequest;
 use \OCP\IL10N;
 use OCP\AppFramework\Http\JSONResponse;
-
+use OCP\ILogger;
 use \OCA\Files_Antivirus\Db\Rule;
 use \OCA\Files_Antivirus\Db\RuleMapper;
 
@@ -31,14 +31,14 @@ class RuleController extends Controller {
 	 *
 	 * @param string $appName
 	 * @param IRequest $request
-	 * @param $logger
+	 * @param ILogger $logger
 	 * @param IL10N $l10n
 	 * @param RuleMapper $ruleMapper
 	 */
 	public function __construct(
 		$appName,
 		IRequest $request,
-		$logger,
+		ILogger $logger,
 		IL10N $l10n,
 		RuleMapper $ruleMapper
 	) {
