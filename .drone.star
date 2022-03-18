@@ -212,6 +212,9 @@ config = {
             "runAllSuites": True,
             "numberOfParts": 35,
             "filterTags": "~@skip&&~@app-required",
+            "extraApps": {
+                "files_external": "",
+            },
         },
         "core-cli-acceptance": {
             "suites": {
@@ -230,6 +233,9 @@ config = {
             "numberOfParts": 3,
             "emailNeeded": True,
             "filterTags": "~@skip&&~@app-required&&~@dbConversion",
+            "extraApps": {
+                "files_external": "",
+            },
         },
         "core-webui-acceptance": {
             "suites": {
@@ -248,6 +254,9 @@ config = {
             "runAllSuites": True,
             "numberOfParts": 5,
             "filterTags": "@smokeTest&&~@skip&&~@app-required",
+            "extraApps": {
+                "files_external": "",
+            },
         },
     },
     "defaults": {
