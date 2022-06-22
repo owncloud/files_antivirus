@@ -101,6 +101,12 @@ class ICAPClient {
 		return $response;
 	}
 
+	public function respmod(string $service, array $body = [], array $headers = []): array {
+		$request = $this->getRequest('RESPMOD', $service, $body, $headers);
+		$response = $this->send($request);
+		return $response;
+	}
+
 	private function send(string $request): array {
 		$this->connect();
 		// Shut stupid uncontrolled messaging up - we handle errors on our own
