@@ -86,6 +86,8 @@ Select 'Fortinet' from the dropdown.
 
 The request service for FortiSandbox has to be set to 'respmod' and the response header to 'X-Virus-Name'.
 
+Fortinet privides some Demoinstances of the FortiSandbox, please have a look at the [productpage](https://www.fortinet.com/de/products/sandbox/fortisandbox) from Fortinet.
+
 
 ### Run with McAfee Web Gateway 10.x and higher in ICAP Mode
 
@@ -93,6 +95,7 @@ Select 'McAfee Web Gateway 10.x and higher' from the dropdown.
 
 The request service for McAfee has to be set to 'respmod' and the response header to 'X-Virus-Name'.
 
+McAfee provides Demoversions with limited Runtime for evaluation purposes. Have a look at [the McAfee Webpage](https://www.skyhighsecurity.com/en-us/products/secure-web-gateway.html) for the Web Gateway.
 
 Authors:
 
