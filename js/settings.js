@@ -131,8 +131,8 @@ var antivirusSettings = antivirusSettings || {
 
 function av_mode_show_options(str){
 	if ( str === 'daemon'){
-		$('p.av_socket, p.av_path, p.av_mode_icap, p.av_mode_fortinet').hide('slow');
-		$('#av_socket, #av_path, #av_request_service, #av_response_header, #av_fortinet_request_service, #av_fortinet_response_header').attr('disabled', true);
+		$('p.av_socket, p.av_path, p.av_mode_icap, p.av_mode_fortinet, p.av_mode_mawgw').hide('slow');
+		$('#av_socket, #av_path, #av_request_service, #av_response_header, #av_fortinet_request_service, #av_fortinet_response_header, #av_mawgw_request_service, #av_mawgw_response_header').attr('disabled', true);
 		$('#av_host, #av_port').attr('disabled', false);
 		$('p.av_host, p.av_port').show('slow');
 		return;
@@ -140,27 +140,34 @@ function av_mode_show_options(str){
 	if ( str === 'socket' ) {
 		$('#av_socket').attr('disabled', false);
 		$('p.av_socket').show('slow');
-		$('p.av_path, p.av_host, p.av_port, p.av_mode_icap, p.av_mode_fortinet').hide('slow');
-		$('#av_path, #av_host, #av_port, #av_request_service, #av_response_header, #av_fortinet_request_service, #av_fortinet_response_header').attr('disabled', true);
+		$('p.av_path, p.av_host, p.av_port, p.av_mode_icap, p.av_mode_fortinet, p.av_mode_mawgw').hide('slow');
+		$('#av_path, #av_host, #av_port, #av_request_service, #av_response_header, #av_fortinet_request_service, #av_fortinet_response_header, #av_mawgw_request_service, #av_mawgw_response_header').attr('disabled', true);
 		return;
 	}
 	if (str === 'executable') {
-		$('p.av_socket, p.av_host, p.av_port, p.av_mode_icap, p.av_mode_fortinet').hide('slow');
-		$('#av_socket, #av_host, #av_port, #av_request_service, #av_response_header, #av_fortinet_request_service, #av_fortinet_response_header').attr('disabled', true);
+		$('p.av_socket, p.av_host, p.av_port, p.av_mode_icap, p.av_mode_fortinet, p.av_mode_mawgw').hide('slow');
+		$('#av_socket, #av_host, #av_port, #av_request_service, #av_response_header, #av_fortinet_request_service, #av_fortinet_response_header, #av_mawgw_request_service, #av_mawgw_response_header').attr('disabled', true);
 		$('#av_path').attr('disabled', false);
 		$('p.av_path').show('slow');
 		return;
 	}
 	if (str === 'fortinet') {
 		$('p.av_socket, p.av_path, p.av_mode_icap').hide('slow');
-		$('#av_socket, #av_path, #av_request_service, #av_response_header').attr('disabled', true);
+		$('#av_socket, #av_path, #av_request_service, #av_response_header, p.av_mode_mawgw, #av_mawgw_request_service, #av_mawgw_response_header').attr('disabled', true);
 		$('#av_host, #av_port, #av_fortinet_request_service, #av_fortinet_response_header').attr('disabled', false);
 		$('p.av_host, p.av_port, p.av_mode_fortinet').show('slow');
 		return;
 	}
+	if (str === 'mawgw') {
+		$('p.av_socket, p.av_path, p.av_mode_icap, p.av_mode_fortinet').hide('slow');
+		$('#av_socket, #av_path, #av_request_service, #av_response_header').attr('disabled', true);
+		$('#av_host, #av_port, #av_mawgw_request_service, #av_mawgw_response_header').attr('disabled', false);
+		$('p.av_host, p.av_port, p.av_mode_mawgw').show('slow');
+		return;
+	}
 	// icap below
-	$('p.av_socket, p.av_path, p.av_mode_fortinet').hide('slow');
-	$('#av_socket, #av_path, #av_fortinet_request_service, #av_fortinet_response_header').attr('disabled', true);
+	$('p.av_socket, p.av_path, p.av_mode_fortinet, p.av_mode_mawgw').hide('slow');
+	$('#av_socket, #av_path, #av_fortinet_request_service, #av_fortinet_response_header, #av_mawgw_request_service, #av_mawgw_response_header').attr('disabled', true);
 	$('#av_host, #av_port, #av_request_service, #av_response_header').attr('disabled', false);
 	$('p.av_host, p.av_port, p.av_mode_icap').show('slow');
 }

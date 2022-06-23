@@ -17,6 +17,7 @@ script('files_antivirus', 'settings');
 						'socket' => $l->t('Daemon (Socket)'),
 						'icap' => $l->t('Daemon (ICAP)'),
 						'fortinet' => $l->t('Fortinet (ICAP)'),
+						'mawgw' => $l->t('McAfee Webgateway 10.x and higher (ICAP)'),
 					], $_['avMode'])) ?>
 				</select>
 			</p>
@@ -47,6 +48,14 @@ script('files_antivirus', 'settings');
 			<p class="av_response_header av_mode_fortinet">
 				<label for="av_fortinet_response_header"><?php p($l->t('ICAP response header. Fortinet sends X-Virus-ID'));?></label>
 				<input type="text" id="av_fortinet_response_header" name="avResponseHeader" value="<?php p($_['avResponseHeader']); ?>" />
+			</p>
+			<p class="av_req_service av_mode_mawgw">
+				<label for="av_mawgw_request_service"><?php p($l->t('ICAP request service. McAfee Webgateway uses "respmod"'));?></label>
+				<input type="text" id="av_mawgw_request_service" name="avRequestService" value="<?php p($_['avRequestService']); ?>" />
+			</p>
+			<p class="av_response_header av_mode_mawgw">
+				<label for="av_mawgw_response_header"><?php p($l->t('ICAP response header. McAfee Webgateway sends X-Virus-Name'));?></label>
+				<input type="text" id="av_mawgw_response_header" name="avResponseHeader" value="<?php p($_['avResponseHeader']); ?>" />
 			</p>
 			<p class="av_path">
 				<label for="av_path"><?php p($l->t('Path to clamscan')); ?></label>
