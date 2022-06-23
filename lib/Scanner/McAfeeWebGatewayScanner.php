@@ -55,7 +55,8 @@ class McAfeeWebGatewayScanner {
 			'res-body' => $this->data
 		], [
 			'Preview' => \strlen($this->data),
-			'X-Client-IP' => $localIP
+			'X-Client-IP' => $localIP,
+			'Allow' => 204
 		]);
 
 
@@ -76,7 +77,7 @@ class McAfeeWebGatewayScanner {
 				$message = $this->l10n->t('A malware or virus was detected, your upload was deleted. In doubt or for details please contact your system administrator');
 				return Status::create(Status::SCANRESULT_INFECTED, $message);
 			}			
-
+			return Status::create(Status::SCANRESULT_CLEAN);
 		} else {
 			throw new \RuntimeException('AV failed!');
 		}
