@@ -55,13 +55,13 @@ class ICAPClient {
 			switch ($type) {
 				case 'req-hdr':
 				case 'res-hdr':
-					$encapsulated[$type] = \strlen($bodyData);
+					$encapsulated[$type] = \strlen($data);
 					$bodyData .= $data;
 					break;
 
 				case 'req-body':
 				case 'res-body':
-					$encapsulated[$type] = \strlen($bodyData);
+					$encapsulated[$type] = \strlen($data);
 					$bodyData .= \dechex(\strlen($data)) . "\r\n";
 					$bodyData .= $data;
 					$bodyData .= "\r\n";
