@@ -16,6 +16,7 @@ OC.L10N.register(
     "Saved" : "Salvato",
     "Virus detected! Can't upload the file %s" : "Virus rilevato! Impossibile caricare il file %s",
     "Malware detected" : "Malware rilevato",
+    "A malware or virus was detected, your upload was deleted. In doubt or for details please contact your system administrator" : "Un malware o virus è stato rilevato, il tuo caricamento è stato cancellato. Se in dubbio o per dettagli contattare l'amministratore di sistema",
     "Greetings {user}," : "Ciao {user},",
     "Sorry, but a malware was detected in a file you tried to upload and it had to be deleted." : "Siamo spiacenti, ma un malware è stato rilevato in un file che hai provato a caricare ed è necessario eliminarlo.",
     "This email is a notification from {host}. Please, do not reply." : "Questa email è una notifica proveniente da {host}. Per favore non rispondere.",
