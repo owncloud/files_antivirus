@@ -4,18 +4,19 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
-## [1.1.0] - 2022-06-24
+## [1.1.0] - 2022-07-26
 
 ### Fixed
 
-- [#477](https://github.com/owncloud/files_antivirus/issue/477) - Advanced settings (list of rules) is not displayed
-- [#472](https://github.com/owncloud/files_antivirus/issue/472) - Encapsulated type count is wrong in ICAPClient
-- [#473](https://github.com/owncloud/files_antivirus/issue/473) - ICAP Response Modification Mode is missing
+- [#477](https://github.com/owncloud/files_antivirus/pull/477) - Advanced settings (list of rules) is not displayed
+- [#472](https://github.com/owncloud/files_antivirus/pull/472) - Encapsulated type count is wrong in ICAPClient
+- [#473](https://github.com/owncloud/files_antivirus/pull/473) - ICAP Response Modification Mode is missing
+- [#495](https://github.com/owncloud/files_antivirus/pull/495) - Fix wrong offset for the ICAP protocol
 
 ### Added
 
-- [#488](https://github.com/owncloud/files_antivirus/issue/488) - Add ICAP Scanner for FortiSandbox
-- [#489](https://github.com/owncloud/files_antivirus/issue/489) - Add ICAP Scanner for McAfee Web Gateway 10.x #489
+- [#488](https://github.com/owncloud/files_antivirus/pull/488) - Add ICAP Scanner for FortiSandbox
+- [#489](https://github.com/owncloud/files_antivirus/pull/489) - Add ICAP Scanner for McAfee Web Gateway 10.x #489
 
 
 ## [1.0.0] - 2021-05-31
