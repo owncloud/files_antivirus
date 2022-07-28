@@ -26,7 +26,7 @@ class McAfeeWebGatewayScanner {
 		$this->virusHeader = $config->getAvResponseHeader();
 		$this->sizeLimit = $config->getAvMaxFileSize();
 		$this->l10n = $l10n;
-        $this->logger = $logger;
+		$this->logger = $logger;
 	}
 
 	public function initScanner() {
@@ -59,24 +59,23 @@ class McAfeeWebGatewayScanner {
 			'Allow' => 204
 		]);
 
-
-        $code = $response['protocol']['code'] ?? 500;
+		$code = $response['protocol']['code'] ?? 500;
 		if ($code === 100 || $code === 200 || $code === 204) {
 
-			// Check the Header Response from User-Input 
-            // FIXME McAfee adds the X-Headers after Encapsulated. Parser should be improved. Never runs into $virus.
+			// Check the Header Response from User-Input
+			// FIXME McAfee adds the X-Headers after Encapsulated. Parser should be improved. Never runs into $virus.
 			$virus = $response['headers'][$this->virusHeader] ?? false;
-            if ($virus) {
+			if ($virus) {
 				return Status::create(Status::SCANRESULT_INFECTED, $virus);
 			}
 
 			// McAfee Webgateway if X-Headers are afterwards Encapsulated are sent
-            // FIXME Parser should be improved. We catch in the second try the return states.
+			// FIXME Parser should be improved. We catch in the second try the return states.
 			$respHeader = $response['body']['res-hdr']['HTTP_STATUS'] ?? '';
-			if (\strpos($respHeader, '403 Forbidden') !== false || \strpos($respHeader, '403 VirusFound') !== false || \strpos($respHeader, 'X-Virus-Name')  !== false ) {
+			if (\strpos($respHeader, '403 Forbidden') !== false || \strpos($respHeader, '403 VirusFound') !== false || \strpos($respHeader, 'X-Virus-Name')  !== false) {
 				$message = $this->l10n->t('A malware or virus was detected, your upload was deleted. In doubt or for details please contact your system administrator');
 				return Status::create(Status::SCANRESULT_INFECTED, $message);
-			}			
+			}
 			return Status::create(Status::SCANRESULT_CLEAN);
 		} else {
 			throw new \RuntimeException('AV failed!');

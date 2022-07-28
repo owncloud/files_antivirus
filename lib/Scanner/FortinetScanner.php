@@ -26,7 +26,7 @@ class FortinetScanner {
 		$this->virusHeader = $config->getAvResponseHeader();
 		$this->sizeLimit = $config->getAvMaxFileSize();
 		$this->l10n = $l10n;
-        $this->logger = $logger;
+		$this->logger = $logger;
 	}
 
 	public function initScanner() {
@@ -50,7 +50,6 @@ class FortinetScanner {
 
 		$localIP = getHostByName(getHostName());
 
-
 		$c = new ICAPClient($this->host, $this->port);
 		$response = $c->respmod($this->reqService, [
 			'res-hdr' => "POST / HTTP/1.0\r\nHost: 127.0.0.1\r\nX-Client-IP: ".$localIP."\r\nContent-Disposition: inline ; filename=test2.exe\r\nContent-Length: ".\strlen($this->data)."\r\n\r\n",
@@ -59,14 +58,12 @@ class FortinetScanner {
 			'Allow' => 204
 		]);
 
-
-        $code = $response['protocol']['code'] ?? 500;
+		$code = $response['protocol']['code'] ?? 500;
 		if ($code === 200 || $code === 204) {
 			$virus = $response['headers'][$this->virusHeader] ?? false;
-            if ($virus) {
+			if ($virus) {
 				return Status::create(Status::SCANRESULT_INFECTED, $virus);
 			}
-
 		} else {
 			throw new \RuntimeException('AV failed!');
 		}
