@@ -9,7 +9,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 ### Fixed
 
 - [#477](https://github.com/owncloud/files_antivirus/pull/477) - Advanced settings (list of rules) is not displayed
-- [#472](https://github.com/owncloud/files_antivirus/pull/472) - Encapsulated type count is wrong in ICAPClient
 - [#473](https://github.com/owncloud/files_antivirus/pull/473) - ICAP Response Modification Mode is missing
 - [#495](https://github.com/owncloud/files_antivirus/pull/495) - Fix wrong offset for the ICAP protocol
 
