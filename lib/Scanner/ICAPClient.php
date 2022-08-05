@@ -55,13 +55,21 @@ class ICAPClient {
 			switch ($type) {
 				case 'req-hdr':
 				case 'res-hdr':
-					$encapsulated[$type] = \strlen($bodyData);
+					if (\array_key_exists('Preview', $headers)) {
+						$encapsulated[$type] = \strlen($data);          # McAfee Webgateway
+					} else {
+						$encapsulated[$type] = \strlen($bodyData);      # ClamAV and Fortinet
+					}
 					$bodyData .= $data;
 					break;
 
 				case 'req-body':
 				case 'res-body':
-					$encapsulated[$type] = \strlen($bodyData);
+					if (\array_key_exists('Preview', $headers)) {
+						$encapsulated[$type] = \strlen($data);          # McAfee Webgateway
+					} else {
+						$encapsulated[$type] = \strlen($bodyData);      # ClamAV and Fortinet
+					}
 					$bodyData .= \dechex(\strlen($data)) . "\r\n";
 					$bodyData .= $data;
 					$bodyData .= "\r\n";
