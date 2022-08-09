@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
+## [Unreleased] 
+
+- 
+
+
 ## [1.1.0] - 2022-07-26
 
 ### Fixed
@@ -337,7 +342,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 - Initial implementation
 
 
-[unreleased]: https://github.com/owncloud/files_antivirus/compare/v1.1.0...master
+[Unreleased]: https://github.com/owncloud/files_antivirus/compare/v1.1.0...master
 [1.1.0]: https://github.com/owncloud/files_antivirus/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/owncloud/files_antivirus/compare/v0.16.0...v1.0.0
 [0.16.0]: https://github.com/owncloud/files_antivirus/compare/v0.15.2...v0.16.0
