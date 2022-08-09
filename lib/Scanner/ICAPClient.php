@@ -55,6 +55,7 @@ class ICAPClient {
 			switch ($type) {
 				case 'req-hdr':
 				case 'res-hdr':
+					# Temp fix, until https://github.com/owncloud/files_antivirus/pull/500
 					if (\array_key_exists('Preview', $headers)) {
 						$encapsulated[$type] = \strlen($data);          # McAfee Webgateway
 					} else {
