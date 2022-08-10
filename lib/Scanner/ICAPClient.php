@@ -55,13 +55,22 @@ class ICAPClient {
 			switch ($type) {
 				case 'req-hdr':
 				case 'res-hdr':
-					$encapsulated[$type] = \strlen($bodyData);
+					# Temp fix, until https://github.com/owncloud/files_antivirus/pull/500
+					if (\array_key_exists('Preview', $headers)) {
+						$encapsulated[$type] = \strlen($data);          # McAfee Webgateway
+					} else {
+						$encapsulated[$type] = \strlen($bodyData);      # ClamAV and Fortinet
+					}
 					$bodyData .= $data;
 					break;
 
 				case 'req-body':
 				case 'res-body':
-					$encapsulated[$type] = \strlen($bodyData);
+					if (\array_key_exists('Preview', $headers)) {
+						$encapsulated[$type] = \strlen($data);          # McAfee Webgateway
+					} else {
+						$encapsulated[$type] = \strlen($bodyData);      # ClamAV and Fortinet
+					}
 					$bodyData .= \dechex(\strlen($data)) . "\r\n";
 					$bodyData .= $data;
 					$bodyData .= "\r\n";
@@ -97,6 +106,12 @@ class ICAPClient {
 
 	public function reqmod(string $service, array $body = [], array $headers = []): array {
 		$request = $this->getRequest('REQMOD', $service, $body, $headers);
+		$response = $this->send($request);
+		return $response;
+	}
+
+	public function respmod(string $service, array $body = [], array $headers = []): array {
+		$request = $this->getRequest('RESPMOD', $service, $body, $headers);
 		$response = $this->send($request);
 		return $response;
 	}

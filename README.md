@@ -79,6 +79,24 @@ NOTE: The older versions of KAV did not send back the virus/infection name in an
 In v2.0.0 the header to transport the virus can be configured. Default: No header is sent.
 see https://support.kaspersky.com/ScanEngine/1.0/en-US/201214.htm
 
+
+### Run with FortiSandbox in ICAP Mode
+
+Select 'Fortinet' from the dropdown.
+
+The request service for FortiSandbox has to be set to 'respmod' and the response header to 'X-Virus-Name'.
+
+Fortinet privides some Demoinstances of the FortiSandbox, please have a look at the [productpage](https://www.fortinet.com/de/products/sandbox/fortisandbox) from Fortinet.
+
+
+### Run with McAfee Web Gateway 10.x and higher in ICAP Mode
+
+Select 'McAfee Web Gateway 10.x and higher' from the dropdown.
+
+The request service for McAfee has to be set to 'respmod' and the response header to 'X-Virus-Name'.
+
+McAfee provides Demoversions with limited Runtime for evaluation purposes. Have a look at [the McAfee Webpage](https://www.skyhighsecurity.com/en-us/products/secure-web-gateway.html) for the Web Gateway.
+
 Authors:
 
 [Manuel Delgado López](https://github.com/valarauco/) :: manuel.delgado at ucr.ac.cr  

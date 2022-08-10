@@ -4,7 +4,23 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
-## [unreleased] - XXXX-XX-XX
+## [Unreleased] 
+
+- 
+
+
+## [1.1.0] - 2022-07-26
+
+### Fixed
+
+- [#477](https://github.com/owncloud/files_antivirus/pull/477) - Advanced settings (list of rules) is not displayed
+- [#473](https://github.com/owncloud/files_antivirus/pull/473) - ICAP Response Modification Mode is missing
+- [#495](https://github.com/owncloud/files_antivirus/pull/495) - Fix wrong offset for the ICAP protocol
+
+### Added
+
+- [#488](https://github.com/owncloud/files_antivirus/pull/488) - Add ICAP Scanner for FortiSandbox
+- [#489](https://github.com/owncloud/files_antivirus/pull/489) - Add ICAP Scanner for McAfee Web Gateway 10.x #489
 
 
 ## [1.0.0] - 2021-05-31
@@ -326,7 +342,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 - Initial implementation
 
 
-[unreleased]: https://github.com/owncloud/files_antivirus/compare/v1.0.0...master
+[Unreleased]: https://github.com/owncloud/files_antivirus/compare/v1.1.0...master
+[1.1.0]: https://github.com/owncloud/files_antivirus/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/owncloud/files_antivirus/compare/v0.16.0...v1.0.0
 [0.16.0]: https://github.com/owncloud/files_antivirus/compare/v0.15.2...v0.16.0
 [0.15.2]: https://github.com/owncloud/files_antivirus/compare/v0.15.1...v0.15.2

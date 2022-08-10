@@ -8,7 +8,7 @@ use OCA\Files_Antivirus\Status;
 use OCP\IL10N;
 use OCP\ILogger;
 
-class ICAPScanner {
+class FortinetScanner {
 	/** @var IL10N */
 	private $l10n;
 
@@ -26,6 +26,7 @@ class ICAPScanner {
 		$this->virusHeader = $config->getAvResponseHeader();
 		$this->sizeLimit = $config->getAvMaxFileSize();
 		$this->l10n = $l10n;
+		$this->logger = $logger;
 	}
 
 	public function initScanner() {
@@ -46,26 +47,22 @@ class ICAPScanner {
 		if ($this->data === '') {
 			return Status::create(Status::SCANRESULT_CLEAN);
 		}
+
+		$localIP = getHostByName(getHostName());
+
 		$c = new ICAPClient($this->host, $this->port);
-		$response = $c->reqmod($this->reqService, [
-			'req-hdr' => "PUT / HTTP/1.0\r\nHost: 127.0.0.1\r\n\r\n",
-			'req-body' => $this->data
+		$response = $c->respmod($this->reqService, [
+			'res-hdr' => "POST / HTTP/1.0\r\nHost: 127.0.0.1\r\nX-Client-IP: ".$localIP."\r\nContent-Disposition: inline ; filename=test2.exe\r\nContent-Length: ".\strlen($this->data)."\r\n\r\n",
+			'res-body' => $this->data
 		], [
 			'Allow' => 204
 		]);
+
 		$code = $response['protocol']['code'] ?? 500;
 		if ($code === 200 || $code === 204) {
-			// c-icap/clamav reports this header
 			$virus = $response['headers'][$this->virusHeader] ?? false;
 			if ($virus) {
 				return Status::create(Status::SCANRESULT_INFECTED, $virus);
-			}
-
-			// kaspersky(pre 2020 product editions) and McAfee handling
-			$respHeader = $response['body']['res-hdr']['HTTP_STATUS'] ?? '';
-			if (\strpos($respHeader, '403 Forbidden') !== false || \strpos($respHeader, '403 VirusFound') !== false) {
-				$message = $this->l10n->t('A malware or virus was detected, your upload was deleted. In doubt or for details please contact your system administrator');
-				return Status::create(Status::SCANRESULT_INFECTED, $message);
 			}
 		} else {
 			throw new \RuntimeException('AV failed!');

@@ -14,6 +14,8 @@
 namespace OCA\Files_Antivirus;
 
 use OCA\Files_Antivirus\Scanner\ICAPScanner;
+use OCA\Files_Antivirus\Scanner\FortinetScanner;
+use OCA\Files_Antivirus\Scanner\McAfeeWebGatewayScanner;
 use OCA\Files_Antivirus\Scanner\InitException;
 use OCP\IL10N;
 use \OCP\ILogger;
@@ -76,6 +78,12 @@ class ScannerFactory {
 				break;
 			case 'icap':
 				$this->scannerClass = ICAPScanner::class;
+				break;
+			case 'fortinet':
+				$this->scannerClass = FortinetScanner::class;
+				break;
+			case 'mawgw':
+				$this->scannerClass = McAfeeWebGatewayScanner::class;
 				break;
 			default:
 				throw new InitException(

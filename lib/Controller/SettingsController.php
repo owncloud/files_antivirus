@@ -106,6 +106,16 @@ class SettingsController extends Controller {
 				$this->settings->setAvHost($avHost);
 				$this->settings->setAvRequestService($avRequestService);
 				$this->settings->setAvResponseHeader($avResponseHeader);
+			} elseif ($avMode === 'fortinet') {
+				$this->settings->setAvPort($avPort);
+				$this->settings->setAvHost($avHost);
+				$this->settings->setAvRequestService($avRequestService);
+				$this->settings->setAvResponseHeader($avResponseHeader);
+			} elseif ($avMode === 'mawgw') {
+				$this->settings->setAvPort($avPort);
+				$this->settings->setAvHost($avHost);
+				$this->settings->setAvRequestService($avRequestService);
+				$this->settings->setAvResponseHeader($avResponseHeader);
 			}
 
 			$this->settings->setAvInfectedAction($avInfectedAction);
