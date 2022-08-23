@@ -116,6 +116,15 @@ class AvirWrapper extends Wrapper {
 	public function fopen($path, $mode) {
 		$stream = $this->storage->fopen($path, $mode);
 
+		$data = $this->storage->file_get_contents($path);
+		$scanner = $this->scannerFactory->getScanner();
+		$scanner->initScanner();
+		$content = new Content($data, $this->appConfig->getAvChunkSize());
+		while (($chunk = $content->fread()) !== false) {
+			$scanner->onAsyncData($chunk);
+		}
+		$this->onScanComplete($scanner, $path, false, true);
+
 		if (\is_resource($stream)
 			&& $this->isWritingMode($mode)
 			&& $this->isScannableSize($path)
@@ -149,10 +158,11 @@ class AvirWrapper extends Wrapper {
 	 * @param AbstractScanner $scanner
 	 * @param string $path
 	 * @param bool $shouldDelete
+	 * @param bool $isDownload
 	 *
 	 * @throws FileContentNotAllowedException
 	 */
-	private function onScanComplete($scanner, $path, $shouldDelete) {
+	private function onScanComplete($scanner, $path, $shouldDelete, $isDownload = false) {
 		$status = $scanner->completeAsyncScan();
 		if (\intval($status->getNumericStatus()) === Status::SCANRESULT_INFECTED) {
 			$owner = $this->getOwner($path);
@@ -180,11 +190,12 @@ class AvirWrapper extends Wrapper {
 				$this->unlink($path);
 			}
 
+			$text = 'Virus %s is detected in the file. Upload cannot be completed.';
+			if ($isDownload) {
+				$text = 'Virus %s is detected in the file. Please contact an administrator.';
+			}
 			throw new FileContentNotAllowedException(
-				$this->l10n->t(
-					'Virus %s is detected in the file. Upload cannot be completed.',
-					$status->getDetails()
-				),
+				$this->l10n->t($text, $status->getDetails()),
 				false
 			);
 		}
