@@ -50,18 +50,8 @@ config = {
     "phpunit": {
         "allDatabases": {
             "phpVersions": [
-                "7.3",
-            ],
-        },
-        "reducedDatabases": {
-            "phpVersions": [
                 DEFAULT_PHP_VERSION,
             ],
-            "databases": [
-                "sqlite",
-                "mariadb:10.2",
-            ],
-            "coverage": False,
         },
     },
     "acceptance": {
