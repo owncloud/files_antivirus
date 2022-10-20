@@ -35,6 +35,8 @@ dir = {
     "federated": "/var/www/owncloud/federated",
     "server": "/var/www/owncloud/server",
     "testrunner": "/var/www/owncloud/testrunner",
+    "scalityConfig": "/var/www/owncloud/server/config/scality.config.php",
+    "browserService": "/home/seluser/Downloads",
 }
 
 config = {
@@ -88,7 +90,7 @@ config = {
                     "name": "configure-app",
                     "image": OC_CI_PHP % DEFAULT_PHP_VERSION,
                     "commands": [
-                        "cd /var/www/owncloud/server",
+                        "cd %s" % dir["server"],
                         "wait-for-it -t 600 icap:1344",
                         'php occ config:app:set --value "icap" files_antivirus av_host',
                         'php occ config:app:set --value "icap" files_antivirus av_mode',
@@ -126,7 +128,7 @@ config = {
                     "name": "configure-app",
                     "image": OC_CI_PHP % DEFAULT_PHP_VERSION,
                     "commands": [
-                        "cd /var/www/owncloud/server",
+                        "cd %s" % dir["server"],
                         "wait-for-it -t 600 icap:1344",
                         'php occ config:app:set --value "icap" files_antivirus av_host',
                         'php occ config:app:set --value "icap" files_antivirus av_mode',
@@ -157,7 +159,7 @@ config = {
                     "name": "configure-app",
                     "image": OC_CI_PHP % DEFAULT_PHP_VERSION,
                     "commands": [
-                        "cd /var/www/owncloud/server",
+                        "cd %s" % dir["server"],
                         "wait-for-it -t 600 clamav:3310",
                         'php occ config:app:set --value "clamav" files_antivirus av_host',
                         'php occ config:app:set --value "daemon" files_antivirus av_mode',
@@ -188,7 +190,7 @@ config = {
                     "name": "configure-app",
                     "image": OC_CI_PHP % DEFAULT_PHP_VERSION,
                     "commands": [
-                        "cd /var/www/owncloud/server",
+                        "cd %s" % dir["server"],
                         "wait-for-it -t 600 clamav:3310",
                         'php occ config:app:set --value "clamav" files_antivirus av_host',
                         'php occ config:app:set --value "daemon" files_antivirus av_mode',
@@ -298,7 +300,7 @@ config = {
             ],
             "extraCommandsBeforeTestRun": [
                 # required to pass the executable tests
-                "ln -s /var/www/owncloud/server/apps/files_antivirus/tests/util/avir.sh /usr/bin/clamscan",
+                "ln -s %s/apps/files_antivirus/tests/util/avir.sh /usr/bin/clamscan" % dir["server"],
             ],
         },
         "acceptance": {
@@ -307,7 +309,7 @@ config = {
                     "name": "configure-app",
                     "image": OC_CI_PHP % DEFAULT_PHP_VERSION,
                     "commands": [
-                        "cd /var/www/owncloud/server",
+                        "cd %s" % dir["server"],
                         "wait-for-it -t 600 clamav:3310",
                         'php occ config:app:set --value "clamav" files_antivirus av_host',
                         'php occ config:app:set --value "daemon" files_antivirus av_mode',
@@ -1201,16 +1203,16 @@ def acceptance(ctx):
                         "name": "configure-app",
                         "image": OC_CI_PHP % DEFAULT_PHP_VERSION,
                         "commands": [
-                            "cd /var/www/owncloud/server/apps/files_primary_s3",
-                            "cp tests/drone/scality.config.php /var/www/owncloud/server/config",
-                            "sed -i -e \"s/owncloud/owncloud-acceptance-tests-$DRONE_BUILD_NUMBER-$DRONE_STAGE_NUMBER/\" /var/www/owncloud/server/config/scality.config.php",
-                            "sed -i -e \"s/accessKey1/$SCALITY_KEY/\" /var/www/owncloud/server/config/scality.config.php",
-                            "sed -i -e \"s/verySecretKey1/$SCALITY_SECRET_ESCAPED/\" /var/www/owncloud/server/config/scality.config.php",
-                            "sed -i -e \"s/http/https/\" /var/www/owncloud/server/config/scality.config.php",
-                            "sed -i -e \"s/scality:8000/%s/\" /var/www/owncloud/server/config/scality.config.php" % params["externalScality"]["externalServerUrl"],
-                            "cd /var/www/owncloud/server/",
+                            "cd %s/apps/files_primary_s3" % dir["server"],
+                            "cp tests/drone/scality.config.php %s/config" % dir["server"],
+                            "sed -i -e \"s/owncloud/owncloud-acceptance-tests-$DRONE_BUILD_NUMBER-$DRONE_STAGE_NUMBER/\" %s" % dir["scalityConfig"],
+                            "sed -i -e \"s/accessKey1/$SCALITY_KEY/\" %s" % dir["scalityConfig"],
+                            "sed -i -e \"s/verySecretKey1/$SCALITY_SECRET_ESCAPED/\" %s" % dir["scalityConfig"],
+                            "sed -i -e \"s/http/https/\" %s" % dir["scalityConfig"],
+                            "sed -i -e \"s/scality:8000/%s/\" %s" % (params["externalScality"]["externalServerUrl"], dir["scalityConfig"]),
+                            "cd %s" % dir["server"],
                             "php occ s3:create-bucket owncloud-acceptance-tests-$DRONE_BUILD_NUMBER-$DRONE_STAGE_NUMBER --accept-warning",
-                            "cd /var/www/owncloud/testrunner/apps/files_primary_s3",
+                            "cd %s/apps/files_primary_s3" % dir["testrunner"],
                         ],
                         "environment": {
                             "SCALITY_KEY": {
@@ -1234,7 +1236,7 @@ def acceptance(ctx):
                             "aws configure set aws_access_key_id $SCALITY_KEY",
                             "aws configure set aws_secret_access_key $SCALITY_SECRET",
                             "aws --endpoint-url $SCALITY_ENDPOINT s3 rm --recursive s3://owncloud-acceptance-tests-$DRONE_BUILD_NUMBER-$DRONE_STAGE_NUMBER",
-                            "/var/www/owncloud/testrunner/apps/files_primary_s3/tests/delete_all_object_versions.sh $SCALITY_ENDPOINT owncloud-acceptance-tests-$DRONE_BUILD_NUMBER-$DRONE_STAGE_NUMBER",
+                            "%s/apps/files_primary_s3/tests/delete_all_object_versions.sh $SCALITY_ENDPOINT owncloud-acceptance-tests-$DRONE_BUILD_NUMBER-$DRONE_STAGE_NUMBER" % dir["testrunner"],
                             "aws --endpoint-url $SCALITY_ENDPOINT s3 rb --force s3://owncloud-acceptance-tests-$DRONE_BUILD_NUMBER-$DRONE_STAGE_NUMBER",
                         ],
                         "environment": {
@@ -1621,7 +1623,7 @@ def browserService(browser):
             },
             "volumes": [{
                 "name": "downloads",
-                "path": "/home/seluser/Downloads",
+                "path": dir["browserService"],
             }],
         }]
 
@@ -1635,7 +1637,7 @@ def browserService(browser):
             },
             "volumes": [{
                 "name": "downloads",
-                "path": "/home/seluser/Downloads",
+                "path": dir["browserService"],
             }],
         }]
 
@@ -2096,11 +2098,11 @@ def fixPermissions(phpVersion, federatedServerNeeded, selUserNeeded = False):
         ] + ([
             "chown -R www-data %s" % dir["federated"],
         ] if federatedServerNeeded else []) + ([
-            "chmod 777 /home/seluser/Downloads/",
+            "chmod 777 %s" % dir["browserService"],
         ] if selUserNeeded else []),
         "volumes": [{
             "name": "downloads",
-            "path": "/home/seluser/Downloads/",
+            "path": dir["browserService"],
         }],
     }]
 
@@ -2306,7 +2308,7 @@ def phplint(ctx):
         "type": "docker",
         "name": "lint-test",
         "workspace": {
-            "base": "/var/www/owncloud",
+            "base": dir["base"],
             "path": "server/apps/%s" % ctx.repo.name,
         },
         "steps": skipIfUnchanged(ctx, "lint") +
