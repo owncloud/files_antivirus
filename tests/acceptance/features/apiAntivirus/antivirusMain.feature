@@ -10,6 +10,7 @@ Feature: Antivirus basic
     And the owncloud log has been cleared
     And user "Alice" has been created with default attributes and small skeleton files
 
+
   Scenario Outline: A small file without a virus can be uploaded
     Given using <dav-path-version> DAV path
     When user "Alice" uploads file "textfile.txt" from the antivirus test data folder to "/ok-textfile.txt" using the WebDAV API
@@ -20,6 +21,7 @@ Feature: Antivirus basic
       | dav-path-version |
       | old              |
       | new              |
+
 
   Scenario Outline: A small file with a virus cannot be uploaded
     Given using <dav-path-version> DAV path
@@ -33,6 +35,7 @@ Feature: Antivirus basic
       | dav-path-version |
       | old              |
       | new              |
+
 
   Scenario Outline: A small file with a virus can be uploaded when the antivirus app is disabled
     Given using <dav-path-version> DAV path
@@ -48,6 +51,7 @@ Feature: Antivirus basic
       | old              |
       | new              |
 
+
   Scenario Outline: A small file without a virus can be uploaded in chunks
     Given using <dav-path-version> DAV path
     When user "Alice" uploads the following chunks to "/myChunkedFile.txt" with <dav-path-version> chunking and using the WebDAV API
@@ -62,6 +66,7 @@ Feature: Antivirus basic
       | dav-path-version |
       | old              |
       | new              |
+
 
   Scenario Outline: A small file with a virus cannot be uploaded in chunks
     Given using <dav-path-version> DAV path
@@ -80,6 +85,7 @@ Feature: Antivirus basic
       | old              |
       | new              |
 
+
   Scenario: A small file with a virus cannot be uploaded in chunks (use async move to upload)
     Given using new DAV path
     And the administrator has enabled async operations
@@ -93,6 +99,7 @@ Feature: Antivirus basic
       | status | /^error$/ |
     And as "Alice" file "/myChunkedFile.txt" should not exist
 
+
   Scenario Outline: A small file without a virus can be uploaded via public upload
     Given the administrator has enabled DAV tech_preview
     And as user "Alice"
@@ -104,6 +111,7 @@ Feature: Antivirus basic
       | public-webdav-api |
       | new               |
       | old               |
+
 
   Scenario Outline: A small file with a virus cannot be uploaded via old public upload
     Given the administrator has enabled DAV tech_preview
@@ -120,6 +128,7 @@ Feature: Antivirus basic
       | eicar.com       |
       | eicar_com.zip   |
       | eicarcom2.zip   |
+
 
   Scenario Outline: A small file with a virus cannot be uploaded via new public upload
     Given as user "Alice"
@@ -147,6 +156,7 @@ Feature: Antivirus basic
       | user | app             | method | message               |
       | --   | files_antivirus | PUT    | Infected file deleted |
     And the content of file "/FOLDER/textfile.txt" for user "Alice" should be "Small text file without virus."
+
 
   Scenario Outline: An empty file can be uploaded
     Given using <dav-path-version> DAV path
