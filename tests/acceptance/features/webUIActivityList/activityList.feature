@@ -8,6 +8,7 @@ Feature: log activities of blocked files
     And user "Brian" has logged in using the webUI
     And the user has browsed to the files page
 
+
   Scenario Outline: uploading a virus file should be listed in the general activity list
     Given using <dav-path-version> DAV path
     And user "Brian" has uploaded file "eicar.com" from the antivirus test data folder to "/new-file.txt"
@@ -22,6 +23,7 @@ Feature: log activities of blocked files
       | dav-path-version |
       | old              |
       | new              |
+
 
   Scenario Outline: replacing a file by a virus file should be listed in the general activity list
     Given using <dav-path-version> DAV path
@@ -38,6 +40,7 @@ Feature: log activities of blocked files
       | dav-path-version |
       | old              |
       | new              |
+
 
   Scenario: Uploading a normal file should not list any activities in the Antivirus section
     Given user "Brian" has uploaded file "filesForUpload/lorem.txt" to "/text.txt"
