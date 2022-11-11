@@ -4,28 +4,31 @@ namespace OCA\Files_Antivirus\Scanner;
 use RuntimeException;
 
 class ICAPClient {
-	private $host;
-	private $port;
+	private string $host;
+	private int $port;
 	private $writeHandle;
 
-	public $userAgent = 'ownCloud-icap-client/0.1.0';
+	public string $userAgent = 'ownCloud-icap-client/0.1.0';
 
 	public function __construct(string $host, int $port) {
 		$this->host = $host;
 		$this->port = $port;
 	}
 
+	/**
+	 * @throws InitException
+	 */
 	private function connect(): void {
 		// Shut stupid uncontrolled messaging up - we handle errors on our own
 		$this->writeHandle = @\stream_socket_client(
-			"tcp://{$this->host}:{$this->port}",
+			"tcp://$this->host:$this->port",
 			$errorCode,
 			$errorMessage,
 			5
 		);
 		if (!$this->writeHandle) {
 			throw new InitException(
-				"Cannot connect to \"tcp://{$this->host}:{$this->port}\": $errorMessage (code $errorCode)"
+				"Cannot connect to \"tcp://$this->host:$this->port\": $errorMessage (code $errorCode)"
 			);
 		}
 	}
@@ -89,13 +92,13 @@ class ICAPClient {
 			$headers['Encapsulated'] = '';
 			foreach ($encapsulated as $section => $offset) {
 				$headers['Encapsulated'] .= $headers['Encapsulated'] === '' ? '' : ', ';
-				$headers['Encapsulated'] .= "{$section}={$offset}";
+				$headers['Encapsulated'] .= "$section=$offset";
 			}
 		}
 
-		$request = "{$method} icap://{$this->host}/{$service} ICAP/1.0\r\n";
+		$request = "$method icap://$this->host/$service ICAP/1.0\r\n";
 		foreach ($headers as $header => $value) {
-			$request .= "{$header}: {$value}\r\n";
+			$request .= "$header: $value\r\n";
 		}
 
 		$request .= "\r\n";
@@ -104,24 +107,31 @@ class ICAPClient {
 		return $request;
 	}
 
+	/**
+	 * @throws InitException
+	 */
 	public function reqmod(string $service, array $body = [], array $headers = []): array {
 		$request = $this->getRequest('REQMOD', $service, $body, $headers);
-		$response = $this->send($request);
-		return $response;
+		return $this->send($request);
 	}
 
+	/**
+	 * @throws InitException
+	 */
 	public function respmod(string $service, array $body = [], array $headers = []): array {
 		$request = $this->getRequest('RESPMOD', $service, $body, $headers);
-		$response = $this->send($request);
-		return $response;
+		return $this->send($request);
 	}
 
+	/**
+	 * @throws InitException
+	 */
 	private function send(string $request): array {
 		$this->connect();
 		// Shut stupid uncontrolled messaging up - we handle errors on our own
 		if (@\fwrite($this->writeHandle, $request) === false) {
 			throw new InitException(
-				"Writing to \"{$this->host}:{$this->port}}\" failed"
+				"Writing to \"$this->host:$this->port}\" failed"
 			);
 		}
 
@@ -183,7 +193,7 @@ class ICAPClient {
 			if ($prevString === "" && $trimmedHeaderString === "") {
 				break;
 			}
-			list($headerName, $headerValue) = $this->parseHeader($trimmedHeaderString);
+			[$headerName, $headerValue] = $this->parseHeader($trimmedHeaderString);
 			if ($headerName !== '') {
 				$headers[$headerName] = $headerValue;
 				if ($headerName == "Encapsulated") {
@@ -206,7 +216,7 @@ class ICAPClient {
 			if ($line === '') {
 				continue;
 			}
-			list($name, $value) = $this->parseHeader($line);
+			[$name, $value] = $this->parseHeader($line);
 			if ($name !== '') {
 				$headers[$name] = $value;
 			}

@@ -8,23 +8,31 @@
 
 namespace OCA\Files_Antivirus\Tests\unit;
 
-use OC\Files\Filesystem;
 use OC\Files\View;
+use OC\User\LoginException;
 use OCA\Files_Antivirus\Item;
+use OCP\AppFramework\QueryException;
+use OCP\Files\NotFoundException;
+use Test\Util\User\Dummy;
 
 class ItemTest extends TestBase {
 	public const UID = 'testo';
 	public const PWD = 'test';
 	public const CONTENT = 'LoremIpsum';
 
-	protected $view;
+	protected View $view;
 
 	public static function setUpBeforeClass(): void {
 		parent::setUpBeforeClass();
 		\OC_User::clearBackends();
-		\OC_User::useBackend(new \Test\Util\User\Dummy());
+		\OC_User::useBackend(new Dummy());
 	}
 
+	/**
+	 * @throws LoginException
+	 * @throws QueryException
+	 * @throws \Exception
+	 */
 	public function setUp(): void {
 		parent::setUp();
 
@@ -44,8 +52,12 @@ class ItemTest extends TestBase {
 		$this->view->file_put_contents('file1', self::CONTENT);
 		$config->setAvMaxFileSize($oldLimit);
 	}
-	
-	public function testRead() {
+
+	/**
+	 * @throws NotFoundException
+	 * @throws QueryException
+	 */
+	public function testRead(): void {
 		$item = new Item($this->l10n, $this->view, '/file1');
 		$this->assertTrue($item->isValid());
 		

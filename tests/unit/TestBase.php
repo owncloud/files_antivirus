@@ -10,15 +10,29 @@
 namespace OCA\Files_Antivirus\Tests\unit;
 
 use OCA\Files_Antivirus\AppInfo\Application;
+use OCP\AppFramework\IAppContainer;
+use OCP\IDb;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use OCA\Files_Antivirus\AppConfig;
+use OCP\IL10N;
 
 abstract class TestBase extends TestCase {
-	protected $db;
-	protected $application;
-	protected $container;
+	protected IDb $db;
+	protected Application $application;
+	protected IAppContainer $container;
+	/**
+	 * @var AppConfig|MockObject
+	 */
 	protected $config;
+	/**
+	 * @var IL10N|MockObject
+	 */
 	protected $l10n;
-	
+
+	/**
+	 * @throws \Exception
+	 */
 	public function setUp(): void {
 		parent::setUp();
 		\OC_App::enable('files_antivirus');
@@ -28,16 +42,16 @@ abstract class TestBase extends TestCase {
 		$this->application = new Application();
 		$this->container = $this->application->getContainer();
 		
-		$this->config = $this->getMockBuilder('\OCA\Files_Antivirus\AppConfig')
+		$this->config = $this->getMockBuilder(AppConfig::class)
 				->disableOriginalConstructor()
 				->getMock()
 		;
 		$this->config->method('__call')
-			->will($this->returnCallback([$this, 'getAppValue']));
+			->willReturnCallback([$this, 'getAppValue']);
 		$this->config->method('getAvChunkSize')
-			->will($this->returnValue(8192));
+			->willReturn(8192);
 
-		$this->l10n = $this->getMockBuilder('\OCP\IL10N')
+		$this->l10n = $this->getMockBuilder(IL10N::class)
 				->disableOriginalConstructor()
 				->getMock()
 		;
@@ -55,7 +69,7 @@ abstract class TestBase extends TestCase {
 		}
 	}
 
-	protected function getTestDataDirItem($relativePath) {
+	protected function getTestDataDirItem($relativePath): string {
 		return __DIR__ . '/../data/' . $relativePath;
 	}
 }

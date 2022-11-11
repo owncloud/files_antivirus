@@ -13,29 +13,15 @@
 
 namespace OCA\Files_Antivirus;
 
+use OC\Files\View;
+use OCP\AppFramework\QueryException;
+use OCP\Files\NotFoundException;
 use OCP\IL10N;
-use OCA\Files_Antivirus\Status;
-use OCA\Files_Antivirus\Activity;
 
 class Item implements IScannable {
-	/**
-	 * @var IL10N
-	 */
-	private $l10n;
-	
-	/**
-	 * File view
-	 *
-	 * @var \OC\Files\View
-	 */
-	protected $view;
-	
-	/**
-	 * Path relative to the view
-	 *
-	 * @var string
-	 */
-	protected $path;
+	private IL10N $l10n;
+	protected View $view;
+	protected string $path;
 
 	/**
 	 * Scanned fileid (optional)
@@ -67,14 +53,19 @@ class Item implements IScannable {
 	
 	/**
 	 * Is filesize match the size conditions
-	 *
-	 * @var bool
 	 */
-	protected $isValidSize;
-	
-	public function __construct(IL10N $l10n, $view, $path, $id = null, $etag = null) {
+	protected bool $isValidSize;
+
+	/**
+	 * @throws NotFoundException
+	 * @throws QueryException
+	 */
+	public function __construct(IL10N $l10n, View $view, string $path, int $id = null, string $etag = null) {
 		$this->l10n = $l10n;
-		
+		$this->view = $view;
+		$this->path = $path;
+		$this->etag = $etag;
+
 		if (!\is_object($view)) {
 			$this->logError('Can\'t init filesystem view.', $id, $path);
 			throw new \RuntimeException();
@@ -91,10 +82,6 @@ class Item implements IScannable {
 			$this->id = $id;
 		}
 		
-		$this->view = $view;
-		$this->path = $path;
-		$this->etag = $etag;
-		
 		$this->isValidSize = $view->filesize($path) > 0;
 		
 		$application = new AppInfo\Application();
@@ -104,41 +91,40 @@ class Item implements IScannable {
 	
 	/**
 	 * Is this file good for scanning?
-	 *
-	 * @return boolean
 	 */
-	public function isValid() {
-		$isValid = !$this->view->is_dir($this->path) && $this->isValidSize;
-		return $isValid;
+	public function isValid(): bool {
+		return !$this->view->is_dir($this->path) && $this->isValidSize;
 	}
-	
+
 	/**
 	 * Reads a file portion by portion until the very end
 	 *
 	 * @return string|boolean
+	 * @throws NotFoundException
 	 */
 	public function fread() {
 		if (!$this->isValid()) {
-			return;
+			return false;
 		}
 		if ($this->fileHandle === null) {
 			$this->getFileHandle();
 		}
 		
 		if ($this->fileHandle !== null && !$this->feof()) {
-			$chunk = \fread($this->fileHandle, $this->chunkSize);
-			return $chunk;
+			return \fread($this->fileHandle, $this->chunkSize);
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Action to take if this item is infected
 	 *
 	 * @param Status $status
 	 * @param boolean $isBackground
+	 * @throws NotFoundException
+	 * @throws QueryException
 	 */
-	public function processInfected(Status $status, $isBackground) {
+	public function processInfected(Status $status, bool $isBackground): void {
 		$application = new AppInfo\Application();
 		$appConfig = $application->getContainer()->query('AppConfig');
 		$infectedAction = $appConfig->getAvInfectedAction();
@@ -183,21 +169,17 @@ class Item implements IScannable {
 	/**
 	 * Action to take if this item status is unclear
 	 *
-	 * @param Status $status
-	 * @param boolean $isBackground
+	 * @throws NotFoundException
 	 */
-	public function processUnchecked(Status $status, $isBackground) {
+	public function processUnchecked(Status $status): void {
 		//TODO: Show warning to the user: The file can not be checked
 		$this->logError('Not Checked. ' . $status->getDetails());
 	}
 	
 	/**
 	 * Action to take if this item status is not infected
-	 *
-	 * @param Status $status
-	 * @param boolean $isBackground
 	 */
-	public function processClean(Status $status, $isBackground) {
+	public function processClean(bool $isBackground): void {
 		if (!$isBackground || $this->id === null) {
 			return;
 		}
@@ -223,10 +205,8 @@ class Item implements IScannable {
 
 	/**
 	 * Check if the end of file is reached
-	 *
-	 * @return boolean
 	 */
-	private function feof() {
+	private function feof(): bool {
 		$isDone = \feof($this->fileHandle);
 		if ($isDone) {
 			$this->logDebug('Scan is done');
@@ -235,47 +215,49 @@ class Item implements IScannable {
 		}
 		return $isDone;
 	}
-	
+
 	/**
 	 * Opens a file for reading
 	 *
-	 * @throws \RuntimeException
+	 * @throws NotFoundException
 	 */
-	private function getFileHandle() {
+	private function getFileHandle(): void {
 		$fileHandle = $this->view->fopen($this->path, "r");
 		if ($fileHandle === false) {
 			$this->logError('Can not open for reading.', $this->id, $this->path);
 			throw new \RuntimeException();
-		} else {
-			$this->logDebug('Scan started');
-			$this->fileHandle = $fileHandle;
 		}
+
+		$this->logDebug('Scan started');
+		$this->fileHandle = $fileHandle;
 	}
 	
-	/**
-	 * @param string $message
-	 */
-	public function logDebug($message) {
+	public function logDebug(string $message): void {
 		$extra = ' File: ' . $this->id
 				. ' Account: ' . $this->view->getOwner($this->path)
 				. ' Path: ' . $this->path;
 		\OCP\Util::writeLog('files_antivirus', $message . $extra, \OCP\Util::DEBUG);
 	}
-	
+
 	/**
-	 * @param string $message
-	 * @param int $id optional
-	 * @param string $path optional
+	 * @throws NotFoundException
 	 */
-	public function logError($message, $id=null, $path=null) {
-		$ownerInfo = $this->view === null ? '' : ' Account: ' . $this->view->getOwner($path);
-		$extra = ' File: ' . ($id === null ? $this->id : $id)
+	public function logError(string $message, int $id = null, string $path = null): void {
+		$ownerInfo = ' ';
+		if ($path && $this->view->file_exists($path)) {
+			$ownerInfo = ' Account: ' . $this->view->getOwner($path);
+		}
+		$extra = ' File: ' . ($id ?? $this->id)
 				. $ownerInfo
-				. ' Path: ' . ($path === null ? $this->path : $path);
+				. ' Path: ' . ($path ?? $this->path);
 		\OCP\Util::writeLog(
 			'files_antivirus',
 			$message . $extra,
 			\OCP\Util::ERROR
 		);
+	}
+
+	public function getFilename(): string {
+		return basename($this->path);
 	}
 }

@@ -8,16 +8,16 @@ use OCA\Files_Antivirus\Status;
 use OCP\IL10N;
 use OCP\ILogger;
 
-class ICAPScanner {
-	/** @var IL10N */
-	private $l10n;
+class ICAPScanner implements IScanner {
+	private IL10N $l10n;
 
-	private $data = '';
-	private $host;
-	private $port;
-	private $reqService;
-	private $virusHeader;
-	private $sizeLimit;
+	private string $data = '';
+	private string $host;
+	private int $port;
+	private string $reqService;
+	private string $virusHeader;
+	private int $sizeLimit;
+	private string $filename;
 
 	public function __construct(AppConfig $config, ILogger $logger, IL10N $l10n) {
 		$this->host = $config->getAvHost();
@@ -28,10 +28,11 @@ class ICAPScanner {
 		$this->l10n = $l10n;
 	}
 
-	public function initScanner() {
+	public function initScanner(string $fileName): void {
+		$this->filename = $fileName;
 	}
 
-	public function onAsyncData($data) {
+	public function onAsyncData($data): void {
 		$hasNoSizeLimit = $this->sizeLimit === -1;
 		$scannedBytes = \strlen($this->data);
 		if ($hasNoSizeLimit || $scannedBytes <= $this->sizeLimit) {
@@ -42,13 +43,20 @@ class ICAPScanner {
 		}
 	}
 
-	public function completeAsyncScan() {
+	/**
+	 * @throws InitException
+	 */
+	public function completeAsyncScan(): Status {
 		if ($this->data === '') {
 			return Status::create(Status::SCANRESULT_CLEAN);
 		}
+
+		$requestHeaders = $this->buildRequestHeaders();
+		$requestHeader = implode("\r\n", $requestHeaders);
+
 		$c = new ICAPClient($this->host, $this->port);
 		$response = $c->reqmod($this->reqService, [
-			'req-hdr' => "PUT / HTTP/1.0\r\nHost: 127.0.0.1\r\n\r\n",
+			'req-hdr' => "$requestHeader\r\n\r\n",
 			'req-body' => $this->data
 		], [
 			'Allow' => 204
@@ -61,7 +69,7 @@ class ICAPScanner {
 				return Status::create(Status::SCANRESULT_INFECTED, $virus);
 			}
 
-			// kaspersky(pre 2020 product editions) and McAfee handling
+			// kaspersky(pre-2020 product editions) and McAfee handling
 			$respHeader = $response['body']['res-hdr']['HTTP_STATUS'] ?? '';
 			if (\strpos($respHeader, '403 Forbidden') !== false || \strpos($respHeader, '403 VirusFound') !== false) {
 				$message = $this->l10n->t('A malware or virus was detected, your upload was deleted. In doubt or for details please contact your system administrator');
@@ -73,8 +81,11 @@ class ICAPScanner {
 		return Status::create(Status::SCANRESULT_CLEAN);
 	}
 
-	public function scan(IScannable $item) {
-		$this->initScanner();
+	/**
+	 * @throws InitException
+	 */
+	public function scan(IScannable $item): Status {
+		$this->initScanner($item->getFilename());
 		while (($chunk = $item->fread()) !== false) {
 			$this->onAsyncData($chunk);
 		}
@@ -84,6 +95,21 @@ class ICAPScanner {
 		return $status;
 	}
 
-	protected function shutdownScanner() {
+	public function shutdownScanner(): void {
+	}
+
+	protected function getContentLength(): int {
+		return \strlen($this->data);
+	}
+
+	protected function getFileName(): string {
+		return $this->filename;
+	}
+
+	protected function buildRequestHeaders(): array {
+		return [
+			'PUT / HTTP/1.0',
+			'Host: 127.0.0.1',
+		];
 	}
 }

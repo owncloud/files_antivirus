@@ -15,10 +15,11 @@ namespace OCA\Files_Antivirus;
 
 use OCA\Files_Antivirus\Scanner\ICAPScanner;
 use OCA\Files_Antivirus\Scanner\FortinetScanner;
+use OCA\Files_Antivirus\Scanner\IScanner;
 use OCA\Files_Antivirus\Scanner\McAfeeWebGatewayScanner;
 use OCA\Files_Antivirus\Scanner\InitException;
 use OCP\IL10N;
-use \OCP\ILogger;
+use OCP\ILogger;
 use OCA\Files_Antivirus\Scanner\Local;
 use OCA\Files_Antivirus\Scanner\Socket;
 use OCA\Files_Antivirus\Scanner\Daemon;
@@ -28,25 +29,14 @@ class ScannerFactory {
 	public const EICAR_PART_1 = 'X5O!P%@AP[4\PZX54(P^)7CC)7}$';
 	public const EICAR_PART_2 = 'EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*';
 
-	/**
-	 * @var AppConfig
-	 */
-	protected $appConfig;
+	protected AppConfig $appConfig;
+	protected ILogger $logger;
+	protected string $scannerClass;
+	protected IL10N $l10N;
 
 	/**
-	 * @var ILogger;
+	 * @throws InitException
 	 */
-	protected $logger;
-
-	/**
-	 * @var string
-	 */
-	protected $scannerClass;
-	/**
-	 * @var IL10N
-	 */
-	private $l10N;
-
 	public function __construct(AppConfig $appConfig, ILogger $logger, IL10N $l10N) {
 		$this->appConfig = $appConfig;
 		$this->logger = $logger;
@@ -65,7 +55,7 @@ class ScannerFactory {
 	/**
 	 * @throws InitException
 	 */
-	protected function getScannerClass() {
+	protected function getScannerClass(): void {
 		switch ($this->appConfig->getAvMode()) {
 			case 'daemon':
 				$this->scannerClass = Daemon::class;
@@ -97,10 +87,8 @@ class ScannerFactory {
 
 	/**
 	 * Produce a scanner instance
-	 *
-	 * @return \OCA\Files_Antivirus\Scanner\AbstractScanner
 	 */
-	public function getScanner() {
+	public function getScanner(): IScanner {
 		return new $this->scannerClass($this->appConfig, $this->logger, $this->l10N);
 	}
 
@@ -109,12 +97,12 @@ class ScannerFactory {
 	 *
 	 * @return bool
 	 */
-	public function testConnection(AppConfig $appConfig) {
+	public function testConnection(AppConfig $appConfig): bool {
 		$this->appConfig = $appConfig;
 		try {
 			$this->getScannerClass();
 			$scanner = $this->getScanner();
-			$item = new Content(self::EICAR_PART_1 . self::EICAR_PART_2, 4096);
+			$item = new Content('eicar.com', self::EICAR_PART_1 . self::EICAR_PART_2, 4096);
 			$status = $scanner->scan($item);
 			return $status->getNumericStatus() === Status::SCANRESULT_INFECTED;
 		} catch (\Exception $e) {

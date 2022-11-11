@@ -14,15 +14,15 @@
 namespace OCA\Files_Antivirus;
 
 class Content implements IScannable {
-	protected $content;
-	
-	protected $currentPosition = 0;
-	
-	protected $chunkSize;
-	
-	public function __construct($content, $chunkSize) {
+	protected string $content;
+	protected int $currentPosition = 0;
+	protected int $chunkSize;
+	private string $filename;
+
+	public function __construct(string $filename, string $content, int $chunkSize) {
 		$this->content = $content;
 		$this->chunkSize = $chunkSize;
+		$this->filename = $filename;
 	}
 	
 	public function fread() {
@@ -30,8 +30,12 @@ class Content implements IScannable {
 			return false;
 		}
 		$chunk = \substr($this->content, $this->currentPosition, $this->chunkSize);
-		$this->currentPosition = $this->currentPosition + $this->chunkSize;
+		$this->currentPosition += $this->chunkSize;
 		
 		return $chunk;
+	}
+
+	public function getFilename(): string {
+		return $this->filename;
 	}
 }

@@ -14,6 +14,7 @@
 namespace OCA\Files_Antivirus\Scanner;
 
 use OCA\Files_Antivirus\AppConfig;
+use OCP\IL10N;
 use OCP\ILogger;
 
 /**
@@ -22,33 +23,22 @@ use OCP\ILogger;
  * @package OCA\Files_Antivirus\Scanner
  */
 class Daemon extends External {
-
-	/**
-	 * @var string
-	 */
-	private $avHost;
-
-	/**
-	 * @var int
-	 */
-	private $avPort;
+	private string $avHost;
+	private int $avPort;
 
 	/**
 	 * Daemon constructor.
 	 *
-	 * @param AppConfig $config
-	 * @param ILogger $logger
-	 *
 	 * @throws InitException
 	 */
-	public function __construct(AppConfig $config, ILogger $logger) {
-		parent::__construct($config, $logger);
+	public function __construct(AppConfig $config, ILogger $logger, IL10N $l10n) {
+		parent::__construct($config, $logger, $l10n);
 
 		$this->avHost = $this->appConfig->getAvHost();
-		$this->avPort = $this->appConfig->getAvPort();
+		$avPort = $this->appConfig->getAvPort();
 		$checks = [
 			'hostname' => $this->avHost,
-			'port' => $this->avPort
+			'port' => $avPort
 		];
 		$errors = [];
 		foreach ($checks as $key => $check) {
@@ -65,13 +55,15 @@ class Daemon extends External {
 				'The app is not configured properly. ' . \implode(' ', $errors)
 			);
 		}
+
+		$this->avPort = $avPort;
 	}
 
 	/**
 	 * @throws InitException
 	 */
-	public function initScanner() {
-		parent::initScanner();
+	public function initScanner(string $fileName): void {
+		parent::initScanner($fileName);
 		$this->writeHandle = @\fsockopen($this->avHost, $this->avPort);
 		if (!$this->getWriteHandle()) {
 			throw new InitException(

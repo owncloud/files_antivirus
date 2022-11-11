@@ -8,6 +8,7 @@ use OCA\Files_Antivirus\Status;
 use OCP\IL10N;
 use OCP\ILogger;
 
+# TODO: inhert from ICAPScanner
 class McAfeeWebGatewayScanner {
 	/** @var IL10N */
 	private $l10n;
@@ -29,7 +30,7 @@ class McAfeeWebGatewayScanner {
 		$this->logger = $logger;
 	}
 
-	public function initScanner() {
+	public function initScanner(string $fileName): void {
 	}
 
 	public function onAsyncData($data) {
@@ -84,7 +85,7 @@ class McAfeeWebGatewayScanner {
 	}
 
 	public function scan(IScannable $item) {
-		$this->initScanner();
+		$this->initScanner($item->getFilename());
 		while (($chunk = $item->fread()) !== false) {
 			$this->onAsyncData($chunk);
 		}

@@ -9,19 +9,20 @@
 namespace OCA\Files_Antivirus\Tests\unit;
 
 use OCA\Files_Antivirus\Activity;
+use OC\L10N\Factory;
+use OCP\IURLGenerator;
 
 class ActivityTest extends TestBase {
-	/** @var  Activity */
-	protected $activity;
+	protected Activity $activity;
 	
 	public function setUp(): void {
 		parent::setUp();
-		$langFactory = $this->getMockBuilder('OC\L10N\Factory')
+		$langFactory = $this->getMockBuilder(Factory::class)
 				->disableOriginalConstructor()
 				->getMock()
 		;
 		
-		$urlGenerator = $this->getMockBuilder('OCP\IURLGenerator')
+		$urlGenerator = $this->getMockBuilder(IURLGenerator::class)
 				->disableOriginalConstructor()
 				->getMock()
 		;
@@ -29,7 +30,7 @@ class ActivityTest extends TestBase {
 		$this->activity = new Activity($langFactory, $urlGenerator);
 	}
 	
-	public function testGetTypeIcon() {
+	public function testGetTypeIcon(): void {
 		$this->assertFalse(
 			$this->activity->getTypeIcon(null)
 		);
@@ -37,13 +38,13 @@ class ActivityTest extends TestBase {
 		$this->assertEquals('icon-info', $this->activity->getTypeIcon(Activity::TYPE_VIRUS_DETECTED));
 	}
 	
-	public function testGetSpecialParameterList() {
+	public function testGetSpecialParameterList(): void {
 		$this->assertFalse(
 			$this->activity->getSpecialParameterList(null, null)
 		);
 	}
 	
-	public function testGetGroupParameter() {
+	public function testGetGroupParameter(): void {
 		$this->assertFalse(
 			$this->activity->getGroupParameter(null)
 		);

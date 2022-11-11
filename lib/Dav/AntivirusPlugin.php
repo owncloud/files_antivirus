@@ -17,44 +17,29 @@ use OCA\DAV\Upload\FutureFile;
 use OCA\Files_Antivirus\AppInfo\Application;
 use OCA\Files_Antivirus\Resource;
 use OCA\Files_Antivirus\Status;
+use OCP\AppFramework\QueryException;
 use OCP\ILogger;
 use OCP\IUserSession;
 use Sabre\DAV\Exception\Forbidden;
+use Sabre\DAV\Exception\NotFound;
 use Sabre\DAV\INode;
 use Sabre\DAV\Server;
 use Sabre\DAV\ServerPlugin;
 
 /**
- * Sabre plugin for the the antivirus
+ * Sabre plugin for the antivirus
  */
 class AntivirusPlugin extends ServerPlugin {
 	public const NS_OWNCLOUD = 'http://owncloud.org/ns';
 
-	/**
-	 * @var \Sabre\DAV\Server $server
-	 */
-	private $davServer;
+	private Server $davServer;
 
-	/**
-	 * @var Application
-	 */
-	private $application;
+	private Application $application;
 
-	/**
-	 * @var IUserSession
-	 */
-	private $userSession;
+	private IUserSession $userSession;
 
-	/**
-	 * @var ILogger
-	 */
-	private $logger;
+	private ILogger $logger;
 
-	/**
-	 * Constructor
-	 *
-	 * @param Application $application
-	 */
 	public function __construct(Application $application, IUserSession $userSession, ILogger $logger) {
 		$this->application = $application;
 		$this->userSession = $userSession;
@@ -84,8 +69,9 @@ class AntivirusPlugin extends ServerPlugin {
 	 * @param string $source
 	 * @param string $destination
 	 *
-	 * @return bool|void
-	 * @throws \Sabre\DAV\Exception\NotFound
+	 * @return bool
+	 * @throws QueryException
+	 * @throws NotFound
 	 */
 	public function beforeMove($source, $destination) {
 		$sourceNode = $this->davServer->tree->getNodeForPath($source);
@@ -107,8 +93,9 @@ class AntivirusPlugin extends ServerPlugin {
 	 *                           changed &$data
 	 * @return bool|null
 	 * @throws Forbidden
+	 * @throws QueryException
 	 */
-	public function beforeCreateFile($path, &$data, INode $parentNode, &$modified) {
+	public function beforeCreateFile(string $path, &$data, INode $parentNode, &$modified) {
 		// Scan a public upload
 		if ($this->userSession->getUser() === null) {
 			$this->scanPublicUpload($path, $data);
@@ -127,6 +114,7 @@ class AntivirusPlugin extends ServerPlugin {
 	 *                           changed &$data
 	 * @return bool|null
 	 * @throws Forbidden
+	 * @throws QueryException
 	 */
 	public function beforeWriteContent($path, INode $node, &$data, &$modified) {
 		// Scan a public upload
@@ -141,14 +129,15 @@ class AntivirusPlugin extends ServerPlugin {
 	 * @param string $path
 	 * @param resource $data
 	 * @throws Forbidden
+	 * @throws QueryException
 	 */
-	private function scanPublicUpload($path, &$data) {
+	private function scanPublicUpload(string $path, &$data): void {
 		$container = $this->application->getContainer();
 		$appConfig = $container->query('AppConfig');
 		$scannerFactory = $container->query('ScannerFactory');
 		$scanner = $scannerFactory->getScanner();
-		$status = $scanner->scan(new Resource($data, $appConfig->getAvChunkSize()));
-		if (\intval($status->getNumericStatus()) === Status::SCANRESULT_INFECTED) {
+		$status = $scanner->scan(new Resource(basename($path), $data, $appConfig->getAvChunkSize()));
+		if ((int)$status->getNumericStatus() === Status::SCANRESULT_INFECTED) {
 			$details = $status->getDetails();
 			$this->logger->warning(
 				"Infected file deleted after uploading to the public folder. $details Path: $path",

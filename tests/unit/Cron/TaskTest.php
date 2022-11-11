@@ -9,16 +9,18 @@
 namespace OCA\Files_Antivirus\Tests\unit\Cron;
 
 use OCA\Files_Antivirus\Cron\Task;
+use OCA\Files_Antivirus\Scanner\InitException;
 use OCA\Files_Antivirus\ScannerFactory;
 use OCA\Files_Antivirus\Tests\unit\Mock\Config as ConfigMock;
 use OCA\Files_Antivirus\Tests\unit\Mock\ScannerFactory as ScannerMock;
 use OCA\Files_Antivirus\Tests\unit\TestBase;
 use Doctrine\DBAL\Driver\Statement;
+use OCP\AppFramework\QueryException;
 use OCP\IL10N;
+use ReflectionException;
 
 class TaskTest extends TestBase {
-	/** @var  ScannerFactory */
-	protected $scannerFactory;
+	protected ScannerFactory $scannerFactory;
 
 	public function setUp(): void {
 		parent::setUp();
@@ -36,7 +38,11 @@ class TaskTest extends TestBase {
 		);
 	}
 
-	public function testRun() {
+	/**
+	 * @throws ReflectionException
+	 * @throws QueryException
+	 */
+	public function testRun(): void {
 		$cronMock = new Task(
 			$this->container->getServer()->getUserSession(),
 			$this->container->getServer()->getLogger(),
@@ -54,7 +60,12 @@ class TaskTest extends TestBase {
 		$this->assertNull($result);
 	}
 
-	public function testGetFilesForScan() {
+	/**
+	 * @throws InitException
+	 * @throws QueryException
+	 * @throws ReflectionException
+	 */
+	public function testGetFilesForScan(): void {
 		$scannerFactory = new ScannerMock(
 			new ConfigMock(
 				$this->container->query('CoreConfig'),

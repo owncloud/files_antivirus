@@ -12,8 +12,10 @@ namespace OCA\Files_Antivirus\Tests\unit;
 use OC\Files\Filesystem;
 use OC\Files\View;
 use OC\Files\Storage\Storage;
+use OC\User\LoginException;
 use OCA\Files_Antivirus\AvirWrapper;
 use OCA\Files_Antivirus\ScannerFactory;
+use OCP\AppFramework\QueryException;
 use OCP\IL10N;
 use Test\Util\User\Dummy;
 
@@ -23,7 +25,7 @@ class ChunkUploadTest extends TestBase {
 
 	protected $scannerFactory;
 
-	protected $isWrapperRegistered = false;
+	protected bool $isWrapperRegistered = false;
 
 	public static function setUpBeforeClass(): void {
 		parent::setUpBeforeClass();
@@ -31,6 +33,11 @@ class ChunkUploadTest extends TestBase {
 		\OC_User::useBackend(new Dummy());
 	}
 
+	/**
+	 * @throws LoginException
+	 * @throws QueryException
+	 * @throws \Exception
+	 */
 	public function setUp(): void {
 		parent::setUp();
 		if (!\OC::$server->getUserManager()->get(self::UID)) {
@@ -63,7 +70,10 @@ class ChunkUploadTest extends TestBase {
 		\OC::$server->getUserFolder(self::UID);
 	}
 
-	public function testSkipIndividualChunks() {
+	/**
+	 * @throws \Exception
+	 */
+	public function testSkipIndividualChunks(): void {
 		$this->scannerFactory->expects(self::never())
 			->method('getScanner');
 
@@ -78,6 +88,9 @@ class ChunkUploadTest extends TestBase {
 		@\fclose($fd);
 	}
 
+	/**
+	 * @throws QueryException
+	 */
 	public function wrapperCallback($mountPoint, $storage) {
 		/**
 		 * @var Storage $storage

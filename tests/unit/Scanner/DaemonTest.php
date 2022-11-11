@@ -12,9 +12,13 @@ use OCA\Files_Antivirus\AppConfig;
 use OCA\Files_Antivirus\Scanner\InitException;
 use OCA\Files_Antivirus\ScannerFactory;
 use OCA\Files_Antivirus\Tests\unit\TestBase;
+use OCP\AppFramework\QueryException;
 use OCP\IL10N;
 
 class DaemonTest extends TestBase {
+	/**
+	 * @throws QueryException
+	 */
 	public function testWrongAntivirusHost(): void {
 		$this->expectException(InitException::class);
 
@@ -41,9 +45,12 @@ class DaemonTest extends TestBase {
 		);
 
 		$scanner = $scannerFactory->getScanner();
-		$scanner->initScanner();
+		$scanner->initScanner('test.txt');
 	}
 
+	/**
+	 * @throws QueryException
+	 */
 	public function testEmptyAntivirusHost(): void {
 		$this->expectException(InitException::class);
 
@@ -72,6 +79,9 @@ class DaemonTest extends TestBase {
 		$scannerFactory->getScanner();
 	}
 
+	/**
+	 * @throws QueryException
+	 */
 	public function testEmptyAntivirusPort(): void {
 		$this->expectException(InitException::class);
 

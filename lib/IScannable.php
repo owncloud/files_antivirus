@@ -21,4 +21,6 @@ interface IScannable {
 	 * @return string|false
 	 */
 	public function fread();
+
+	public function getFilename(): string;
 }

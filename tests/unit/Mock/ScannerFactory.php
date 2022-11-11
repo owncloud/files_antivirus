@@ -10,9 +10,14 @@
 namespace OCA\Files_Antivirus\Tests\unit\Mock;
 
 use OCA\Files_Antivirus\Scanner\Daemon;
+use OCA\Files_Antivirus\Scanner\InitException;
+use OCA\Files_Antivirus\Scanner\IScanner;
 
 class ScannerFactory extends \OCA\Files_Antivirus\ScannerFactory {
-	public function getScanner() {
-		return new Daemon($this->appConfig, $this->logger);
+	/**
+	 * @throws InitException
+	 */
+	public function getScanner(): IScanner {
+		return new Daemon($this->appConfig, $this->logger, $this->l10N);
 	}
 }

@@ -9,8 +9,8 @@
 
 namespace OCA\Files_Antivirus\Tests\unit\Mock;
 
-use \OCA\Files_Antivirus\AppConfig;
-use \OCA\Files_Antivirus\Tests\util\DummyClam;
+use OCA\Files_Antivirus\AppConfig;
+use OCA\Files_Antivirus\Tests\util\DummyClam;
 
 class Config extends AppConfig {
 	public function getAppValue($key) {
