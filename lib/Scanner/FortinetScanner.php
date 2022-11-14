@@ -15,4 +15,8 @@ class FortinetScanner extends ICAPScanner {
 			"Content-Length: $contentLength",
 		];
 	}
+
+	protected function usesReqMod(): bool {
+		return false;
+	}
 }

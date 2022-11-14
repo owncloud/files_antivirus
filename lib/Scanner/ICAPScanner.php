@@ -55,12 +55,21 @@ class ICAPScanner implements IScanner {
 		$requestHeader = implode("\r\n", $requestHeaders);
 
 		$c = new ICAPClient($this->host, $this->port);
-		$response = $c->reqmod($this->reqService, [
-			'req-hdr' => "$requestHeader\r\n\r\n",
-			'req-body' => $this->data
-		], [
-			'Allow' => 204
-		]);
+		if ($this->usesReqMod()) {
+			$response = $c->reqmod($this->reqService, [
+				'req-hdr' => "$requestHeader\r\n\r\n",
+				'req-body' => $this->data
+			], [
+				'Allow' => 204
+			]);
+		} else {
+			$response = $c->respmod($this->reqService, [
+				'res-hdr' => "$requestHeader\r\n\r\n",
+				'res-body' => $this->data
+			], [
+				'Allow' => 204
+			]);
+		}
 		$code = $response['protocol']['code'] ?? 500;
 		if ($code === 200 || $code === 204) {
 			// c-icap/clamav reports this header
@@ -106,6 +115,9 @@ class ICAPScanner implements IScanner {
 		return $this->filename;
 	}
 
+	protected function usesReqMod(): bool {
+		return true;
+	}
 	protected function buildRequestHeaders(): array {
 		return [
 			'PUT / HTTP/1.0',
