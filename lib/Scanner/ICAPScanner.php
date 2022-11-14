@@ -29,6 +29,13 @@ class ICAPScanner implements IScanner {
 	}
 
 	public function initScanner(string $fileName): void {
+		// remove .ocTransferId444531916.part from part files
+		$fileName = \preg_replace(
+			'|\.ocTransferId\d+\.part$|',
+			'',
+			$fileName
+		);
+
 		$this->filename = $fileName;
 	}
 
@@ -111,7 +118,7 @@ class ICAPScanner implements IScanner {
 		return \strlen($this->data);
 	}
 
-	protected function getFileName(): string {
+	public function getFileName(): string {
 		return $this->filename;
 	}
 

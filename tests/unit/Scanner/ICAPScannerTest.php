@@ -42,6 +42,11 @@ class ICAPScannerTest extends TestCase {
 		$this->scanner = new ICAPScanner($config, $logger, $l10n);
 	}
 
+	public function testFilename(): void {
+		$this->scanner->initScanner('test.txt.ocTransferId123456.part');
+		self::assertEquals('test.txt', $this->scanner->getFileName());
+	}
+
 	/**
 	 * @dataProvider providesScanData
 	 * @throws InitException
