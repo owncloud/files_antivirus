@@ -3,7 +3,7 @@
 namespace OCA\Files_Antivirus\Scanner;
 
 class FortinetScanner extends ICAPScanner {
-	protected function buildRequestHeaders(): array {
+	protected function buildBodyHeaders(): array {
 		$localIP = getHostByName(getHostName());
 		$contentLength = $this->getContentLength();
 		$fileName = $this->getFileName();

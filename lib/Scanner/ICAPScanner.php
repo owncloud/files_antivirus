@@ -58,27 +58,34 @@ class ICAPScanner implements IScanner {
 			return Status::create(Status::SCANRESULT_CLEAN);
 		}
 
-		$requestHeaders = $this->buildRequestHeaders();
+		$requestHeaders = $this->buildBodyHeaders();
 		$requestHeader = implode("\r\n", $requestHeaders);
+
+		$icapHeaders = $this->getICAPHeaders();
 
 		$c = new ICAPClient($this->host, $this->port);
 		if ($this->usesReqMod()) {
-			$response = $c->reqmod($this->reqService, [
+			$response = $c->reqmod(
+				$this->reqService,
+				[
 				'req-hdr' => "$requestHeader\r\n\r\n",
 				'req-body' => $this->data
-			], [
-				'Allow' => 204
-			]);
+			],
+				$icapHeaders
+			);
 		} else {
-			$response = $c->respmod($this->reqService, [
+			$response = $c->respmod(
+				$this->reqService,
+				[
+				'req-hdr' => "",
 				'res-hdr' => "$requestHeader\r\n\r\n",
 				'res-body' => $this->data
-			], [
-				'Allow' => 204
-			]);
+			],
+				$icapHeaders
+			);
 		}
 		$code = $response['protocol']['code'] ?? 500;
-		if ($code === 200 || $code === 204) {
+		if ($code === 100 || $code === 200 || $code === 204) {
 			// c-icap/clamav reports this header
 			$virus = $response['headers'][$this->virusHeader] ?? false;
 			if ($virus) {
@@ -125,10 +132,17 @@ class ICAPScanner implements IScanner {
 	protected function usesReqMod(): bool {
 		return true;
 	}
-	protected function buildRequestHeaders(): array {
+
+	protected function buildBodyHeaders(): array {
 		return [
 			'PUT / HTTP/1.0',
 			'Host: 127.0.0.1',
+		];
+	}
+
+	protected function getICAPHeaders(): array {
+		return [
+			'Allow' => 204
 		];
 	}
 }

@@ -110,6 +110,14 @@ class ICAPClient {
 	/**
 	 * @throws InitException
 	 */
+	public function request(string $method, string $service, array $body = [], array $headers = []): array {
+		$request = $this->getRequest($method, $service, $body, $headers);
+		return $this->send($request);
+	}
+
+	/**
+	 * @throws InitException
+	 */
 	public function reqmod(string $service, array $body = [], array $headers = []): array {
 		$request = $this->getRequest('REQMOD', $service, $body, $headers);
 		return $this->send($request);
