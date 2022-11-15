@@ -33,4 +33,11 @@ class McAfeeWebGatewayScanner extends ICAPScanner {
 			'Allow' => 204
 		];
 	}
+
+	protected function buildRespModBody(): array {
+		$data =  parent::buildRespModBody();
+		$data['req-hdr'] = "";
+
+		return $data;
+	}
 }

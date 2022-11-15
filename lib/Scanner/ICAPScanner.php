@@ -58,29 +58,19 @@ class ICAPScanner implements IScanner {
 			return Status::create(Status::SCANRESULT_CLEAN);
 		}
 
-		$requestHeaders = $this->buildBodyHeaders();
-		$requestHeader = implode("\r\n", $requestHeaders);
-
 		$icapHeaders = $this->getICAPHeaders();
 
 		$c = new ICAPClient($this->host, $this->port);
 		if ($this->usesReqMod()) {
 			$response = $c->reqmod(
 				$this->reqService,
-				[
-				'req-hdr' => "$requestHeader\r\n\r\n",
-				'req-body' => $this->data
-			],
+				$this->buildReqModBody(),
 				$icapHeaders
 			);
 		} else {
 			$response = $c->respmod(
 				$this->reqService,
-				[
-				'req-hdr' => "",
-				'res-hdr' => "$requestHeader\r\n\r\n",
-				'res-body' => $this->data
-			],
+				$this->buildRespModBody(),
 				$icapHeaders
 			);
 		}
@@ -143,6 +133,26 @@ class ICAPScanner implements IScanner {
 	protected function getICAPHeaders(): array {
 		return [
 			'Allow' => 204
+		];
+	}
+
+	protected function buildRespModBody(): array {
+		$requestHeaders = $this->buildBodyHeaders();
+		$requestHeader = implode("\r\n", $requestHeaders);
+
+		return [
+			'res-hdr' => "$requestHeader\r\n\r\n",
+			'res-body' => $this->data
+		];
+	}
+
+	protected function buildReqModBody(): array {
+		$requestHeaders = $this->buildBodyHeaders();
+		$requestHeader = implode("\r\n", $requestHeaders);
+
+		return [
+			'req-hdr' => "$requestHeader\r\n\r\n",
+			'req-body' => $this->data
 		];
 	}
 }
