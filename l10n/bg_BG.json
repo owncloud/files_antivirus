@@ -38,7 +38,7 @@
     "ICAP request service. Fortinet uses \"respmod\"" : "Услуга за заявка на ICAP. Fortinet използва \"respmod\"",
     "ICAP response header. Fortinet sends X-Virus-ID" : "Заглавие на отговора на ICAP. Fortinet изпраща X-Virus-ID",
     "ICAP request service. McAfee Webgateway uses \"respmod\"" : "Услуга за заявка на ICAP. McAfee Webgateway използва \"respmod\"",
-    "ICAP response header. McAfee Webgateway sends X-Virus-Name" : "Заглавие на отговора на ICAP. McAfee Webgateway изпраща X-Virus-Name",
+    "ICAP response header. McAfee Webgateway sends X-Virus-Name" : "ICAP заглавие на отговора . McAfee Webgateway изпраща X-Virus-Name",
     "Path to clamscan" : "Път до clamscan",
     "Extra command line options (comma-separated)" : "Допълнителни опции на командния ред (разделени със запетая)",
     "Stream Length" : "Stream Length - Дължина на потока",
