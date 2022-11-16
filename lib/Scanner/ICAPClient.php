@@ -142,7 +142,9 @@ class ICAPClient {
 				"Writing to \"$this->host:$this->port}\" failed"
 			);
 		}
-		\OC::$server->getLogger()->error("ICAP request: $request");
+		# only log the first 256 chars
+		$r = substr($request, 0, 256);
+		\OC::$server->getLogger()->error("ICAP request: $r");
 
 		$headers = [];
 		$resHdr = [];
@@ -162,7 +164,7 @@ class ICAPClient {
 			'protocol' => $protocol,
 			'headers' => $headers,
 			'body' => ['res-hdr' => $resHdr]
-		]);
+		], JSON_THROW_ON_ERROR);
 		\OC::$server->getLogger()->error("ICAP resp: $resp");
 
 		return [
