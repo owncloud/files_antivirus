@@ -151,6 +151,7 @@ config = {
             },
             "servers": [
                 "daily-master-qa",
+                "latest",
             ],
             "databases": [
                 "mariadb:10.2",
@@ -182,6 +183,7 @@ config = {
             },
             "servers": [
                 "daily-master-qa",
+                "latest",
             ],
             "databases": [
                 "mariadb:10.2",
