@@ -5,17 +5,14 @@ namespace OCA\Files_Antivirus\Tests\Integration;
 use OCA\Files_Antivirus\AppConfig;
 use OCA\Files_Antivirus\Content;
 use OCA\Files_Antivirus\Scanner\ICAPScanner;
+use OCA\Files_Antivirus\Scanner\InitException;
 use OCA\Files_Antivirus\Status;
 use OCP\IL10N;
 use OCP\ILogger;
 use Test\TestCase;
 
-class IcapScannerTest extends TestCase {
-
-	/**
-	 * @var
-	 */
-	private $scanner;
+class ICAPScannerTest extends TestCase {
+	private ICAPScanner $scanner;
 
 	protected function setUp(): void {
 		parent::setUp();
@@ -44,11 +41,10 @@ class IcapScannerTest extends TestCase {
 
 	/**
 	 * @dataProvider providesScanData
-	 * @param int $expectedStatus
-	 * @param string $scanData
+	 * @throws InitException
 	 */
 	public function testScannerAsync(int $expectedStatus, string $scanData): void {
-		$this->scanner->initScanner();
+		$this->scanner->initScanner('test.tst');
 		$this->scanner->onAsyncData($scanData);
 		$status = $this->scanner->completeAsyncScan();
 		self::assertEquals($expectedStatus, $status->getNumericStatus());
@@ -56,11 +52,10 @@ class IcapScannerTest extends TestCase {
 
 	/**
 	 * @dataProvider providesScanData
-	 * @param int $expectedStatus
-	 * @param string $scanData
+	 * @throws InitException
 	 */
 	public function testScannerScan(int $expectedStatus, string $scanData): void {
-		$status = $this->scanner->scan(new Content($scanData, 5));
+		$status = $this->scanner->scan(new Content('test.txt', $scanData, 5));
 		self::assertEquals($expectedStatus, $status->getNumericStatus());
 	}
 

@@ -29,71 +29,46 @@ namespace OCA\Files_Antivirus\Scanner;
 use OCA\Files_Antivirus\AppConfig;
 use OCA\Files_Antivirus\IScannable;
 use OCA\Files_Antivirus\Status;
+use OCP\IL10N;
 use OCP\ILogger;
 
-abstract class AbstractScanner {
+abstract class AbstractScanner implements IScanner {
 	/**
 	 * Scan result
-	 *
-	 * @var Status
 	 */
-	protected $status;
+	protected ?Status $status = null;
 
 	/**
 	 * If scanning was done part by part
 	 * the first detected infected part is stored here
-	 *
-	 * @var Status
 	 */
-	protected $infectedStatus;
-
-	/**
-	 * @var int
-	 */
-	protected $byteCount;
+	protected ?Status $infectedStatus = null;
+	protected int $byteCount;
 
 	/**
 	 * @var resource
 	 */
 	protected $writeHandle;
-
-	/**
-	 * @var AppConfig
-	 */
-	protected $appConfig;
-
-	/**
-	 * @var  ILogger
-	 */
-	protected $logger;
-
-	/**
-	 * @var string
-	 */
-	protected $lastChunk;
-
-	/**
-	 * @var bool
-	 */
-	protected $isLogUsed = false;
-
-	/**
-	 * @var bool
-	 */
-	protected $isAborted = false;
+	protected AppConfig $appConfig;
+	protected ILogger $logger;
+	protected ?string $lastChunk = null;
+	protected bool $isLogUsed = false;
+	protected bool $isAborted = false;
+	private string $filename;
 
 	/**
 	 * Close used resources
 	 */
-	abstract protected function shutdownScanner();
+	abstract public function shutdownScanner(): void;
 
 	/**
 	 * AbstractScanner constructor.
 	 *
 	 * @param AppConfig $config
 	 * @param ILogger $logger
+	 * @param IL10N $l10N
 	 */
-	public function __construct(AppConfig $config, ILogger $logger) {
+	public function __construct(AppConfig $config, ILogger $logger, IL10N $l10N) {
 		$this->appConfig = $config;
 		$this->logger = $logger;
 	}
@@ -101,7 +76,7 @@ abstract class AbstractScanner {
 	/**
 	 * @return Status
 	 */
-	public function getStatus() {
+	public function getStatus(): Status {
 		if ($this->infectedStatus instanceof Status) {
 			return $this->infectedStatus;
 		}
@@ -111,15 +86,8 @@ abstract class AbstractScanner {
 		return new Status();
 	}
 
-	/**
-	 * Synchronous scan
-	 *
-	 * @param IScannable $item
-	 *
-	 * @return Status
-	 */
-	public function scan(IScannable $item) {
-		$this->initScanner();
+	public function scan(IScannable $item): Status {
+		$this->initScanner($item->getFilename());
 
 		$sizeLimit = $this->appConfig->getAvMaxFileSize();
 		$hasNoSizeLimit = $sizeLimit === -1;
@@ -141,16 +109,11 @@ abstract class AbstractScanner {
 	 *
 	 * @param string $data
 	 */
-	public function onAsyncData($data) {
+	public function onAsyncData($data): void {
 		$this->writeChunk($data);
 	}
 
-	/**
-	 * Async scan - resource is closed
-	 *
-	 * @return Status
-	 */
-	public function completeAsyncScan() {
+	public function completeAsyncScan(): Status {
 		$this->shutdownScanner();
 		return $this->getStatus();
 	}
@@ -160,10 +123,10 @@ abstract class AbstractScanner {
 	 * Do NOT open connection in constructor because this method
 	 * is used for reconnection
 	 */
-	public function initScanner() {
+	public function initScanner(string $fileName): void {
+		$this->filename = $fileName;
 		$this->byteCount = 0;
-		if ($this->status instanceof Status
-			&& $this->status->getNumericStatus() === Status::SCANRESULT_INFECTED
+		if ($this->status && $this->status->getNumericStatus() === Status::SCANRESULT_INFECTED
 		) {
 			$this->infectedStatus = clone $this->status;
 		}
@@ -173,22 +136,19 @@ abstract class AbstractScanner {
 	/**
 	 * @param string $chunk
 	 */
-	protected function writeChunk($chunk) {
+	protected function writeChunk(string $chunk): void {
 		$this->fwrite(
 			$this->prepareChunk($chunk)
 		);
 	}
 
-	/**
-	 * @param string $data
-	 */
-	final protected function fwrite($data) {
+	final protected function fwrite(string $data): void {
 		if ($this->isAborted) {
 			return;
 		}
 
 		$dataLength = \strlen($data);
-		$streamSizeLimit = \intval($this->appConfig->getAvStreamMaxLength());
+		$streamSizeLimit = $this->appConfig->getAvStreamMaxLength();
 		if ($this->byteCount + $dataLength > $streamSizeLimit) {
 			$this->logger->debug(
 				'reinit scanner',
@@ -214,23 +174,15 @@ abstract class AbstractScanner {
 		}
 	}
 
-	/**
-	 * @return bool
-	 */
-	protected function retry() {
-		$this->initScanner();
+	protected function retry(): bool {
+		$this->initScanner($this->filename);
 		if ($this->lastChunk !== null) {
 			return $this->writeRaw($this->lastChunk);
 		}
 		return true;
 	}
 
-	/**
-	 * @param string $data
-	 *
-	 * @return bool
-	 */
-	protected function writeRaw($data) {
+	protected function writeRaw(string $data): bool {
 		$dataLength = \strlen($data);
 		$bytesWritten = @\fwrite($this->getWriteHandle(), $data);
 		if ($bytesWritten === $dataLength) {
@@ -252,12 +204,8 @@ abstract class AbstractScanner {
 
 	/**
 	 * Prepare chunk (if needed)
-	 *
-	 * @param string $data
-	 *
-	 * @return string
 	 */
-	protected function prepareChunk($data) {
+	protected function prepareChunk(string $data): string {
 		return $data;
 	}
 }

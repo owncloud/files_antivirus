@@ -13,12 +13,9 @@
 
 namespace OCA\Files_Antivirus;
 
-use OC\Files\Filesystem;
 use OC\Files\Storage\Wrapper\Wrapper;
-use OCA\Files_Antivirus\Scanner\AbstractScanner;
 use OCA\Files_Antivirus\Scanner\InitException;
-use OCA\Files_Antivirus\Status;
-use OCP\App;
+use OCA\Files_Antivirus\Scanner\IScanner;
 use OCP\Files\FileContentNotAllowedException;
 use OCP\IL10N;
 use OCP\ILogger;
@@ -83,8 +80,8 @@ class AvirWrapper extends Wrapper {
 	public function file_put_contents($path, $data) {
 		try {
 			$scanner = $this->scannerFactory->getScanner();
-			$scanner->initScanner();
-			$content = new Content($data, $this->appConfig->getAvChunkSize());
+			$scanner->initScanner(basename($path));
+			$content = new Content(basename($path), $data, $this->appConfig->getAvChunkSize());
 			while (($chunk = $content->fread()) !== false) {
 				$scanner->onAsyncData($chunk);
 			}
@@ -122,7 +119,7 @@ class AvirWrapper extends Wrapper {
 		) {
 			try {
 				$scanner = $this->scannerFactory->getScanner();
-				$scanner->initScanner();
+				$scanner->initScanner(basename($path));
 				return CallBackWrapper::wrap(
 					$stream,
 					null,
@@ -146,15 +143,11 @@ class AvirWrapper extends Wrapper {
 	}
 
 	/**
-	 * @param AbstractScanner $scanner
-	 * @param string $path
-	 * @param bool $shouldDelete
-	 *
 	 * @throws FileContentNotAllowedException
 	 */
-	private function onScanComplete($scanner, $path, $shouldDelete) {
+	private function onScanComplete(IScanner $scanner, string $path, bool $shouldDelete): void {
 		$status = $scanner->completeAsyncScan();
-		if (\intval($status->getNumericStatus()) === Status::SCANRESULT_INFECTED) {
+		if ($status->getNumericStatus() === Status::SCANRESULT_INFECTED) {
 			$owner = $this->getOwner($path);
 
 			$this->logger->warning(

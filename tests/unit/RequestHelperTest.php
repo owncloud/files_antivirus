@@ -17,23 +17,23 @@ use OCP\ILogger;
 use OCP\IRequest;
 use OCP\IUser;
 use OCP\IUserSession;
+use PHPUnit\Framework\MockObject\MockObject;
+use Sabre\DAV\Exception\NotFound;
+use Sabre\DAV\Server;
 use Sabre\DAV\Tree;
 
 class RequestHelperTest extends TestBase {
 	/**
-	 * @var IRequest | \PHPUnit\Framework\MockObject\MockObject
+	 * @var IRequest | MockObject
 	 */
 	private $request;
 
 	/**
-	 * @var \OC\Files\Storage\Storage | \PHPUnit\Framework\MockObject\MockObject
+	 * @var Storage | MockObject
 	 */
 	private $storage;
 
-	/**
-	 * @var string
-	 */
-	private $owner = 'anon';
+	private string $owner = 'anon';
 
 	public function setUp(): void {
 		parent::setUp();
@@ -44,23 +44,23 @@ class RequestHelperTest extends TestBase {
 		$this->storage = $this->getMockBuilder(Storage::class)
 			->disableOriginalConstructor()
 			->getMock();
-		$this->storage->expects($this->any())
+		$this->storage
 			->method('getOwner')
 			->willReturn($this->owner);
 	}
 
-	public function testPublicUploadSize() {
+	public function testPublicUploadSize(): void {
 		$size = 100;
-		$this->request->expects($this->any())
+		$this->request
 			->method('getMethod')
 			->willReturn('PUT');
 
-		$this->request->expects($this->any())
+		$this->request
 			->method('getHeader')
 			->with('CONTENT_LENGTH')
 			->willReturn($size);
 
-		$this->request->expects($this->any())
+		$this->request
 			->method('getScriptName')
 			->willReturn('/somepath/public.php');
 
@@ -73,12 +73,12 @@ class RequestHelperTest extends TestBase {
 		$this->assertEquals($size, $uploadSize);
 	}
 
-	public function testChunkSkipped() {
-		$this->request->expects($this->any())
+	public function testChunkSkipped(): void {
+		$this->request
 			->method('getMethod')
 			->willReturn('PUT');
 
-		$this->request->expects($this->any())
+		$this->request
 			->method('getScriptName')
 			->willReturn('/somepath/remote.php');
 
@@ -91,28 +91,31 @@ class RequestHelperTest extends TestBase {
 		$this->assertNull($uploadSize);
 	}
 
-	public function testCachedSize() {
+	/**
+	 * @throws NotFound
+	 */
+	public function testCachedSize(): void {
 		$davPath = "files/$this->owner/fileName";
 		$movePath = "files/fileName";
 		$size = 1500;
 
-		$this->request->expects($this->any())
+		$this->request
 			->method('getMethod')
 			->willReturn('MOVE');
 
 		$node = $this->getMockBuilder(FutureFile::class)
 			->disableOriginalConstructor()
 			->getMock();
-		$node->expects($this->any())
+		$node
 			->method('getSize')
 			->willReturn($size);
 
 		$tree = $this->createMock(Tree::class);
-		$tree->expects($this->any())
+		$tree
 			->method('getNodeForPath')
 			->willReturn($node);
 
-		$server = $this->createMock(\Sabre\DAV\Server::class);
+		$server = $this->createMock(Server::class);
 		$server->tree = $tree;
 
 		$user =$this->createMock(IUser::class);

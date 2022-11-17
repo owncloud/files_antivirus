@@ -11,9 +11,14 @@ namespace OCA\Files_Antivirus\Tests\unit;
 use OC\Files\Storage\Storage;
 use OC\Files\Storage\Temporary;
 use OC\Files\Storage\Wrapper\Wrapper;
+use OC\User\LoginException;
 use OCA\Files_Antivirus\AvirWrapper;
 use OCA\Files_Antivirus\RequestHelper;
+use OCA\Files_Antivirus\Scanner\InitException;
 use OCA\Files_Antivirus\Tests\util\DummyClam;
+use OCP\AppFramework\QueryException;
+use OCP\Files\FileContentNotAllowedException;
+use OCP\Files\ForbiddenException;
 use OCP\IL10N;
 use Test\Util\User\Dummy;
 
@@ -21,10 +26,7 @@ class AvirWrapperTest extends TestBase {
 	public const UID = 'testo';
 	public const PWD = 'test';
 
-	/**
-	 * @var  Mock\ScannerFactory
-	 */
-	protected $scannerFactory;
+	protected Mock\ScannerFactory $scannerFactory;
 
 	/**
 	 * @var RequestHelper
@@ -42,6 +44,12 @@ class AvirWrapperTest extends TestBase {
 		\OC_User::useBackend(new Dummy());
 	}
 
+	/**
+	 * @throws LoginException
+	 * @throws InitException
+	 * @throws QueryException
+	 * @throws \Exception
+	 */
 	public function setUp(): void {
 		parent::setUp();
 		$this->skeletonDirectory = \OC::$server->getConfig()->getSystemValue(
@@ -80,9 +88,11 @@ class AvirWrapperTest extends TestBase {
 	}
 
 	/**
+	 * @throws ForbiddenException
+	 * @throws QueryException
 	 */
-	public function testInfectedFwrite() {
-		$this->expectException(\OCP\Files\FileContentNotAllowedException::class);
+	public function testInfectedWrite(): void {
+		$this->expectException(FileContentNotAllowedException::class);
 
 		$wrapper = $this->getWrapper();
 		$fd = $wrapper->fopen('killing bee', 'w+');
@@ -91,9 +101,11 @@ class AvirWrapperTest extends TestBase {
 	}
 
 	/**
+	 * @throws ForbiddenException
+	 * @throws QueryException
 	 */
-	public function testBigInfectedFwrite() {
-		$this->expectException(\OCP\Files\FileContentNotAllowedException::class);
+	public function testBigInfectedWrite(): void {
+		$this->expectException(FileContentNotAllowedException::class);
 
 		$wrapper = $this->getWrapper();
 		$fd = $wrapper->fopen('killing whale', 'w+');
@@ -103,23 +115,31 @@ class AvirWrapperTest extends TestBase {
 	}
 
 	/**
+	 * @throws QueryException
 	 */
-	public function testInfectedFilePutContents() {
-		$this->expectException(\OCP\Files\ForbiddenException::class);
+	public function testInfectedFilePutContents(): void {
+		$this->expectException(ForbiddenException::class);
 
 		$wrapper = $this->getWrapper();
 		$wrapper->file_put_contents('test_put_infected', 'it ' . DummyClam::TEST_SIGNATURE);
 	}
 
-	public function testHealthFilePutContents() {
+	/**
+	 * @throws ForbiddenException
+	 * @throws QueryException
+	 */
+	public function testHealthFilePutContents(): void {
 		$wrapper = $this->getWrapper();
 		$result = $wrapper->file_put_contents('test_put_healthly', 'it works!');
 		self::assertNotFalse($result);
 	}
 
-	private function getWrapper() {
+	/**
+	 * @throws QueryException
+	 */
+	private function getWrapper(): AvirWrapper {
 		$storage = new Temporary([]);
-		$wrapper = new AvirWrapper([
+		return new AvirWrapper([
 			'storage' => $storage,
 			'appConfig' => $this->config,
 			'scannerFactory' => $this->scannerFactory,
@@ -127,7 +147,6 @@ class AvirWrapperTest extends TestBase {
 			'logger' => $this->container->query('Logger'),
 			'requestHelper' => $this->requestHelper,
 		]);
-		return $wrapper;
 	}
 
 	public static function tearDownAfterClass(): void {
@@ -136,7 +155,7 @@ class AvirWrapperTest extends TestBase {
 		\OC_User::clearBackends();
 	}
 
-	public function testUnlink() {
+	public function testUnlink(): void {
 		$storage = $this->createMock(Storage::class);
 		$storage->expects(self::once())
 			->method('unlink')

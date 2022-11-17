@@ -12,10 +12,12 @@ use OCA\Files_Antivirus\AppConfig;
 use OCA\Files_Antivirus\Scanner\InitException;
 use OCA\Files_Antivirus\ScannerFactory;
 use OCA\Files_Antivirus\Tests\unit\TestBase;
+use OCP\AppFramework\QueryException;
 use OCP\IL10N;
 
 class SocketTest extends TestBase {
 	/**
+	 * @throws QueryException
 	 */
 	public function testWrongAntivirusSocket(): void {
 		$this->expectException(InitException::class);
@@ -41,6 +43,6 @@ class SocketTest extends TestBase {
 		);
 
 		$scanner = $scannerFactory->getScanner();
-		$scanner->initScanner();
+		$scanner->initScanner('test.txt');
 	}
 }

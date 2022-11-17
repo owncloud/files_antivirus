@@ -23,7 +23,7 @@ abstract class External extends AbstractScanner {
 	 * Send an empty chunk to indicate the end of stream,
 	 * read response and close the handle
 	 */
-	protected function shutdownScanner() {
+	public function shutdownScanner(): void {
 		@\fwrite($this->getWriteHandle(), \pack('N', 0));
 		$response = \fgets($this->getWriteHandle());
 		$this->logger->debug(
@@ -35,14 +35,7 @@ abstract class External extends AbstractScanner {
 		$this->status->parseResponse($response);
 	}
 
-	/**
-	 * Prepend a chunk sent to ClamAv with its length
-	 *
-	 * @param string $data
-	 *
-	 * @return string
-	 */
-	protected function prepareChunk($data) {
+	protected function prepareChunk(string $data): string {
 		$chunkLength = \pack('N', \strlen($data));
 		return $chunkLength . $data;
 	}

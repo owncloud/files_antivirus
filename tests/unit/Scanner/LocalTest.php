@@ -15,22 +15,31 @@ use OCA\Files_Antivirus\Scanner\InitException;
 use OCA\Files_Antivirus\ScannerFactory;
 use OCA\Files_Antivirus\Status;
 use OCA\Files_Antivirus\Tests\unit\TestBase;
+use OCP\AppFramework\QueryException;
+use OCP\Files\NotFoundException;
 use OCP\IL10N;
+use OC\Files\View;
 
 class LocalTest extends TestBase {
 	public const TEST_CLEAN_FILENAME = 'foo.txt';
 	public const TEST_INFECTED_FILENAME = 'kitten.inf';
 
-	protected $ruleMapper;
+	protected RuleMapper $ruleMapper;
 	protected $view;
 	
-	protected $cleanItem;
-	protected $infectedItem;
-	protected $scannerFactory;
-	
+	protected Item $cleanItem;
+	protected Item $infectedItem;
+	protected ScannerFactory $scannerFactory;
+
+	/**
+	 * @throws InitException
+	 * @throws NotFoundException
+	 * @throws QueryException
+	 * @throws \Exception
+	 */
 	public function setUp(): void {
 		parent::setUp();
-		$this->view = $this->getMockBuilder('\OC\Files\View')
+		$this->view = $this->getMockBuilder(View::class)
 				->disableOriginalConstructor()
 				->getMock()
 		;
@@ -60,6 +69,7 @@ class LocalTest extends TestBase {
 	}
 
 	/**
+	 * @throws QueryException
 	 */
 	public function testWrongAntivirusPath(): void {
 		$this->expectException(InitException::class);
@@ -69,16 +79,14 @@ class LocalTest extends TestBase {
 			->getMock()
 		;
 		$config->method('__call')
-			->will(self::returnCallback(
-				function ($methodName) {
-					switch ($methodName) {
-						case 'getAvPath':
-							return  __DIR__ . '/../util/wrong_av_path.sh';
-						case 'getAvMode':
-							return 'executable';
-					}
+			->willReturnCallback(function ($methodName) {
+				switch ($methodName) {
+					case 'getAvPath':
+						return __DIR__ . '/../util/wrong_av_path.sh';
+					case 'getAvMode':
+						return 'executable';
 				}
-			))
+			})
 		;
 
 		$scannerFactory = new ScannerFactory(
@@ -99,19 +107,21 @@ class LocalTest extends TestBase {
 		
 		$scanner->scan($this->cleanItem);
 		$cleanStatus = $scanner->getStatus();
-		self::assertInstanceOf('\OCA\Files_Antivirus\Status', $cleanStatus);
 		self::assertEquals(Status::SCANRESULT_CLEAN, $cleanStatus->getNumericStatus());
 	}
-	
+
+	/**
+	 * @throws NotFoundException
+	 * @throws QueryException
+	 */
 	public function testNotExisting(): void {
 		$this->expectException('RuntimeException');
 		
-		$fileView = new \OC\Files\View('');
+		$fileView = new View('');
 		$nonExistingItem = new Item($this->l10n, $fileView, 'non-existing.file', 42);
 		$scanner = $this->scannerFactory->getScanner();
 		$scanner->scan($nonExistingItem);
 		$unknownStatus = $scanner->scan($nonExistingItem);
-		self::assertInstanceOf('\OCA\Files_Antivirus\Status', $unknownStatus);
 		self::assertEquals(Status::SCANRESULT_UNCHECKED, $unknownStatus->getNumericStatus());
 	}
 	
@@ -122,7 +132,6 @@ class LocalTest extends TestBase {
 		$scanner = $this->scannerFactory->getScanner();
 		$scanner->scan($this->infectedItem);
 		$infectedStatus = $scanner->getStatus();
-		self::assertInstanceOf('\OCA\Files_Antivirus\Status', $infectedStatus);
 		self::assertEquals(Status::SCANRESULT_INFECTED, $infectedStatus->getNumericStatus());
 	}
 }

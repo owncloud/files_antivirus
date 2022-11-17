@@ -13,6 +13,9 @@
 
 namespace OCA\Files_Antivirus;
 
+use OCP\AppFramework\QueryException;
+use OCP\Files\NotFoundException;
+
 class Status {
 
 	/*
@@ -154,20 +157,23 @@ class Status {
 		$cleanRules = $cleanRules ? $cleanRules : [];
 
 		// order: clean, infected, try to guess error
-		$allRules = \array_merge($cleanRules, $infectedRules, $uncheckedRules);
-		return $allRules;
+		return \array_merge($cleanRules, $infectedRules, $uncheckedRules);
 	}
 
-	public function dispatch($item, $isBackground = false) {
+	/**
+	 * @throws QueryException
+	 * @throws NotFoundException
+	 */
+	public function dispatch(Item $item, $isBackground = false): void {
 		switch ($this->getNumericStatus()) {
 			case self::SCANRESULT_UNCHECKED:
-				$item->processUnchecked($this, $isBackground);
+				$item->processUnchecked($this);
 				break;
 			case self::SCANRESULT_INFECTED:
 				$item->processInfected($this, $isBackground);
 				break;
 			case self::SCANRESULT_CLEAN:
-				$item->processClean($this, $isBackground);
+				$item->processClean($isBackground);
 				break;
 		}
 	}
