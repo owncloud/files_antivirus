@@ -13,11 +13,11 @@ script('files_antivirus', 'settings');
 				<select id="av_mode" name="avMode">
 					<?php print_unescaped(html_select_options([
 						'executable' => 'ClamAV ' . $l->t('Executable'),
-						'daemon' => 'ClamAV ' . $l->t('Daemon'),
-						'socket' => 'ClamAV ' . $l->t('Daemon (Socket)'),
-						'icap' => 'ClamAV ' . $l->t('Daemon (ICAP)'),
-						'fortinet' => $l->t('Fortinet (ICAP)'),
-						'mawgw' => $l->t('McAfee Webgateway 10.x and higher (ICAP)'),
+						'daemon' => 'ClamAV Daemon (TCP Socket)',
+						'socket' => 'ClamAV Daemon (Unix Socket)',
+						'icap' => 'ClamAV & Kaspersky (ICAP)',
+						'fortinet' => 'Fortinet (ICAP)',
+						'mawgw' => 'McAfee Webgateway / Skyhigh Secure Web Gateway (ICAP)',
 					], $_['avMode'])) ?>
 				</select>
 			</p>

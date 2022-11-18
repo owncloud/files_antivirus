@@ -103,7 +103,7 @@ var antivirusSettings = antivirusSettings || {
 		var row = $(this).parent();
 		row.hide();
 		$.post(OC.generateUrl('apps/files_antivirus/settings/rule/delete'), {id : row.data('id')},
-			function onSuccess(response){
+			function onSuccess(){
 				row.remove();
 			}
 		);
@@ -152,7 +152,7 @@ function av_mode_show_options(str){
 		return;
 	}
 	if (str === 'fortinet') {
-		$('p.av_socket, p.av_path, p.av_mode_icap').hide('slow');
+		$('p.av_socket, p.av_path, p.av_mode_icap, p.av_mode_mawgw').hide('slow');
 		$('#av_socket, #av_path, #av_request_service, #av_response_header, p.av_mode_mawgw, #av_mawgw_request_service, #av_mawgw_response_header').attr('disabled', true);
 		$('#av_host, #av_port, #av_fortinet_request_service, #av_fortinet_response_header').attr('disabled', false);
 		$('p.av_host, p.av_port, p.av_mode_fortinet').show('slow');
