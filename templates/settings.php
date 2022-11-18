@@ -83,6 +83,10 @@ script('files_antivirus', 'settings');
 				/>
 				<label for="av_max_file_size" class="a-left"><?php p($l->t('bytes'))?></label>
 			</p>
+			<p class="av_scan_background">
+				<label for="av_scan_background"><?php p($l->t('Background scanning'));?></label>
+				<select id="av_scan_background" name="avScanBackground"><?php print_unescaped(html_select_options(['true' => $l->t('Enabled'), 'false' => $l->t('Disabled')], $_['avScanBackground'])) ?></select>
+			</p>
 			<p class="infected_action">
 				<label for="av_infected_action"><?php p($l->t('When infected files were found during a background scan'));?></label>
 				<select id="av_infected_action" name="avInfectedAction"><?php print_unescaped(html_select_options(['only_log' => $l->t('Only log'), 'delete' => $l->t('Delete file')], $_['avInfectedAction'])) ?></select>
