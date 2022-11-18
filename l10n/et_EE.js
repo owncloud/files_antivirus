@@ -17,7 +17,6 @@ OC.L10N.register(
     "Virus detected! Can't upload the file %s" : "Leitud viirus! Ei saa üles laadida faili %s",
     "Malware detected" : "Leitud nuhkvara",
     "Greetings {user}," : "Tere {user},",
-    "Sorry, but a malware was detected in a file you tried to upload and it had to be deleted." : "Kahju, kuid üleslaetavast failist leiti pahavara ning fail tuli kustutada.",
     "This email is a notification from {host}. Please, do not reply." : "Käesolev email on teavitus masinast {host}. Palun ära vasta.",
     "File uploaded: {file}" : "Laetud üles fail: {file}",
     "Antivirus Configuration" : "Viirustõrje seadistus",

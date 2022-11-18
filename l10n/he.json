@@ -15,7 +15,6 @@
     "Virus detected! Can't upload the file %s" : "התגלה וירוס! לא ניתן להעלות את הקובץ %s",
     "Malware detected" : "התגלתה תוכנה זדונית",
     "Greetings {user}," : "ברוך הבא {user},",
-    "Sorry, but a malware was detected in a file you tried to upload and it had to be deleted." : "סליחה, אבל התגלתה נוזקה באחד מהקבצים שניסית להעלות והוא נאלץ להמחק.",
     "This email is a notification from {host}. Please, do not reply." : "דוא\"ל זה הוא התראה מ{host}. אנא, אל תגיב אליו.",
     "File uploaded: {file}" : "קובץ הועלה: {file}",
     "Antivirus Configuration" : "הגדרות אנטי-וירוס",

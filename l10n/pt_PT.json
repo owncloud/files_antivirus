@@ -14,7 +14,6 @@
     "Virus detected! Can't upload the file %s" : "Detetado vírus! Não é possível enviar o ficheiro %s",
     "Malware detected" : "Detetado Malware",
     "Greetings {user}," : "Bem-vindo {user},",
-    "Sorry, but a malware was detected in a file you tried to upload and it had to be deleted." : "Desculpe, mas foi detetado malware num ficheiro que tentou enviar e este teve de ser eliminado.",
     "This email is a notification from {host}. Please, do not reply." : "Esta mensagem é uma notificação do {host}. Por favor, não responda.",
     "File uploaded: {file}" : "Ficheiro enviado: {file}",
     "Antivirus Configuration" : "Configuração do Antivírus",

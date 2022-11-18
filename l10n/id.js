@@ -17,7 +17,6 @@ OC.L10N.register(
     "Virus detected! Can't upload the file %s" : "Virus terdeteksi! Tidak dapat mengunggah berkas %s",
     "Malware detected" : "Malware terdeteksi",
     "Greetings {user}," : "Salam {user},",
-    "Sorry, but a malware was detected in a file you tried to upload and it had to be deleted." : "Maaf, tetapi sebuah malware terdeteksi dalam berkas yang Anda unggah dan berkas tersebut akan dihapus.",
     "This email is a notification from {host}. Please, do not reply." : "Email ini adalah pemberitahuan dari {host}. Jangan dibalas.",
     "File uploaded: {file}" : "Berkas diunggah: {file}",
     "Antivirus Configuration" : "Konfigurasi Antivirus",

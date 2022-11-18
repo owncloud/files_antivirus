@@ -17,7 +17,6 @@ OC.L10N.register(
     "Virus detected! Can't upload the file %s" : "Virus gedetecteerd! Kan bestand %s niet uploaden",
     "Malware detected" : "Malware gedetecteerd",
     "Greetings {user}," : "Hallo {user},",
-    "Sorry, but a malware was detected in a file you tried to upload and it had to be deleted." : "Sorry, maar in een bestand dat u probeerde te uploaden is malware gedetecteerd en het is om die reden verwijderd.",
     "This email is a notification from {host}. Please, do not reply." : "Deze e-mail is een notificatie van {host}. Gelieve niet te antwoorden.",
     "File uploaded: {file}" : "Geüpload bestand: {file}",
     "Antivirus Configuration" : "Antivirus Instellingen",

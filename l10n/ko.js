@@ -17,7 +17,6 @@ OC.L10N.register(
     "Virus detected! Can't upload the file %s" : "바이러스가 감지되었습니다! 파일 %s을(를) 업로드할 수 없습니다",
     "Malware detected" : "멀웨어 감지됨",
     "Greetings {user}," : "{user}님, 환영합니다",
-    "Sorry, but a malware was detected in a file you tried to upload and it had to be deleted." : "업로드하려고 시도한 파일에 악성 소프트웨어가 포함되어 있어서 삭제되었습니다.",
     "This email is a notification from {host}. Please, do not reply." : "이 이메일은 {host}에서 보낸 알림입니다. 답장하지 마십시오.",
     "File uploaded: {file}" : "파일 업로드됨: {file}",
     "Antivirus Configuration" : "안티바이러스 설정",

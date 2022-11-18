@@ -17,7 +17,6 @@ OC.L10N.register(
     "Virus detected! Can't upload the file %s" : "Vírus fannst! Get ekki sent inn skrána %s",
     "Malware detected" : "Spilliforrit fannst",
     "Greetings {user}," : "Daginn {user},",
-    "Sorry, but a malware was detected in a file you tried to upload and it had to be deleted." : "Því miður, en það fannst spillifarmur í skrá sem þú varst að reyna að senda inn og því þurfti að eyða henni.",
     "This email is a notification from {host}. Please, do not reply." : "Þessi tölvupóstur er tilkynning frá {host}. Ekki svara honum.",
     "File uploaded: {file}" : "Innsend skrá: {file}",
     "Antivirus Configuration" : "Uppsetning vírusvarna",
