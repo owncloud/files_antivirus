@@ -23,7 +23,6 @@ use OCP\Files\ForbiddenException;
 use Icewind\Streams\CallbackWrapper;
 
 class AvirWrapper extends Wrapper {
-	public const AV_EXCEPTION_MESSAGE = 'Either the ownCloud antivirus app is misconfigured or the external antivirus service is not accessible. %s';
 
 	/**
 	 * Modes that are used for writing
@@ -89,9 +88,8 @@ class AvirWrapper extends Wrapper {
 
 			return parent::file_put_contents($path, $data);
 		} catch (InitException $e) {
-			$message = \sprintf(self::AV_EXCEPTION_MESSAGE, $e->getMessage());
-			$this->logger->warning($message, ['app' => 'files_antivirus']);
-			throw new ForbiddenException($message, true, $e);
+			$this->logger->logException($e, ['app' => 'files_antivirus']);
+			throw new ForbiddenException(L10n::getEnduserNotification($this->l10n), true, $e);
 		} catch (FileContentNotAllowedException $e) {
 			throw new ForbiddenException($e->getMessage(), false, $e);
 		} catch (\Exception $e) {
@@ -131,9 +129,8 @@ class AvirWrapper extends Wrapper {
 					}
 				);
 			} catch (InitException $e) {
-				$message = \sprintf(self::AV_EXCEPTION_MESSAGE, $e->getMessage());
-				$this->logger->warning($message, ['app' => 'files_antivirus']);
-				throw new ForbiddenException($message, false, $e);
+				$this->logger->logException($e, ['app' => 'files_antivirus']);
+				throw new ForbiddenException(L10n::getEnduserNotification($this->l10n), true, $e);
 			} catch (\Exception $e) {
 				$message = 	\implode(' ', [ __CLASS__, __METHOD__, $e->getMessage()]);
 				$this->logger->warning($message, ['app' => 'files_antivirus']);

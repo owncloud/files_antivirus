@@ -4,6 +4,7 @@ namespace OCA\Files_Antivirus\Scanner;
 
 use OCA\Files_Antivirus\AppConfig;
 use OCA\Files_Antivirus\IScannable;
+use OCA\Files_Antivirus\L10n;
 use OCA\Files_Antivirus\Status;
 use OCP\IL10N;
 use OCP\ILogger;
@@ -18,6 +19,7 @@ class ICAPScanner implements IScanner {
 	private string $virusHeader;
 	private int $sizeLimit;
 	private string $filename;
+	private ILogger $logger;
 
 	public function __construct(AppConfig $config, ILogger $logger, IL10N $l10n) {
 		$this->host = $config->getAvHost();
@@ -26,6 +28,7 @@ class ICAPScanner implements IScanner {
 		$this->virusHeader = $config->getAvResponseHeader();
 		$this->sizeLimit = $config->getAvMaxFileSize();
 		$this->l10n = $l10n;
+		$this->logger = $logger;
 	}
 
 	public function initScanner(string $fileName): void {
@@ -50,9 +53,6 @@ class ICAPScanner implements IScanner {
 		}
 	}
 
-	/**
-	 * @throws InitException
-	 */
 	public function completeAsyncScan(): Status {
 		if ($this->data === '') {
 			return Status::create(Status::SCANRESULT_CLEAN);
@@ -60,38 +60,43 @@ class ICAPScanner implements IScanner {
 
 		$icapHeaders = $this->getICAPHeaders();
 
-		$c = new ICAPClient($this->host, $this->port);
-		if ($this->usesReqMod()) {
-			$response = $c->reqmod(
-				$this->reqService,
-				$this->buildReqModBody(),
-				$icapHeaders
-			);
-		} else {
-			$response = $c->respmod(
-				$this->reqService,
-				$this->buildRespModBody(),
-				$icapHeaders
-			);
-		}
-		$code = $response['protocol']['code'] ?? 500;
-		if ($code === 100 || $code === 200 || $code === 204) {
-			// c-icap/clamav reports this header
-			$virus = $response['headers'][$this->virusHeader] ?? false;
-			if ($virus) {
-				return Status::create(Status::SCANRESULT_INFECTED, $virus);
+		try {
+			$c = new ICAPClient($this->host, $this->port);
+			if ($this->usesReqMod()) {
+				$response = $c->reqmod(
+					$this->reqService,
+					$this->buildReqModBody(),
+					$icapHeaders
+				);
+			} else {
+				$response = $c->respmod(
+					$this->reqService,
+					$this->buildRespModBody(),
+					$icapHeaders
+				);
 			}
+			$code = $response['protocol']['code'] ?? 500;
+			if ($code === 100 || $code === 200 || $code === 204) {
+				// c-icap/clamav reports this header
+				$virus = $response['headers'][$this->virusHeader] ?? false;
+				if ($virus) {
+					return Status::create(Status::SCANRESULT_INFECTED, $virus);
+				}
 
-			// kaspersky(pre-2020 product editions) and McAfee handling
-			$respHeader = $response['body']['res-hdr']['HTTP_STATUS'] ?? '';
-			if (\strpos($respHeader, '403 Forbidden') !== false || \strpos($respHeader, '403 VirusFound') !== false) {
-				$message = $this->l10n->t('A malware or virus was detected, your upload was denied. In doubt or for details please contact your system administrator.');
-				return Status::create(Status::SCANRESULT_INFECTED, $message);
+				// kaspersky(pre-2020 product editions) and McAfee handling
+				$respHeader = $response['body']['res-hdr']['HTTP_STATUS'] ?? '';
+				if (\strpos($respHeader, '403 Forbidden') !== false || \strpos($respHeader, '403 VirusFound') !== false) {
+					$message = $this->l10n->t('A malware or virus was detected, your upload was denied. In doubt or for details please contact your system administrator.');
+					return Status::create(Status::SCANRESULT_INFECTED, $message);
+				}
+				return Status::create(Status::SCANRESULT_CLEAN);
 			}
-		} else {
-			throw new \RuntimeException('AV failed!');
+			$respJson = json_encode($response, JSON_THROW_ON_ERROR);
+			$this->logger->error("ICAP response unusable: $respJson");
+		} catch (InitException $e) {
+			$this->logger->logException($e);
 		}
-		return Status::create(Status::SCANRESULT_CLEAN);
+		throw new \RuntimeException(L10n::getEnduserNotification($this->l10n));
 	}
 
 	/**
