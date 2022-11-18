@@ -44,7 +44,7 @@ class SettingsControllerTest extends TestBase {
 
 		$this->config = $this->getMockBuilder(AppConfig::class)
 			->disableOriginalConstructor()
-			->setMethods(['setter', 'getAppValue'])
+			->onlyMethods(['setter', 'getAppValue'])
 			->getMock();
 
 		$this->scannerFactory = $this->getMockBuilder(ScannerFactory::class)
@@ -59,7 +59,8 @@ class SettingsControllerTest extends TestBase {
 				['av_infected_action', ['delete']],
 				['av_stream_max_length', [100]],
 				['av_max_file_size', [800]],
-				['av_mode', ['executable']]
+				['av_mode', ['executable']],
+				['av_scan_background', [true]],
 			);
 
 		$settings = new SettingsController($this->request, $this->config, $this->scannerFactory, $this->l10n);
@@ -72,7 +73,8 @@ class SettingsControllerTest extends TestBase {
 			100,
 			800,
 			'',
-			''
+			'',
+			true
 		);
 	}
 
@@ -84,7 +86,8 @@ class SettingsControllerTest extends TestBase {
 				['av_infected_action', ['delete']],
 				['av_stream_max_length', [100]],
 				['av_max_file_size', [800]],
-				['av_mode', ['socket']]
+				['av_mode', ['socket']],
+				['av_scan_background', [false]],
 			);
 
 		$settings = new SettingsController($this->request, $this->config, $this->scannerFactory, $this->l10n);
@@ -98,7 +101,8 @@ class SettingsControllerTest extends TestBase {
 			100,
 			800,
 			'',
-			''
+			'',
+			false
 		);
 	}
 
@@ -128,7 +132,8 @@ class SettingsControllerTest extends TestBase {
 			100,
 			800,
 			'',
-			''
+			'',
+			true
 		);
 	}
 }
