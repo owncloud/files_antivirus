@@ -4,9 +4,24 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
-## [Unreleased] 
+## [Unreleased] - 2022-xx-xx
 
 - 
+
+## [1.2.0] - 2022-11-17
+
+### Added
+
+- [#517](https://github.com/owncloud/files_antivirus/pull/517) - Add setting to enable/disable background scanning
+
+### Fixed
+
+- [#518](https://github.com/owncloud/files_antivirus/pull/518) - In case of missconfiguration a non-tech message is presented
+- [#516](https://github.com/owncloud/files_antivirus/pull/516) - Av mode names & fortinet fields
+- [#514](https://github.com/owncloud/files_antivirus/pull/514) - Upload cannot be deleted but only denied + use same message in two places
+- [#512](https://github.com/owncloud/files_antivirus/pull/512) - Fortinet scanner file name + major code cleanup
+- [#496](https://github.com/owncloud/files_antivirus/pull/496) - Daemon and Executable mode are specific to ClamAV
+- [#455](https://github.com/owncloud/files_antivirus/pull/455) - Doc link for executable and params point to the wrong doc
 
 
 ## [1.1.0] - 2022-07-26
@@ -342,7 +357,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 - Initial implementation
 
 
-[Unreleased]: https://github.com/owncloud/files_antivirus/compare/v1.1.0...master
+[Unreleased]: https://github.com/owncloud/files_antivirus/compare/v1.2.0...master
+[1.2.0]: https://github.com/owncloud/files_antivirus/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/owncloud/files_antivirus/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/owncloud/files_antivirus/compare/v0.16.0...v1.0.0
 [0.16.0]: https://github.com/owncloud/files_antivirus/compare/v0.15.2...v0.16.0
