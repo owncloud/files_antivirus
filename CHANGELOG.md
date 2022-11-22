@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 ### Fixed
 
 - [#525](https://github.com/owncloud/files_antivirus/pull/525) - PHP Syntax error when upgrading to files_antivirus 1.2.0 on PHP 7.3 #525
+- Translation updates
 
 ## [1.2.0] - 2022-11-17
 
