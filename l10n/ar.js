@@ -37,6 +37,8 @@ OC.L10N.register(
     "bytes" : "بايت",
     "File size limit, -1 means no limit" : "حد حجم الملف، -1 تعني عدم وجود حد",
     "File size limit in bytes, -1 means no limit" : "حد حجم الملف بالبايت، -1 تعني عدم وجود حد",
+    "Enabled" : "مُفعَّل",
+    "Disabled" : "مُعطَّل",
     "When infected files were found during a background scan" : "عند العثور على ملف مصاب أثناء فحص الخلفية",
     "Only log" : "التسجيل في السجل فقط",
     "Delete file" : "حذف الملف",

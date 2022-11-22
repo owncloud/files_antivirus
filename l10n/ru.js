@@ -37,6 +37,8 @@ OC.L10N.register(
     "bytes" : "байты",
     "File size limit, -1 means no limit" : "Ограничение на размер файла, -1 означает без ограничения",
     "File size limit in bytes, -1 means no limit" : "Ограничение на размер файла в байтах, -1 означает без ограничения",
+    "Enabled" : "Включено",
+    "Disabled" : "Отключена",
     "When infected files were found during a background scan" : "Если при фоновом сканировании найдены заражённые файлы",
     "Only log" : "Записывать в журнал",
     "Delete file" : "Удалить файл",
