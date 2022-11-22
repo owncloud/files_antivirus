@@ -23,7 +23,10 @@ use OCP\ILogger;
  * @package OCA\Files_Antivirus\Scanner
  */
 class Socket extends External {
-	private string $socket;
+	/**
+	 * @var string
+	 */
+	private $socket;
 
 	/**
 	 * Socket constructor.

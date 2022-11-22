@@ -14,10 +14,22 @@
 namespace OCA\Files_Antivirus;
 
 class Content implements IScannable {
-	protected string $content;
-	protected int $currentPosition = 0;
-	protected int $chunkSize;
-	private string $filename;
+	/**
+	 * @var string
+	 */
+	protected $content;
+	/**
+	 * @var int
+	 */
+	protected $currentPosition = 0;
+	/**
+	 * @var int
+	 */
+	protected $chunkSize;
+	/**
+	 * @var string
+	 */
+	private $filename;
 
 	public function __construct(string $filename, string $content, int $chunkSize) {
 		$this->content = $content;

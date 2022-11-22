@@ -4,11 +4,20 @@ namespace OCA\Files_Antivirus\Scanner;
 use RuntimeException;
 
 class ICAPClient {
-	private string $host;
-	private int $port;
+	/**
+	 * @var string
+	 */
+	private $host;
+	/**
+	 * @var int
+	 */
+	private $port;
 	private $writeHandle;
 
-	public string $userAgent = 'ownCloud-icap-client/0.1.0';
+	/**
+	 * @var string
+	 */
+	public $userAgent = 'ownCloud-icap-client/0.1.0';
 
 	public function __construct(string $host, int $port) {
 		$this->host = $host;

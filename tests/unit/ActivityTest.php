@@ -13,7 +13,10 @@ use OC\L10N\Factory;
 use OCP\IURLGenerator;
 
 class ActivityTest extends TestBase {
-	protected Activity $activity;
+	/**
+	 * @var Activity
+	 */
+	protected $activity;
 	
 	public function setUp(): void {
 		parent::setUp();

@@ -16,8 +16,11 @@ class StatusTest extends TestBase {
 	public const TEST_CLEAN = 0;
 	public const TEST_INFECTED = 1;
 	public const TEST_ERROR = 40;
-	
-	protected RuleMapper $ruleMapper;
+
+	/**
+	 * @var RuleMapper
+	 */
+	protected $ruleMapper;
 
 	public function setUp(): void {
 		parent::setUp();

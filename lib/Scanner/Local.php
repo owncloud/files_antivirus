@@ -18,14 +18,17 @@ use OCP\IL10N;
 use OCP\ILogger;
 
 class Local extends AbstractScanner {
-	protected string $avPath;
+	/**
+	 * @var string
+	 */
+	protected $avPath;
 	
 	/**
 	 * STDIN and STDOUT descriptors
 	 *
 	 * @var array of resources
 	 */
-	private array $pipes = [];
+	private $pipes = [];
 	
 	/**
 	 * Process handle

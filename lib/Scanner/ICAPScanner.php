@@ -10,16 +10,43 @@ use OCP\IL10N;
 use OCP\ILogger;
 
 class ICAPScanner implements IScanner {
-	private IL10N $l10n;
+	/**
+	 * @var IL10N
+	 */
+	private $l10n;
 
-	private string $data = '';
-	private string $host;
-	private int $port;
-	private string $reqService;
-	private string $virusHeader;
-	private int $sizeLimit;
-	private string $filename;
-	private ILogger $logger;
+	/**
+	 * @var string
+	 */
+	private $data = '';
+	/**
+	 * @var string
+	 */
+	private $host;
+	/**
+	 * @var int
+	 */
+	private $port;
+	/**
+	 * @var string
+	 */
+	private $reqService;
+	/**
+	 * @var string
+	 */
+	private $virusHeader;
+	/**
+	 * @var int
+	 */
+	private $sizeLimit;
+	/**
+	 * @var string
+	 */
+	private $filename;
+	/**
+	 * @var ILogger
+	 */
+	private $logger;
 
 	public function __construct(AppConfig $config, ILogger $logger, IL10N $l10n) {
 		$this->host = $config->getAvHost();

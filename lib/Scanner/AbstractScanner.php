@@ -35,26 +35,51 @@ use OCP\ILogger;
 abstract class AbstractScanner implements IScanner {
 	/**
 	 * Scan result
+	 *
+	 * @var Status|null
 	 */
-	protected ?Status $status = null;
+	protected $status = null;
 
 	/**
 	 * If scanning was done part by part
 	 * the first detected infected part is stored here
+	 *
+	 * @var Status|null
 	 */
-	protected ?Status $infectedStatus = null;
-	protected int $byteCount;
+	protected $infectedStatus = null;
+	/**
+	 * @var int
+	 */
+	protected $byteCount;
 
 	/**
 	 * @var resource
 	 */
 	protected $writeHandle;
-	protected AppConfig $appConfig;
-	protected ILogger $logger;
-	protected ?string $lastChunk = null;
-	protected bool $isLogUsed = false;
-	protected bool $isAborted = false;
-	private string $filename;
+	/**
+	 * @var AppConfig
+	 */
+	protected $appConfig;
+	/**
+	 * @var ILogger
+	 */
+	protected $logger;
+	/**
+	 * @var string|null
+	 */
+	protected $lastChunk = null;
+	/**
+	 * @var bool
+	 */
+	protected $isLogUsed = false;
+	/**
+	 * @var bool
+	 */
+	protected $isAborted = false;
+	/**
+	 * @var string
+	 */
+	private $filename;
 
 	/**
 	 * Close used resources

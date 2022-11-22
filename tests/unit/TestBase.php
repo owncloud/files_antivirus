@@ -18,9 +18,18 @@ use OCA\Files_Antivirus\AppConfig;
 use OCP\IL10N;
 
 abstract class TestBase extends TestCase {
-	protected IDb $db;
-	protected Application $application;
-	protected IAppContainer $container;
+	/**
+	 * @var IDb
+	 */
+	protected $db;
+	/**
+	 * @var Application
+	 */
+	protected $application;
+	/**
+	 * @var IAppContainer|\OC\AppFramework\DependencyInjection\DIContainer
+	 */
+	protected $container;
 	/**
 	 * @var AppConfig|MockObject
 	 */

@@ -25,7 +25,10 @@ class ChunkUploadTest extends TestBase {
 
 	protected $scannerFactory;
 
-	protected bool $isWrapperRegistered = false;
+	/**
+	 * @var bool
+	 */
+	protected $isWrapperRegistered = false;
 
 	public static function setUpBeforeClass(): void {
 		parent::setUpBeforeClass();

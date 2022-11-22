@@ -24,12 +24,24 @@ class LocalTest extends TestBase {
 	public const TEST_CLEAN_FILENAME = 'foo.txt';
 	public const TEST_INFECTED_FILENAME = 'kitten.inf';
 
-	protected RuleMapper $ruleMapper;
+	/**
+	 * @var RuleMapper
+	 */
+	protected $ruleMapper;
 	protected $view;
-	
-	protected Item $cleanItem;
-	protected Item $infectedItem;
-	protected ScannerFactory $scannerFactory;
+
+	/**
+	 * @var Item
+	 */
+	protected $cleanItem;
+	/**
+	 * @var Item
+	 */
+	protected $infectedItem;
+	/**
+	 * @var ScannerFactory
+	 */
+	protected $scannerFactory;
 
 	/**
 	 * @throws InitException

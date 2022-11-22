@@ -23,8 +23,14 @@ use OCP\ILogger;
  * @package OCA\Files_Antivirus\Scanner
  */
 class Daemon extends External {
-	private string $avHost;
-	private int $avPort;
+	/**
+	 * @var string
+	 */
+	private $avHost;
+	/**
+	 * @var int
+	 */
+	private $avPort;
 
 	/**
 	 * Daemon constructor.

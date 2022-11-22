@@ -19,9 +19,18 @@ use OCP\Files\NotFoundException;
 use OCP\IL10N;
 
 class Item implements IScannable {
-	private IL10N $l10n;
-	protected View $view;
-	protected string $path;
+	/**
+	 * @var IL10N
+	 */
+	private $l10n;
+	/**
+	 * @var View
+	 */
+	protected $view;
+	/**
+	 * @var string
+	 */
+	protected $path;
 
 	/**
 	 * Scanned fileid (optional)
@@ -52,9 +61,11 @@ class Item implements IScannable {
 	protected $chunkSize;
 	
 	/**
-	 * Is filesize match the size conditions
+	 * Does filesize match the size conditions
+	 *
+	 * @var bool
 	 */
-	protected bool $isValidSize;
+	protected $isValidSize;
 
 	/**
 	 * @throws NotFoundException

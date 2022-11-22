@@ -20,7 +20,10 @@ class ItemTest extends TestBase {
 	public const PWD = 'test';
 	public const CONTENT = 'LoremIpsum';
 
-	protected View $view;
+	/**
+	 * @var View
+	 */
+	protected $view;
 
 	public static function setUpBeforeClass(): void {
 		parent::setUpBeforeClass();

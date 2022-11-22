@@ -12,7 +12,10 @@ use OCP\ILogger;
 use Test\TestCase;
 
 class ICAPScannerTest extends TestCase {
-	private ICAPScanner $scanner;
+	/**
+	 * @var ICAPScanner
+	 */
+	private $scanner;
 
 	protected function setUp(): void {
 		parent::setUp();
