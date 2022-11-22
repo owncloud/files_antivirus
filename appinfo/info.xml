@@ -23,7 +23,7 @@ Please note that enabling this application can impact system performance as addi
 	<category>security</category>
 	<licence>AGPL</licence>
 	<author>Manuel Delgado, Bart Visscher, thinksilicon.de, Viktar Dubiniuk</author>
-	<version>1.2.0</version>
+	<version>1.2.1</version>
 	<documentation>
 		<admin>https://doc.owncloud.com/server/latest/admin_manual/configuration/server/antivirus_configuration.html</admin>
 	</documentation>
