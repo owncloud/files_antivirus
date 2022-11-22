@@ -29,10 +29,22 @@ class ScannerFactory {
 	public const EICAR_PART_1 = 'X5O!P%@AP[4\PZX54(P^)7CC)7}$';
 	public const EICAR_PART_2 = 'EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*';
 
-	protected AppConfig $appConfig;
-	protected ILogger $logger;
-	protected string $scannerClass;
-	protected IL10N $l10N;
+	/**
+	 * @var AppConfig
+	 */
+	protected $appConfig;
+	/**
+	 * @var ILogger
+	 */
+	protected $logger;
+	/**
+	 * @var string
+	 */
+	protected $scannerClass;
+	/**
+	 * @var IL10N
+	 */
+	protected $l10N;
 
 	/**
 	 * @throws InitException

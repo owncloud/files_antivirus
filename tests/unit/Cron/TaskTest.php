@@ -20,7 +20,10 @@ use OCP\IL10N;
 use ReflectionException;
 
 class TaskTest extends TestBase {
-	protected ScannerFactory $scannerFactory;
+	/**
+	 * @var ScannerFactory
+	 */
+	protected $scannerFactory;
 
 	public function setUp(): void {
 		parent::setUp();

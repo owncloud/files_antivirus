@@ -23,9 +23,18 @@ use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Http\JSONResponse;
 
 class SettingsController extends Controller {
-	private AppConfig $settings;
-	private ScannerFactory $scannerFactory;
-	private IL10N $l10n;
+	/**
+	 * @var AppConfig
+	 */
+	private $settings;
+	/**
+	 * @var ScannerFactory
+	 */
+	private $scannerFactory;
+	/**
+	 * @var IL10N
+	 */
+	private $l10n;
 
 	/**
 	 * SettingsController constructor.

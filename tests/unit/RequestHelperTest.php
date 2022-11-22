@@ -33,7 +33,10 @@ class RequestHelperTest extends TestBase {
 	 */
 	private $storage;
 
-	private string $owner = 'anon';
+	/**
+	 * @var string
+	 */
+	private $owner = 'anon';
 
 	public function setUp(): void {
 		parent::setUp();

@@ -32,13 +32,25 @@ use Sabre\DAV\ServerPlugin;
 class AntivirusPlugin extends ServerPlugin {
 	public const NS_OWNCLOUD = 'http://owncloud.org/ns';
 
-	private Server $davServer;
+	/**
+	 * @var Server
+	 */
+	private $davServer;
 
-	private Application $application;
+	/**
+	 * @var Application
+	 */
+	private $application;
 
-	private IUserSession $userSession;
+	/**
+	 * @var IUserSession
+	 */
+	private $userSession;
 
-	private ILogger $logger;
+	/**
+	 * @var ILogger
+	 */
+	private $logger;
 
 	public function __construct(Application $application, IUserSession $userSession, ILogger $logger) {
 		$this->application = $application;

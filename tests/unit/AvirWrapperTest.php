@@ -26,7 +26,10 @@ class AvirWrapperTest extends TestBase {
 	public const UID = 'testo';
 	public const PWD = 'test';
 
-	protected Mock\ScannerFactory $scannerFactory;
+	/**
+	 * @var Mock\ScannerFactory
+	 */
+	protected $scannerFactory;
 
 	/**
 	 * @var RequestHelper

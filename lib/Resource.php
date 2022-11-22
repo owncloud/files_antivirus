@@ -16,7 +16,10 @@ namespace OCA\Files_Antivirus;
 class Resource implements IScannable {
 	protected $resource;
 	protected $chunkSize;
-	private string $filename;
+	/**
+	 * @var string
+	 */
+	private $filename;
 
 	public function __construct(string $filename, $resource, $chunkSize) {
 		$this->resource = $resource;
