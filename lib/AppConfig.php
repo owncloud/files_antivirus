@@ -189,7 +189,7 @@ class AppConfig {
 	public function validateValue($key, $value) {
 		if (
 			$key === 'av_mode'
-			&& $value === 'icap'
+			&& ($value === 'icap'|| $value === 'fortinet' || $value === 'mawgw')
 			&& !$this->licenseManager->checkLicenseFor($this->appName, ["disableApp" => false])
 		) {
 			$this->logger->error('No valid license found for icap scanner');
