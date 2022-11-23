@@ -4,9 +4,17 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
+
 ## [Unreleased] - 2022-xx-xx
 
-- 
+-
+
+## [1.2.1] - 2022-11-21
+
+### Fixed
+
+- [#525](https://github.com/owncloud/files_antivirus/pull/525) - PHP Syntax error when upgrading to files_antivirus 1.2.0 on PHP 7.3 #525
+- Translation updates
 
 ## [1.2.0] - 2022-11-17
 
@@ -357,7 +365,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 - Initial implementation
 
 
-[Unreleased]: https://github.com/owncloud/files_antivirus/compare/v1.2.0...master
+[Unreleased]: https://github.com/owncloud/files_antivirus/compare/v1.2.1...master
+[1.2.1]: https://github.com/owncloud/files_antivirus/compare/v1.2.0...v1.2.1
 [1.2.0]: https://github.com/owncloud/files_antivirus/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/owncloud/files_antivirus/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/owncloud/files_antivirus/compare/v0.16.0...v1.0.0
