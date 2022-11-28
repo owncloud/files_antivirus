@@ -143,7 +143,8 @@ class Item implements IScannable {
 		$shouldDelete = !$isBackground || ($isBackground && $infectedAction === 'delete');
 		
 		$message = $shouldDelete ? Activity::MESSAGE_FILE_DELETED : '';
-		
+
+		/** @phan-suppress-next-line PhanDeprecatedFunction */
 		\OC::$server->getActivityManager()->publishActivity(
 			'files_antivirus',
 			Activity::SUBJECT_VIRUS_DETECTED,
@@ -172,6 +173,7 @@ class Item implements IScannable {
 				"Virus detected! Can't upload the file %s",
 				[\basename($this->path)]
 			);
+			/** @phan-suppress-next-line PhanDeprecatedFunction */
 			\OCP\JSON::error(["data" => ["message" => $message]]);
 			exit();
 		}

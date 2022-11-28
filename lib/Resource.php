@@ -31,9 +31,11 @@ class Resource implements IScannable {
 	 * @inheritDoc
 	 */
 	public function fread() {
+		/** @phan-suppress-next-line PhanTypeMismatchArgumentInternal */
 		if (\feof($this->resource)) {
 			return false;
 		}
+		/** @phan-suppress-next-line PhanTypeMismatchArgumentInternal */
 		return \fread($this->resource, $this->chunkSize);
 	}
 

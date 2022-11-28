@@ -39,7 +39,7 @@ class RuleMapper extends Mapper {
 	/**
 	 * Empty the table
 	 *
-	 * @return bool
+	 * @return \PDOStatement
 	 */
 	public function deleteAll() {
 		$sql = 'DELETE FROM `*PREFIX*files_avir_status`';

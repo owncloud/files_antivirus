@@ -112,6 +112,7 @@ class AntivirusPlugin extends ServerPlugin {
 		if ($this->userSession->getUser() === null) {
 			$this->scanPublicUpload($path, $data);
 		}
+		/** @phan-suppress-next-line PhanTypeMismatchArgumentInternal */
 		\rewind($data);
 		return true;
 	}
@@ -133,6 +134,7 @@ class AntivirusPlugin extends ServerPlugin {
 		if ($this->userSession->getUser() === null) {
 			$this->scanPublicUpload($path, $data);
 		}
+		/** @phan-suppress-next-line PhanTypeMismatchArgumentInternal */
 		\rewind($data);
 		return true;
 	}
@@ -159,8 +161,7 @@ class AntivirusPlugin extends ServerPlugin {
 				$container->query('L10N')->t(
 					'Virus %s is detected in the file. Upload cannot be completed.',
 					$status->getDetails()
-				),
-				false
+				)
 			);
 		}
 	}

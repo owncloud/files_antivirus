@@ -37,8 +37,10 @@ class Version20170808221437 implements ISchemaMigration {
 
 			$fileIdColumn = $table->getColumn('fileid');
 			if ($fileIdColumn
+				/** @phan-suppress-next-line PhanDeprecatedClassConstant */
 				&& $fileIdColumn->getType()->getName() !== Type::BIGINT
 			) {
+				/** @phan-suppress-next-line PhanDeprecatedClassConstant */
 				$fileIdColumn->setType(Type::getType(Type::BIGINT));
 				$fileIdColumn->setOptions(['length' => 20]);
 			}

@@ -76,6 +76,7 @@ class FileCollection {
 				'fc',
 				'mounts',
 				'mnt',
+				/** @phan-suppress-next-line PhanTypeMismatchArgument */
 				$qb->expr()->andX(
 					$qb->expr()->eq('fc.storage', 'mnt.storage_id'),
 					$qb->expr()->eq('mnt.mount_point', $concatFunction)

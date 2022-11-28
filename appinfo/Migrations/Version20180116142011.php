@@ -31,6 +31,7 @@ class Version20180116142011 implements ISchemaMigration {
 		$table = $schema->getTable("{$prefix}files_antivirus");
 		$table->addColumn(
 			'etag',
+			/** @phan-suppress-next-line PhanDeprecatedClassConstant */
 			Type::STRING,
 			[
 				'default' => null,

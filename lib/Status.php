@@ -47,6 +47,7 @@ class Status {
 
 	public function __construct() {
 		$this->numericStatus = self::SCANRESULT_UNCHECKED;
+		/** @phan-suppress-next-line PhanDeprecatedFunction */
 		$this->ruleMapper = new Db\RuleMapper(\OC::$server->getDb());
 	}
 
@@ -88,6 +89,7 @@ class Status {
 	 */
 	public function parseResponse($rawResponse, $result = null) {
 		$matches = [];
+		/** @phan-suppress-next-line PhanDeprecatedFunction */
 		$ruleMapper = new Db\RuleMapper(\OC::$server->getDb());
 		if ($result === null) { // Daemon or socket mode
 			try {
