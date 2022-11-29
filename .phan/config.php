@@ -2,7 +2,7 @@
 /**
  * @author Patrick Jahns <github@patrickjahns.de>
  *
- * @copyright Copyright (c) 2018, ownCloud GmbH
+ * @copyright Copyright (c) 2022, ownCloud GmbH
  * @license GPL-2.0
  *
  * This program is free software; you can redistribute it and/or modify it
