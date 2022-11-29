@@ -218,7 +218,7 @@ class AppConfig {
 	 *
 	 * @param string $key
 	 *
-	 * @return string
+	 * @return string|int
 	 *
 	 * @throws \BadFunctionCallException
 	 */

@@ -28,6 +28,7 @@ class Version20210413110050 implements ISqlMigration {
 		$conf = \OC::$server->getConfig();
 		$query = 'SELECT `configkey`, `configvalue` FROM `*PREFIX*appconfig` WHERE `appid` = \'files_antivirus\' AND (`configkey` = \'av_path\' OR `configkey` = \'av_cmd_options\')';
 		$result = $conn->executeQuery($query);
+		/** @phan-suppress-next-line PhanDeprecatedFunction */
 		while ($row = $result->fetch()) {
 			try {
 				$conf->setSystemValue('files_antivirus.' . $row['configkey'], $row['configvalue']);
@@ -36,10 +37,12 @@ class Version20210413110050 implements ISqlMigration {
 				return;
 			}
 		}
+		/** @phan-suppress-next-line PhanDeprecatedFunction */
 		$result->closeCursor();
 
 		$query = 'DELETE FROM `*PREFIX*appconfig` WHERE `appid` = \'files_antivirus\' AND (`configkey` = \'av_path\' OR `configkey` = \'av_cmd_options\')';
 		$result = $conn->executeQuery($query);
+		/** @phan-suppress-next-line PhanDeprecatedFunction */
 		$result->closeCursor();
 	}
 }

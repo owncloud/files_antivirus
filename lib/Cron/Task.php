@@ -129,6 +129,7 @@ class Task extends TimedJob {
 		}
 
 		$cnt = 0;
+		/** @phan-suppress-next-line PhanDeprecatedFunction */
 		while (($row = $result->fetch()) && $cnt < self::BATCH_SIZE) {
 			try {
 				$fileId = $row['fileid'];

@@ -27,6 +27,7 @@ class Version20180116141548 implements ISqlMigration {
 		$sql = $connection->getDatabasePlatform()->getTruncateTableSQL(
 			"`*PREFIX*files_antivirus`"
 		);
+		/** @phan-suppress-next-line PhanDeprecatedFunction */
 		$connection->executeUpdate($sql);
 	}
 }

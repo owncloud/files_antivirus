@@ -58,6 +58,14 @@ config = {
             ],
         },
     },
+    "phan": {
+        "multipleVersions": {
+            "phpVersions": [
+                DEFAULT_PHP_VERSION,
+                "7.3",
+            ],
+        },
+    },
     "phpunit": {
         "allDatabases": {
             "phpVersions": [

@@ -2,12 +2,6 @@
 
 namespace OCA\Files_Antivirus\Scanner;
 
-use OCA\Files_Antivirus\AppConfig;
-use OCA\Files_Antivirus\IScannable;
-use OCA\Files_Antivirus\Status;
-use OCP\IL10N;
-use OCP\ILogger;
-
 class McAfeeWebGatewayScanner extends ICAPScanner {
 	protected function usesReqMod(): bool {
 		return false;

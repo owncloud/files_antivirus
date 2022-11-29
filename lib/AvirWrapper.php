@@ -153,6 +153,7 @@ class AvirWrapper extends Wrapper {
 				['app' => 'files_antivirus']
 			);
 
+			/** @phan-suppress-next-line PhanDeprecatedFunction */
 			\OC::$server->getActivityManager()->publishActivity(
 				'files_antivirus',
 				Activity::SUBJECT_VIRUS_DETECTED,
@@ -173,7 +174,7 @@ class AvirWrapper extends Wrapper {
 			throw new FileContentNotAllowedException(
 				$this->l10n->t(
 					'Virus %s is detected in the file. Upload cannot be completed.',
-					$status->getDetails()
+					[$status->getDetails()]
 				),
 				false
 			);

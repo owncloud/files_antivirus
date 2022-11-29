@@ -204,7 +204,7 @@ class ICAPClient {
 			if ($pieces[1] === "0") {
 				continue;
 			}
-			$rawEncapsulatedHeaders = \fread($this->writeHandle, $pieces[1]);
+			$rawEncapsulatedHeaders = \fread($this->writeHandle, (int) $pieces[1]);
 			$encapsulatedHeaders = $this->parseEncapsulatedHeaders($rawEncapsulatedHeaders);
 			// According to the spec we have a single res-hdr part and are not interested in res-body content
 			break;
