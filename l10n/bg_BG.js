@@ -1,7 +1,7 @@
 OC.L10N.register(
     "files_antivirus",
     {
-    "Clean" : "Чист",
+    "Clean" : "Почистване",
     "Infected" : "Заразен",
     "Unchecked" : "Непроверен",
     "Scanner exit status" : "Състояние при изход от скенера",
@@ -46,11 +46,11 @@ OC.L10N.register(
     "Background scanning" : "Сканиране във фонов режим",
     "Enabled" : "Активирано",
     "Disabled" : "Деактивирано",
-    "When infected files were found during a background scan" : "Когато бъдат открити заразени файлове по време на сканирането на заден план",
+    "When infected files were found during a background scan" : "Когато заразените файлове са открити по време на фоново сканиране",
     "Only log" : "Само доклад",
     "Delete file" : "Изтриване на файл",
     "Save" : "Запазване",
-    "Advanced" : "Допълнителни",
+    "Advanced" : "Разширени",
     "Rules" : "Правила",
     "Clear All" : "Изчистване на всичко",
     "Reset to defaults" : "Възстановяване на настройките по подразбиране",
