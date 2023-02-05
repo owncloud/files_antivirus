@@ -31,7 +31,7 @@ OC.L10N.register(
     "Port" : "Portë",
     "Port number of Antivirus Host, 1-65535" : "Numër porte për Antivirus Host, 1-65535",
     "ICAP request service. Possible values: \"avscan\" for clamav or \"req\" for Kaspersky ScanEngine" : "Shërbim kërkesash ICAP. Vlera të mundshme: “avscan” për Clamav, ose “req”, për Kaspersky ScanEngine",
-    "ICAP response header holding the virus information. Possible values: X-Virus-ID or X-Infection-Found" : "Krye përgjigjeje ICAP që përmban të dhëna për virusin. Vlera të mundshme: X-Virus-ID ose X-Infection-Found",
+    "ICAP response header holding the virus information. Possible values: X-Virus-ID or X-Infection-Found" : "Krye përgjigjeje ICAP që përmban hollësi mbi virusin. Vlera të mundshme: X-Virus-ID ose X-Infection-Found",
     "ICAP request service. Fortinet uses \"respmod\"" : "Shërbim kërkesash ICAP. Fortinet përdor “respmod”",
     "ICAP response header. Fortinet sends X-Virus-ID" : "Krye përgjigjeje ICAP. Fortinet dërgon X-Virus-ID",
     "ICAP request service. McAfee Webgateway uses \"respmod\"" : "Shërbim kërkesash ICAP service. McAfee Webgateway përdor “respmod”",
