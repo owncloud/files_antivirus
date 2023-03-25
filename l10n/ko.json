@@ -28,6 +28,7 @@
     "Hostname or IP address of Antivirus Host" : "안티바이러스 호스트의 이름이나 IP 주소",
     "Port" : "포트",
     "Port number of Antivirus Host, 1-65535" : "안티바이러스 호스트의 포트 번호, 1-65535",
+    "ICAP request service. Possible values: \"avscan\" for clamav or \"req\" for Kaspersky ScanEngine" : "ICAP 요청 서비스. 가능한 값: clamav는 \"avscan\", Kaspersky ScanEngine은 \"req\"",
     "ICAP response header holding the virus information. Possible values: X-Virus-ID or X-Infection-Found" : "바이러스 정보를 담고 있는 ICAP 응답 헤더입니다. 가능한 값: X-Virus-ID 또는 X-Infection-Found",
     "ICAP request service. Fortinet uses \"respmod\"" : "ICAP 요청 서비스. Fortinet은 \"respmod\"를 사용합니다.",
     "ICAP response header. Fortinet sends X-Virus-ID" : "ICAP 응답 헤더. Fortinet이 X-Virus-ID를 보냈습니다.",
