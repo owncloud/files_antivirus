@@ -104,8 +104,8 @@ class ICAPScanner implements IScanner {
 			}
 			$code = $response['protocol']['code'] ?? 500;
 			if ($code === 100 || $code === 200 || $code === 204) {
-				// c-icap/clamav reports this header
-				$virus = $response['headers'][$this->virusHeader] ?? false;
+				// c-icap/clamav reports this header - McAfee 11 reports the virus name in `res-hdr`
+				$virus = $response['headers'][$this->virusHeader] ?? $response['res-hdr'][$this->virusHeader] ?? false;
 				if ($virus) {
 					return Status::create(Status::SCANRESULT_INFECTED, $virus);
 				}
