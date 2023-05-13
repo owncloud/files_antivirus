@@ -171,6 +171,15 @@ function av_mode_show_options(str){
 	$('#av_host, #av_port, #av_request_service, #av_response_header').attr('disabled', false);
 	$('p.av_host, p.av_port, p.av_mode_icap').show('slow');
 }
+
+function infected_action_show_options(str){
+	if (str === 'true') {
+		$('p.infected_action').show('slow');
+	} else {
+		$('p.infected_action').hide('slow');
+	}
+}
+
 $(document).ready(function() {
 	$('#av_submit').on('click', function(event){
 		var isValid = true;
@@ -244,6 +253,10 @@ $(document).ready(function() {
 	$("#av_mode").change(function () {
 		var str = $("#av_mode").val();
 		av_mode_show_options(str);
+	});
+	$("#av_scan_background").change(function () {
+		var backgroundscan = $("#av_scan_background").val();
+		infected_action_show_options(backgroundscan);
 	});
 	$("#av_mode").change();
 });
