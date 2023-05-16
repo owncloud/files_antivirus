@@ -41,7 +41,7 @@ The App is not complete yet, the following works/is done:
 ## Install
 
 * Install and enable the App
-* Go to Admin Panel and [configure](https://doc.owncloud.org/server/10.0/admin_manual/configuration/server/antivirus_configuration.html) the App
+* Go to Admin Panel and [configure](https://doc.owncloud.com/server/next/admin_manual/configuration/server/virus-scanner-support.html) the App
 
 ## Enterprise Feature: ICAP Antivirus integration
 
