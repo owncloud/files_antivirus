@@ -175,8 +175,10 @@ function av_mode_show_options(str){
 function infected_action_show_options(str){
 	if (str === 'true') {
 		$('p.infected_action').show('slow');
+		$('#av_infected_action').attr('disabled', false);
 	} else {
 		$('p.infected_action').hide('slow');
+		$('#av_infected_action').attr('disabled', true);
 	}
 }
 
@@ -254,9 +256,10 @@ $(document).ready(function() {
 		var str = $("#av_mode").val();
 		av_mode_show_options(str);
 	});
+	$("#av_mode").change();
 	$("#av_scan_background").change(function () {
 		var backgroundscan = $("#av_scan_background").val();
 		infected_action_show_options(backgroundscan);
 	});
-	$("#av_mode").change();
+	$("#av_scan_background").change();
 });
