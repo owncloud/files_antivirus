@@ -50,14 +50,7 @@ config = {
         "master",
     ],
     "appInstallCommandPhp": "make",
-    "codestyle": {
-        "multiple": {
-            "phpVersions": [
-                DEFAULT_PHP_VERSION,
-                "7.3",
-            ],
-        },
-    },
+    "codestyle": True,
     "phan": {
         "multipleVersions": {
             "phpVersions": [
