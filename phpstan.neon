@@ -1,0 +1,7 @@
+parameters:
+  bootstrapFiles:
+    - %currentWorkingDirectory%/../../lib/base.php
+  inferPrivatePropertyTypeFromConstructor: true
+  excludePaths:
+    - %currentWorkingDirectory%/appinfo/routes.php
+  ignoreErrors:
