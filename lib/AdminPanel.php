@@ -27,7 +27,6 @@ use OCA\Files_Antivirus\Controller\SettingsController;
 use OCP\Settings\ISettings;
 
 class AdminPanel implements ISettings {
-
 	/**
 	 * @var Application
 	 */

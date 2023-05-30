@@ -22,7 +22,6 @@ use JsonSerializable;
  * @package OCA\Files_Antivirus\Db
  */
 class Rule extends Entity implements JsonSerializable {
-	
 	/*
 	 * Rule needs to be validated by the exit code returned by scanner
 	 */
