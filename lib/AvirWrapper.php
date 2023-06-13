@@ -23,7 +23,6 @@ use OCP\Files\ForbiddenException;
 use Icewind\Streams\CallbackWrapper;
 
 class AvirWrapper extends Wrapper {
-
 	/**
 	 * Modes that are used for writing
 	 *

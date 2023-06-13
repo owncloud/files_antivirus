@@ -7,7 +7,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased] - 2022-xx-xx
 
--
+### Fixed
+
+- [#502](https://github.com/owncloud/files_antivirus/issues/502) - McAfee Webgateway causes a 60 seconds delay on each upload
+
 
 ## [1.2.1] - 2022-11-21
 

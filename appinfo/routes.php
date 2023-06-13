@@ -15,7 +15,7 @@
 
 $application = new \OCA\Files_Antivirus\AppInfo\Application();
 $application->registerRoutes(
-/** @phan-suppress-next-line PhanUndeclaredThis */
+	/** @phan-suppress-next-line PhanUndeclaredThis */
 	$this,
 	[
 		'routes' => [

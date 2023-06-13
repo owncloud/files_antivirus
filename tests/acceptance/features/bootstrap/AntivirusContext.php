@@ -31,7 +31,6 @@ require_once 'bootstrap.php';
  * Defines test steps specific to the antivirus app
  */
 class AntivirusContext implements Context {
-
 	/**
 	 * @var FeatureContext
 	 */

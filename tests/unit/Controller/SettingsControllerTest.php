@@ -18,7 +18,6 @@ use OCP\IL10N;
 use PHPUnit\Framework\MockObject\MockObject;
 
 class SettingsControllerTest extends TestBase {
-
 	/** @var IRequest | MockObject
 	 */
 	protected $request;
