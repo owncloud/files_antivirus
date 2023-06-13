@@ -1,6 +1,7 @@
 <?php
 
 namespace OCA\Files_Antivirus\Scanner;
+use JsonException;
 use RuntimeException;
 
 class ICAPClient {
@@ -67,22 +68,13 @@ class ICAPClient {
 			switch ($type) {
 				case 'req-hdr':
 				case 'res-hdr':
-					# Temp fix, until https://github.com/owncloud/files_antivirus/pull/500
-					if (\array_key_exists('Preview', $headers)) {
-						$encapsulated[$type] = \strlen($data);          # McAfee Webgateway
-					} else {
-						$encapsulated[$type] = \strlen($bodyData);      # ClamAV and Fortinet
-					}
+					$encapsulated[$type] = \strlen($bodyData);
 					$bodyData .= $data;
 					break;
 
 				case 'req-body':
 				case 'res-body':
-					if (\array_key_exists('Preview', $headers)) {
-						$encapsulated[$type] = \strlen($data);          # McAfee Webgateway
-					} else {
-						$encapsulated[$type] = \strlen($bodyData);      # ClamAV and Fortinet
-					}
+					$encapsulated[$type] = \strlen($bodyData);
 					$bodyData .= \dechex(\strlen($data)) . "\r\n";
 					$bodyData .= $data;
 					$bodyData .= "\r\n";
@@ -142,6 +134,7 @@ class ICAPClient {
 
 	/**
 	 * @throws InitException
+	 * @throws JsonException
 	 */
 	private function send(string $request): array {
 		$this->connect();

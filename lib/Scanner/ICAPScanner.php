@@ -32,10 +32,6 @@ class ICAPScanner implements IScanner {
 	 */
 	private $reqService;
 	/**
-	 * @var string
-	 */
-	private $virusHeader;
-	/**
 	 * @var int
 	 */
 	private $sizeLimit;
@@ -47,15 +43,17 @@ class ICAPScanner implements IScanner {
 	 * @var ILogger
 	 */
 	private $logger;
+	/** @var ICAPResponseAnalyser */
+	private $analyser;
 
 	public function __construct(AppConfig $config, ILogger $logger, IL10N $l10n) {
 		$this->host = $config->getAvHost();
 		$this->port = $config->getAvPort();
 		$this->reqService = $config->getAvRequestService();
-		$this->virusHeader = $config->getAvResponseHeader();
 		$this->sizeLimit = $config->getAvMaxFileSize();
 		$this->l10n = $l10n;
 		$this->logger = $logger;
+		$this->analyser = new ICAPResponseAnalyser($config->getAvResponseHeader());
 	}
 
 	public function initScanner(string $fileName): void {
@@ -102,21 +100,11 @@ class ICAPScanner implements IScanner {
 					$icapHeaders
 				);
 			}
-			$code = $response['protocol']['code'] ?? 500;
-			if ($code === 100 || $code === 200 || $code === 204) {
-				// c-icap/clamav reports this header
-				$virus = $response['headers'][$this->virusHeader] ?? false;
-				if ($virus) {
-					return Status::create(Status::SCANRESULT_INFECTED, $virus);
-				}
 
-				// kaspersky(pre-2020 product editions) and McAfee handling
-				$respHeader = $response['body']['res-hdr']['HTTP_STATUS'] ?? '';
-				if (\strpos($respHeader, '403 Forbidden') !== false || \strpos($respHeader, '403 VirusFound') !== false) {
-					$message = $this->l10n->t('A malware or virus was detected, your upload was denied. In doubt or for details please contact your system administrator.');
-					return Status::create(Status::SCANRESULT_INFECTED, $message);
-				}
-				return Status::create(Status::SCANRESULT_CLEAN);
+			$status = $this->analyser->analyseResponse($response);
+			if ($status) {
+				$message = $this->l10n->t('A malware or virus was detected, your upload was denied. In doubt or for details please contact your system administrator.');
+				return Status::create($status[0], $status[1] ?? $message);
 			}
 			$respJson = json_encode($response, JSON_THROW_ON_ERROR);
 			$this->logger->error("ICAP response unusable: $respJson");
