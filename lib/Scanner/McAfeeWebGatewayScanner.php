@@ -22,7 +22,6 @@ class McAfeeWebGatewayScanner extends ICAPScanner {
 	protected function getICAPHeaders(): array {
 		$localIP = getHostByName(getHostName());
 		return [
-			'Preview' => $this->getContentLength(),
 			'X-Client-IP' => $localIP,
 			'Allow' => 204
 		];
