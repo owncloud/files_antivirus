@@ -171,6 +171,7 @@ function av_mode_show_options(str){
 	$('#av_host, #av_port, #av_request_service, #av_response_header').attr('disabled', false);
 	$('p.av_host, p.av_port, p.av_mode_icap').show('slow');
 }
+
 $(document).ready(function() {
 	$('#av_submit').on('click', function(event){
 		var isValid = true;
@@ -246,4 +247,12 @@ $(document).ready(function() {
 		av_mode_show_options(str);
 	});
 	$("#av_mode").change();
+	$("#av_scan_background").change(function () {
+		if ($("#av_scan_background").val() === 'true') {
+			$('p.infected_action').show('slow');
+		} else {
+			$('p.infected_action').hide('slow');
+		}
+	});
+	$("#av_scan_background").change();
 });
