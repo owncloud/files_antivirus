@@ -27,7 +27,7 @@ script('files_antivirus', 'settings');
 			</p>
 			<p class="av_host">
 				<label for="av_host"><?php p($l->t('Host'));?></label>
-				<input pattern="^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$|^((?!-)[A-Za-z0-9-]{1,63}(?<!-)\.)+[A-Za-z]{2,6}$|^((?!-)[A-Za-z0-9-]{1,63}(?<!-))$" type="text" id="av_host" name="avHost" value="<?php p($_['avHost']); ?>" title="<?php p($l->t('Hostname or IP address of Antivirus Host'));?>">
+				<input pattern="^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$|^((?!-)[A-Za-z0-9-]{1,63}(?<!-)\.)+[A-Za-z]{2,63}$|^((?!-)[A-Za-z0-9-]{1,63}(?<!-))$" type="text" id="av_host" name="avHost" value="<?php p($_['avHost']); ?>" title="<?php p($l->t('Hostname or IP address of Antivirus Host'));?>">
 			</p>
 			<p class="av_port">
 				<label for="av_port"><?php p($l->t('Port'));?></label>
