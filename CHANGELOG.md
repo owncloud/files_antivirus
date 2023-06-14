@@ -11,6 +11,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 - [#502](https://github.com/owncloud/files_antivirus/issues/502) - McAfee Webgateway causes a 60 seconds delay on each upload
 - [#534](https://github.com/owncloud/files_antivirus/issues/534) - Fix enterprise check for ICAP
+- [#539](https://github.com/owncloud/files_antivirus/issues/539) - Hide config details about background scan if disabled
 - [#540](https://github.com/owncloud/files_antivirus/issues/540) - Fix hostname input validation
 
 
