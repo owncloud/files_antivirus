@@ -4,12 +4,17 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
+## [Unreleased] - XXXXXX
 
-## [Unreleased] - 2022-xx-xx
+
+## [1.2.2] - 2023-06-13
 
 ### Fixed
 
 - [#502](https://github.com/owncloud/files_antivirus/issues/502) - McAfee Webgateway causes a 60 seconds delay on each upload
+- [#534](https://github.com/owncloud/files_antivirus/issues/534) - Fix enterprise check for ICAP
+- [#539](https://github.com/owncloud/files_antivirus/issues/539) - Hide config details about background scan if disabled
+- [#540](https://github.com/owncloud/files_antivirus/issues/540) - Fix hostname input validation
 
 
 ## [1.2.1] - 2022-11-21
@@ -368,7 +373,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 - Initial implementation
 
 
-[Unreleased]: https://github.com/owncloud/files_antivirus/compare/v1.2.1...master
+[Unreleased]: https://github.com/owncloud/files_antivirus/compare/v1.2.2...master
+[1.2.2]: https://github.com/owncloud/files_antivirus/compare/v1.2.1...v1.2.2
 [1.2.1]: https://github.com/owncloud/files_antivirus/compare/v1.2.0...v1.2.1
 [1.2.0]: https://github.com/owncloud/files_antivirus/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/owncloud/files_antivirus/compare/v1.0.0...v1.1.0
