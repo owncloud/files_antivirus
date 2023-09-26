@@ -33,8 +33,8 @@ class Version20210212160142 implements ISchemaMigration {
 		$prefix = $options['tablePrefix'];
 
 		if (
-			$schema->hasTable("${prefix}files_antivirus_status")
-			&& $schema->hasTable("${prefix}files_avir_status") === false
+			$schema->hasTable("{$prefix}files_antivirus_status")
+			&& $schema->hasTable("{$prefix}files_avir_status") === false
 		) {
 			$dbConn = \OC::$server->getDatabaseConnection();
 			$alterQuery = $dbConn->prepare(
