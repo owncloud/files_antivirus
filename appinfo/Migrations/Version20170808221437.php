@@ -32,7 +32,7 @@ class Version20170808221437 implements ISchemaMigration {
 	public function changeSchema(Schema $schema, array $options) {
 		$prefix = $options['tablePrefix'];
 
-		if ($schema->hasTable("${prefix}files_antivirus")) {
+		if ($schema->hasTable("{$prefix}files_antivirus")) {
 			$table = $schema->getTable("{$prefix}files_antivirus");
 
 			$fileIdColumn = $table->getColumn('fileid');
