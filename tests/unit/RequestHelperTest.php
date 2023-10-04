@@ -53,7 +53,7 @@ class RequestHelperTest extends TestBase {
 	}
 
 	public function testPublicUploadSize(): void {
-		$size = 100;
+		$size = '100';
 		$this->request
 			->method('getMethod')
 			->willReturn('PUT');
