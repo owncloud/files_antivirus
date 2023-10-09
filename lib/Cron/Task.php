@@ -69,11 +69,6 @@ class Task extends TimedJob {
 	protected $currentFilesystemUser;
 
 	/**
-	 * @var \OCP\Files\Folder[]
-	 */
-	protected $userFolders;
-
-	/**
 	 * A constructor
 	 *
 	 * @param IUserSession $userSession
@@ -110,7 +105,7 @@ class Task extends TimedJob {
 	 *
 	 * @return void
 	 */
-	protected function run($argument) {
+	protected function run($argument = '') {
 		if (!\OCP\App::isEnabled('files_antivirus')
 			|| $this->appConfig->getAvScanBackground() !== 'true'
 		) {
