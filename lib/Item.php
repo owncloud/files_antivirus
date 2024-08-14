@@ -35,14 +35,14 @@ class Item implements IScannable {
 	/**
 	 * Scanned fileid (optional)
 	 *
-	 * @var int
+	 * @var int|null
 	 */
 	protected $id;
 
 	/**
 	 * Scanned file etag (optional)
 	 *
-	 * @var string
+	 * @var string|null
 	 */
 	protected $etag;
 	
@@ -71,7 +71,7 @@ class Item implements IScannable {
 	 * @throws NotFoundException
 	 * @throws QueryException
 	 */
-	public function __construct(IL10N $l10n, View $view, string $path, int $id = null, string $etag = null) {
+	public function __construct(IL10N $l10n, View $view, string $path, ?int $id = null, ?string $etag = null) {
 		$this->l10n = $l10n;
 		$this->view = $view;
 		$this->path = $path;
@@ -255,7 +255,7 @@ class Item implements IScannable {
 	/**
 	 * @throws NotFoundException
 	 */
-	public function logError(string $message, int $id = null, string $path = null): void {
+	public function logError(string $message, ?int $id = null, ?string $path = null): void {
 		$ownerInfo = ' ';
 		if ($path && $this->view->file_exists($path)) {
 			$ownerInfo = ' Account: ' . $this->view->getOwner($path);
