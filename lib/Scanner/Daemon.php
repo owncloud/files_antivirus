@@ -70,17 +70,6 @@ class Daemon extends External {
 	 */
 	public function initScanner(string $fileName): void {
 		parent::initScanner($fileName);
-		$this->writeHandle = @\fsockopen($this->avHost, $this->avPort);
-		if (!$this->getWriteHandle()) {
-			throw new InitException(
-				\sprintf(
-					'Could not connect to host "%s" on port %d',
-					$this->avHost,
-					$this->avPort
-				)
-			);
-		}
-
 		// Check we're connecting to a ClamAV daemon
 		$pingResult = $this->sendCommand("PING", 6); // PONG plus newline chars is expected
 		if (\rtrim($pingResult, "\r\n") !== "PONG") {
@@ -93,6 +82,17 @@ class Daemon extends External {
 		// Just check that it starts with "ClamAV"
 		if (\strpos($versionResult, 'ClamAV') !== 0) {
 			throw new InitException("Unexpected response to version: $versionResult");
+		}
+
+		$this->writeHandle = @\fsockopen($this->avHost, $this->avPort);
+		if (!$this->getWriteHandle()) {
+			throw new InitException(
+				\sprintf(
+					'Could not connect to host "%s" on port %d',
+					$this->avHost,
+					$this->avPort
+				)
+			);
 		}
 
 		// request scan from the daemon

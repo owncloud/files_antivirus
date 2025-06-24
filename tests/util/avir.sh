@@ -11,7 +11,7 @@ case $content in
 		echo "ClamAV FakeTest"
 		exit 0
 		;;
-	*kitten)
+	*kitten*)
 		echo "Oh my god! : Kitten FOUND"
 		exit 1
 		;;

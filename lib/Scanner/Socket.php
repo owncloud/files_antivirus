@@ -48,23 +48,6 @@ class Socket extends External {
 	 */
 	public function initScanner(string $fileName): void {
 		parent::initScanner($fileName);
-		$this->writeHandle = @\stream_socket_client(
-			'unix://' . $this->socket,
-			$errorCode,
-			$errorMessage,
-			5
-		);
-		if (!$this->getWriteHandle()) {
-			throw new InitException(
-				\sprintf(
-					'Could not connect to socket "%s": %s (code %d)',
-					$this->socket,
-					$errorMessage,
-					$errorCode
-				)
-			);
-		}
-
 		// Check we're connecting to a ClamAV daemon
 		$pingResult = $this->sendCommand("PING", 6); // PONG plus newline chars is expected
 		if (\rtrim($pingResult, "\r\n") !== "PONG") {
@@ -77,6 +60,18 @@ class Socket extends External {
 		// Just check that it starts with "ClamAV"
 		if (\strpos($versionResult, 'ClamAV') !== 0) {
 			throw new InitException("Unexpected response to version: $versionResult");
+		}
+
+		$this->writeHandle = @\stream_socket_client("unix://{$this->socket}", $errorCode, $errorMessage, 5);
+		if (!$this->getWriteHandle()) {
+			throw new InitException(
+				\sprintf(
+					'Could not connect to socket "%s": %s (code %d)',
+					$this->socket,
+					$errorMessage,
+					$errorCode
+				)
+			);
 		}
 
 		if (@\fwrite($this->getWriteHandle(), "nINSTREAM\n") === false) {
