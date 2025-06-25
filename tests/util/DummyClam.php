@@ -48,42 +48,53 @@ class DummyClam {
 	protected function handleConnection($connection) {
 		$buffer = '';
 		$isAborted = false;
-		$command  =  \fread($connection, 10);
-		//starts from INSTREAM\n from the first packet;
 
-		if ($command !== "nINSTREAM\n") {
-			return;
-		}
-		//echo $command;
-		do {
-			$binaryChunkSize = @\fread($connection, 4);
-			$chunkSizeArray = \unpack('Nlength', $binaryChunkSize);
-			$chunkSize = $chunkSizeArray['length'];
-			if ($chunkSize === 0) {
-				break;
-			}
+		$command = \fgets($connection, 11);
 
-			$dataChunk = '';
-			do {
-				$dataChunk .= @\fread($connection, $chunkSize - \strlen($dataChunk));
-			} while (\is_resource($connection) && \strlen($dataChunk) !== $chunkSize);
+		switch (\rtrim($command, "\r\n")) {
+			case "PING":
+				\fwrite($connection, "PONG\n");
+				\fflush($connection);
+				return;
+			case "VERSION":
+				\fwrite($connection, "ClamAV FakeTest\n");
+				\fflush($connection);
+				return;
+			case "nINSTREAM":
+				do {
+					$binaryChunkSize = @\fread($connection, 4);
+					$chunkSizeArray = \unpack('Nlength', $binaryChunkSize);
+					$chunkSize = $chunkSizeArray['length'];
+					if ($chunkSize === 0) {
+						break;
+					}
 
-			$nextBufferSize = \strlen($buffer) + \strlen($dataChunk);
-			if ($nextBufferSize > self::TEST_STREAM_SIZE) {
-				$isAborted = true;
-				break;
-			}
+					$dataChunk = '';
+					do {
+						$dataChunk .= @\fread($connection, $chunkSize - \strlen($dataChunk));
+					} while (\is_resource($connection) && (\strlen($dataChunk) !== $chunkSize && !\feof($connection)));
 
-			$buffer = $buffer . $dataChunk;
-		} while (true);
+					$nextBufferSize = \strlen($buffer) + \strlen($dataChunk);
+					if ($nextBufferSize > self::TEST_STREAM_SIZE) {
+						$isAborted = true;
+						break;
+					}
 
-		if (!$isAborted) {
-			$response = \strpos($buffer, self::TEST_SIGNATURE) !== false
-				? "Ohoho: Criminal.Joboholic FOUND"
-				: 'Scanned OK'
-			;
-			//echo str_replace('0', '', $buffer) . $response;
-			\fwrite($connection, $response);
+					$buffer = $buffer . $dataChunk;
+				} while (true);
+
+				if (!$isAborted) {
+					$response = \strpos($buffer, self::TEST_SIGNATURE) !== false
+						? "Ohoho: Criminal.Joboholic FOUND"
+						: 'Scanned OK'
+					;
+					//echo str_replace('0', '', $buffer) . $response;
+					\fwrite($connection, $response);
+					\fflush($connection);
+				}
+				return;
+			default:
+				return;
 		}
 	}
 }

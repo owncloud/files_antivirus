@@ -48,12 +48,21 @@ class Socket extends External {
 	 */
 	public function initScanner(string $fileName): void {
 		parent::initScanner($fileName);
-		$this->writeHandle = @\stream_socket_client(
-			'unix://' . $this->socket,
-			$errorCode,
-			$errorMessage,
-			5
-		);
+		// Check we're connecting to a ClamAV daemon
+		$pingResult = $this->sendCommand("PING", 6); // PONG plus newline chars is expected
+		if (\rtrim($pingResult, "\r\n") !== "PONG") {
+			throw new InitException("Unexpected response to ping: $pingResult");
+		}
+
+		$versionResult = $this->sendCommand("VERSION", 500);
+		// The response can vary, and it's difficult to predict the size of the response,
+		// but 500 bytes should be more than enough to fit the whole response.
+		// Just check that it starts with "ClamAV"
+		if (\strpos($versionResult, 'ClamAV') !== 0) {
+			throw new InitException("Unexpected response to version: $versionResult");
+		}
+
+		$this->writeHandle = @\stream_socket_client("unix://{$this->socket}", $errorCode, $errorMessage, 5);
 		if (!$this->getWriteHandle()) {
 			throw new InitException(
 				\sprintf(
@@ -73,5 +82,26 @@ class Socket extends External {
 				)
 			);
 		}
+	}
+
+	/**
+	 * NOTE: ClamAV closes the connection after each command, so we need to
+	 * open a new connection each time.
+	 */
+	private function sendCommand(string $clamavCmd, int $maxResponseSize): string {
+		$handle = @\stream_socket_client("unix://{$this->socket}", $errorCode, $errorMsg, 5);
+		if ($handle === false) {
+			throw new InitException("Failed to connect to socket: {$errorMsg} ({$errorCode})");
+		}
+
+		$bytesWritten = @\fwrite($handle, "{$clamavCmd}\n");
+		if ($bytesWritten !== \strlen($clamavCmd) + 1) {
+			throw new InitException("Failed to write {$clamavCmd} command in the handle. Bytes written: {$bytesWritten}");
+		}
+
+		$result = @\fgets($handle, $maxResponseSize);
+		@fclose($handle);
+
+		return $result;
 	}
 }
