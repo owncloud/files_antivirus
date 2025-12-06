@@ -42,6 +42,7 @@ OC.L10N.register(
     "When infected files were found during a background scan" : "在後台掃描期間發現受感染文件時",
     "Only log" : "仅记录",
     "Delete file" : "刪除文件",
+    "Save" : "保存",
     "Advanced" : "進階",
     "Rules" : "規則",
     "Clear All" : "清除全部",
