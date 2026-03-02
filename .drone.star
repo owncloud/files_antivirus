@@ -63,7 +63,6 @@ config = {
         "multipleVersions": {
             "phpVersions": [
                 DEFAULT_PHP_VERSION,
-                "7.3",
             ],
         },
     },
