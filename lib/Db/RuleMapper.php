@@ -38,12 +38,10 @@ class RuleMapper extends Mapper {
 	
 	/**
 	 * Empty the table
-	 *
-	 * @return \PDOStatement
 	 */
 	public function deleteAll() {
 		$sql = 'DELETE FROM `*PREFIX*files_avir_status`';
-		return $this->execute($sql);
+		return $this->executeStatement($sql);
 	}
 	
 	/**

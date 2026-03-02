@@ -13,7 +13,7 @@
 
 namespace OCA\Files_Antivirus\Db;
 
-use Doctrine\DBAL\Platforms\MySqlPlatform;
+use Doctrine\DBAL\Platforms\MySQLPlatform;
 use OCP\IDBConnection;
 use OCP\Files\IMimeTypeLoader;
 
@@ -38,14 +38,14 @@ class FileCollection {
 	/**
 	 * @param int $fileSizeLimit
 	 *
-	 * @return \Doctrine\DBAL\Driver\Statement|int
+	 * @return \Doctrine\DBAL\Result
 	 */
 	public function getCollection($fileSizeLimit) {
 		$dirMimeTypeId = $this->mimeTypeLoader->getId(
 			'httpd/unix-directory'
 		);
 		$qb = $this->dbConnection->getQueryBuilder();
-		if ($this->dbConnection->getDatabasePlatform() instanceof MySqlPlatform) {
+		if ($this->dbConnection->getDatabasePlatform() instanceof MySQLPlatform) {
 			$concatFunction = $qb->createFunction(
 				"CONCAT('/', mnt.user_id, '/')"
 			);
