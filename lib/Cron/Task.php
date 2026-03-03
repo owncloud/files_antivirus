@@ -124,8 +124,7 @@ class Task extends TimedJob {
 		}
 
 		$cnt = 0;
-		/** @phan-suppress-next-line PhanDeprecatedFunction */
-		while (($row = $result->fetch()) && $cnt < self::BATCH_SIZE) {
+		while (($row = $result->fetchAssociative()) && $cnt < self::BATCH_SIZE) {
 			try {
 				$fileId = $row['fileid'];
 				$userId = $row['user_id'];
@@ -150,10 +149,10 @@ class Task extends TimedJob {
 	}
 
 	/**
-	 * @return \Doctrine\DBAL\Driver\Statement|int
+	 * @return \Doctrine\DBAL\Result
 	 */
 	protected function getFilesForScan() {
-		$fileSizeLimit = \intval($this->appConfig->getAvMaxFileSize());
+		$fileSizeLimit = $this->appConfig->getAvMaxFileSize();
 		return $this->fileCollection->getCollection($fileSizeLimit);
 	}
 
@@ -182,7 +181,7 @@ class Task extends TimedJob {
 			$status->dispatch($item, true);
 			return true;
 		}
-		return false;
+		return false; // @phpstan-ignore-line
 	}
 
 	/**

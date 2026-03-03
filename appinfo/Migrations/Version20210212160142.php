@@ -26,7 +26,7 @@ class Version20210212160142 implements ISchemaMigration {
 	 * @param array $options
 	 *
 	 * @return void
-	 * @throws \Doctrine\DBAL\DBALException
+	 * @throws \Doctrine\DBAL\Exception
 	 * @throws \Doctrine\DBAL\Schema\SchemaException
 	 */
 	public function changeSchema(Schema $schema, array $options) {
@@ -40,7 +40,7 @@ class Version20210212160142 implements ISchemaMigration {
 			$alterQuery = $dbConn->prepare(
 				'ALTER TABLE `*PREFIX*files_antivirus_status` RENAME TO `*PREFIX*files_avir_status`'
 			);
-			$alterQuery->execute();
+			$alterQuery->executeStatement();
 		}
 	}
 }

@@ -23,7 +23,7 @@ class Version20180116141548 implements ISqlMigration {
 	 * @param IDBConnection $connection
 	 * @return void
 	 */
-	public function sql(IDBConnection $connection) {
+	public function sql(IDBConnection $connection) { // @phpstan-ignore-line
 		$sql = $connection->getDatabasePlatform()->getTruncateTableSQL(
 			"`*PREFIX*files_antivirus`"
 		);

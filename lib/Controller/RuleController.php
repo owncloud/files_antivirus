@@ -15,15 +15,11 @@ namespace OCA\Files_Antivirus\Controller;
 
 use \OCP\AppFramework\Controller;
 use \OCP\IRequest;
-use \OCP\IL10N;
 use OCP\AppFramework\Http\JSONResponse;
-use OCP\ILogger;
 use \OCA\Files_Antivirus\Db\Rule;
 use \OCA\Files_Antivirus\Db\RuleMapper;
 
 class RuleController extends Controller {
-	private $logger;
-	private $l10n;
 	private $ruleMapper;
 
 	/**
@@ -31,20 +27,14 @@ class RuleController extends Controller {
 	 *
 	 * @param string $appName
 	 * @param IRequest $request
-	 * @param ILogger $logger
-	 * @param IL10N $l10n
 	 * @param RuleMapper $ruleMapper
 	 */
 	public function __construct(
 		$appName,
 		IRequest $request,
-		ILogger $logger,
-		IL10N $l10n,
 		RuleMapper $ruleMapper
 	) {
 		parent::__construct($appName, $request);
-		$this->logger = $logger;
-		$this->l10n = $l10n;
 		$this->ruleMapper = $ruleMapper;
 	}
 	
@@ -97,14 +87,14 @@ class RuleController extends Controller {
 			$rule = new Rule();
 		}
 		
-		$rule->setStatusType($statusType);
-		$rule->setDescription($description);
-		$rule->setStatus($status);
+		$rule->setStatusType($statusType); // @phpstan-ignore-line
+		$rule->setDescription($description); // @phpstan-ignore-line
+		$rule->setStatus($status); // @phpstan-ignore-line
 		
 		if ($statusType === Rule::RULE_TYPE_CODE) {
-			$rule->setResult($match);
+			$rule->setResult($match); // @phpstan-ignore-line
 		} else {
-			$rule->setMatch($match);
+			$rule->setMatch($match); // @phpstan-ignore-line
 		}
 			
 		if ($id) {
@@ -127,9 +117,10 @@ class RuleController extends Controller {
 		try {
 			$rule = $this->ruleMapper->find($id);
 			$this->ruleMapper->delete($rule);
+			return new JSONResponse($rule);
 		} catch (\Exception $e) {
 			//TODO: Handle
 		}
-		return new JSONResponse($rule);
+		return new JSONResponse([]);
 	}
 }

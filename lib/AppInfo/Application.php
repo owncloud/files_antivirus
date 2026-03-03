@@ -163,7 +163,7 @@ class Application extends App {
 							'requestHelper' => $requestHelper
 						]
 					);
-				} else {
+				} else { // @phpstan-ignore-line
 					return $storage;
 				}
 			},

@@ -16,7 +16,7 @@ namespace OCA\Files_Antivirus;
 use OCP\AppFramework\QueryException;
 use OCP\Files\NotFoundException;
 
-class Status {
+final class Status {
 	/*
 	 *  The file was not checked (e.g. because the AV daemon wasn't running).
 	 */

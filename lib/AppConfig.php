@@ -283,7 +283,7 @@ class AppConfig {
 	public function __call($methodName, $args) {
 		$attr = \lcfirst(\substr($methodName, 3));
 		$key = $this->propertyToKey($attr);
-		if (\strpos($methodName, 'set') === 0) {
+		if (\strpos($methodName, 'set') === 0) { // @phpstan-ignore-line
 			$this->setter($key, $args);
 		} elseif (\strpos($methodName, 'get') === 0) {
 			return $this->getter($key);

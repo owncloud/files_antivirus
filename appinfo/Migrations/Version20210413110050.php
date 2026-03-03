@@ -20,29 +20,23 @@ use OCP\Migration\ISqlMigration;
  * Cleans table before adding etag field
  */
 class Version20210413110050 implements ISqlMigration {
-	/**
-	 * @param IDBConnection $connection
-	 * @return void
-	 */
 	public function sql(IDBConnection $conn) {
 		$conf = \OC::$server->getConfig();
 		$query = 'SELECT `configkey`, `configvalue` FROM `*PREFIX*appconfig` WHERE `appid` = \'files_antivirus\' AND (`configkey` = \'av_path\' OR `configkey` = \'av_cmd_options\')';
 		$result = $conn->executeQuery($query);
-		/** @phan-suppress-next-line PhanDeprecatedFunction */
-		while ($row = $result->fetch()) {
+		while ($row = $result->fetchAssociative()) {
 			try {
 				$conf->setSystemValue('files_antivirus.' . $row['configkey'], $row['configvalue']);
 			} catch (\Exception $e) {
 				echo 'Migration failed: ', $e->getMessage(), '\n';
-				return;
+				return [];
 			}
 		}
-		/** @phan-suppress-next-line PhanDeprecatedFunction */
-		$result->closeCursor();
+		$result->free();
 
 		$query = 'DELETE FROM `*PREFIX*appconfig` WHERE `appid` = \'files_antivirus\' AND (`configkey` = \'av_path\' OR `configkey` = \'av_cmd_options\')';
-		$result = $conn->executeQuery($query);
-		/** @phan-suppress-next-line PhanDeprecatedFunction */
-		$result->closeCursor();
+		$conn->executeStatement($query);
+
+		return [];
 	}
 }

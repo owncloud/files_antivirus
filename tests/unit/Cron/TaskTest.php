@@ -8,6 +8,7 @@
 
 namespace OCA\Files_Antivirus\Tests\unit\Cron;
 
+use Doctrine\DBAL\Result;
 use OCA\Files_Antivirus\Cron\Task;
 use OCA\Files_Antivirus\Scanner\InitException;
 use OCA\Files_Antivirus\ScannerFactory;
@@ -95,6 +96,6 @@ class TaskTest extends TestBase {
 		$method = $class->getMethod('getFilesForScan');
 		$method->setAccessible(true);
 		$result = $method->invokeArgs($cronMock, []);
-		self::assertInstanceOf(Statement::class, $result);
+		self::assertInstanceOf(Result::class, $result);
 	}
 }

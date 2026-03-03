@@ -38,12 +38,10 @@ class RuleMapper extends Mapper {
 	
 	/**
 	 * Empty the table
-	 *
-	 * @return \PDOStatement
 	 */
 	public function deleteAll() {
 		$sql = 'DELETE FROM `*PREFIX*files_avir_status`';
-		return $this->execute($sql);
+		return $this->executeStatement($sql);
 	}
 	
 	/**
@@ -55,7 +53,7 @@ class RuleMapper extends Mapper {
 	 */
 	public function find($id) {
 		$sql = 'SELECT * FROM `*PREFIX*files_avir_status` WHERE `id` = ?';
-		return $this->findEntity($sql, [$id]);
+		return $this->findEntity($sql, [$id]); // @phpstan-ignore-line
 	}
 	
 	/**

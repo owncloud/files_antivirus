@@ -107,7 +107,7 @@ class AvirWrapper extends Wrapper {
 	 *
 	 * @return resource | bool
 	 */
-	public function fopen($path, $mode) {
+	public function fopen($path, $mode) { // @phpstan-ignore-line
 		$stream = $this->storage->fopen($path, $mode);
 
 		if (\is_resource($stream)

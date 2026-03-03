@@ -13,7 +13,7 @@
 
 namespace OCA\Files_Antivirus\Db;
 
-use Doctrine\DBAL\Platforms\MySqlPlatform;
+use Doctrine\DBAL\Platforms\MySQLPlatform;
 use OCP\IDBConnection;
 use OCP\Files\IMimeTypeLoader;
 
@@ -38,14 +38,14 @@ class FileCollection {
 	/**
 	 * @param int $fileSizeLimit
 	 *
-	 * @return \Doctrine\DBAL\Driver\Statement|int
+	 * @return \Doctrine\DBAL\Result
 	 */
 	public function getCollection($fileSizeLimit) {
 		$dirMimeTypeId = $this->mimeTypeLoader->getId(
 			'httpd/unix-directory'
 		);
 		$qb = $this->dbConnection->getQueryBuilder();
-		if ($this->dbConnection->getDatabasePlatform() instanceof MySqlPlatform) {
+		if ($this->dbConnection->getDatabasePlatform() instanceof MySQLPlatform) {
 			$concatFunction = $qb->createFunction(
 				"CONCAT('/', mnt.user_id, '/')"
 			);
@@ -58,6 +58,7 @@ class FileCollection {
 		if ($fileSizeLimit === -1) {
 			$sizeLimitExpr = $qb->expr()->neq('fc.size', $qb->expr()->literal('0'));
 		} else {
+			// @phpstan-ignore-next-line
 			$sizeLimitExpr = $qb->expr()->andX(
 				$qb->expr()->neq('fc.size', $qb->expr()->literal('0')),
 				$qb->expr()->lt('fc.size', $qb->expr()->literal((string) $fileSizeLimit))
@@ -77,7 +78,7 @@ class FileCollection {
 				'mounts',
 				'mnt',
 				/** @phan-suppress-next-line PhanTypeMismatchArgument */
-				$qb->expr()->andX(
+				$qb->expr()->andX( // @phpstan-ignore-line
 					$qb->expr()->eq('fc.storage', 'mnt.storage_id'),
 					$qb->expr()->eq('mnt.mount_point', $concatFunction)
 				)
@@ -86,7 +87,7 @@ class FileCollection {
 				$qb->expr()->neq('fc.mimetype', $qb->expr()->literal($dirMimeTypeId))
 			)
 			->andWhere(
-				$qb->expr()->orX(
+				$qb->expr()->orX( // @phpstan-ignore-line
 					$qb->expr()->isNull('fa.etag'),
 					$qb->expr()->neq('fc.etag', 'fa.etag')
 				)

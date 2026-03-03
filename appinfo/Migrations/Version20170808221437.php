@@ -14,7 +14,9 @@
 namespace OCA\Files_Antivirus\Migrations;
 
 use Doctrine\DBAL\Schema\Schema;
+use Doctrine\DBAL\Types\BigIntType;
 use Doctrine\DBAL\Types\Type;
+use Doctrine\DBAL\Types\Types;
 use OCP\Migration\ISchemaMigration;
 
 /**
@@ -26,7 +28,7 @@ class Version20170808221437 implements ISchemaMigration {
 	 * @param array $options
 	 *
 	 * @return void
-	 * @throws \Doctrine\DBAL\DBALException
+	 * @throws \Doctrine\DBAL\Exception
 	 * @throws \Doctrine\DBAL\Schema\SchemaException
 	 */
 	public function changeSchema(Schema $schema, array $options) {
@@ -36,12 +38,10 @@ class Version20170808221437 implements ISchemaMigration {
 			$table = $schema->getTable("{$prefix}files_antivirus");
 
 			$fileIdColumn = $table->getColumn('fileid');
-			if ($fileIdColumn
-				/** @phan-suppress-next-line PhanDeprecatedClassConstant */
-				&& $fileIdColumn->getType()->getName() !== Type::BIGINT
+			if ($fileIdColumn // @phpstan-ignore-line
+				&& $fileIdColumn->getType() instanceof BigIntType
 			) {
-				/** @phan-suppress-next-line PhanDeprecatedClassConstant */
-				$fileIdColumn->setType(Type::getType(Type::BIGINT));
+				$fileIdColumn->setType(Type::getType(Types::BIGINT));
 				$fileIdColumn->setOptions(['length' => 20]);
 			}
 		}

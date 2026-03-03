@@ -57,7 +57,7 @@ class ScannerFactory {
 		} catch (InitException $e) {
 			// rethrow misconfiguration exception
 			throw $e;
-		} catch (\Exception $e) {
+		} catch (\Exception $e) { /* @phpstan-ignore-line  */
 			$message = 	\implode(' ', [ __CLASS__, __METHOD__, $e->getMessage()]);
 			$this->logger->warning($message, ['app' => 'files_antivirus']);
 		}

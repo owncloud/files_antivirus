@@ -13,7 +13,7 @@
 
 namespace OCA\Files_Antivirus\Migrations;
 use Doctrine\DBAL\Schema\Schema;
-use Doctrine\DBAL\Types\Type;
+use Doctrine\DBAL\Types\Types;
 use OCP\Migration\ISchemaMigration;
 
 /**
@@ -32,7 +32,7 @@ class Version20180116142011 implements ISchemaMigration {
 		$table->addColumn(
 			'etag',
 			/** @phan-suppress-next-line PhanDeprecatedClassConstant */
-			Type::STRING,
+			Types::STRING,
 			[
 				'default' => null,
 				'length' => 40,

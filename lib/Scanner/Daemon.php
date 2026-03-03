@@ -85,7 +85,7 @@ class Daemon extends External {
 		}
 
 		$this->writeHandle = @\fsockopen($this->avHost, $this->avPort);
-		if (!$this->getWriteHandle()) {
+		if (!$this->getWriteHandle()) { // @phpstan-ignore-line
 			throw new InitException(
 				\sprintf(
 					'Could not connect to host "%s" on port %d',

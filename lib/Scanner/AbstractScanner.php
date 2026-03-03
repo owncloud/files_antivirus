@@ -93,7 +93,7 @@ abstract class AbstractScanner implements IScanner {
 	 * @param ILogger $logger
 	 * @param IL10N $l10N
 	 */
-	public function __construct(AppConfig $config, ILogger $logger, IL10N $l10N) {
+	public function __construct(AppConfig $config, ILogger $logger, IL10N $l10N) { // @phpstan-ignore-line
 		$this->appConfig = $config;
 		$this->logger = $logger;
 	}

@@ -51,7 +51,7 @@ class Item implements IScannable {
 	 *
 	 * @var resource
 	 */
-	protected $fileHandle;
+	protected $fileHandle; // @phpstan-ignore-line
 	
 	/**
 	 * Portion size
@@ -122,6 +122,7 @@ class Item implements IScannable {
 		}
 		
 		if ($this->fileHandle !== null && !$this->feof()) {
+			/* @phpstan-ignore-next-line */
 			return \fread($this->fileHandle, $this->chunkSize);
 		}
 		return false;
@@ -139,7 +140,8 @@ class Item implements IScannable {
 		$application = new AppInfo\Application();
 		$appConfig = $application->getContainer()->query('AppConfig');
 		$infectedAction = $appConfig->getAvInfectedAction();
-		
+
+		/* @phpstan-ignore-next-line */
 		$shouldDelete = !$isBackground || ($isBackground && $infectedAction === 'delete');
 		
 		$message = $shouldDelete ? Activity::MESSAGE_FILE_DELETED : '';
@@ -220,11 +222,11 @@ class Item implements IScannable {
 	 * Check if the end of file is reached
 	 */
 	private function feof(): bool {
-		$isDone = \feof($this->fileHandle);
+		$isDone = \feof($this->fileHandle); // @phpstan-ignore-line
 		if ($isDone) {
 			$this->logDebug('Scan is done');
-			\fclose($this->fileHandle);
-			$this->fileHandle = null;
+			\fclose($this->fileHandle); // @phpstan-ignore-line
+			$this->fileHandle = null; // @phpstan-ignore-line
 		}
 		return $isDone;
 	}
@@ -236,13 +238,13 @@ class Item implements IScannable {
 	 */
 	private function getFileHandle(): void {
 		$fileHandle = $this->view->fopen($this->path, "r");
-		if ($fileHandle === false) {
+		if ($fileHandle === false) { // @phpstan-ignore-line
 			$this->logError('Can not open for reading.', $this->id, $this->path);
 			throw new \RuntimeException();
 		}
 
 		$this->logDebug('Scan started');
-		$this->fileHandle = $fileHandle;
+		$this->fileHandle = $fileHandle; // @phpstan-ignore-line
 	}
 	
 	public function logDebug(string $message): void {

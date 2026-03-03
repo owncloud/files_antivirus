@@ -63,7 +63,7 @@ class Socket extends External {
 		}
 
 		$this->writeHandle = @\stream_socket_client("unix://{$this->socket}", $errorCode, $errorMessage, 5);
-		if (!$this->getWriteHandle()) {
+		if (!$this->getWriteHandle()) { // @phpstan-ignore-line
 			throw new InitException(
 				\sprintf(
 					'Could not connect to socket "%s": %s (code %d)',
