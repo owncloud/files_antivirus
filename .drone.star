@@ -4,7 +4,7 @@ MINIO_MC = "minio/mc:RELEASE.2020-12-18T10-53-53Z"
 OC_CI_ALPINE = "owncloudci/alpine:latest"
 OC_CI_BAZEL_BUILDIFIER = "owncloudci/bazel-buildifier"
 OC_CI_CEPH = "owncloudci/ceph:tag-build-master-jewel-ubuntu-16.04"
-OC_CI_CORE = "owncloudci/core"
+OC_CI_CORE = "owncloudci/core:php83"
 OC_CI_DRONE_SKIP_PIPELINE = "owncloudci/drone-skip-pipeline"
 OC_CI_NODEJS = "owncloudci/nodejs:%s"
 OC_CI_ORACLE_XE = "owncloudci/oracle-xe:latest"
@@ -25,7 +25,7 @@ SONARSOURCE_SONAR_SCANNER_CLI = "sonarsource/sonar-scanner-cli"
 DEEPDIVER_ICAP_CLAMAV_SERVICE = "deepdiver/icap-clamav-service"
 OC_CI_CLAMAVD = "owncloudci/clamavd"
 
-DEFAULT_PHP_VERSION = "7.4"
+DEFAULT_PHP_VERSION = "8.3"
 DEFAULT_NODEJS_VERSION = "14"
 
 # minio mc environment variables
@@ -160,7 +160,6 @@ config = {
             },
             "servers": [
                 "daily-master-qa",
-                "latest",
             ],
             "databases": [
                 "mariadb:10.2",
@@ -192,7 +191,6 @@ config = {
             },
             "servers": [
                 "daily-master-qa",
-                "latest",
             ],
             "databases": [
                 "mariadb:10.2",
@@ -1112,7 +1110,7 @@ def acceptance(ctx):
     errorFound = False
 
     default = {
-        "servers": ["daily-master-qa", "latest"],
+        "servers": ["daily-master-qa"],
         "browsers": ["chrome"],
         "phpVersions": [DEFAULT_PHP_VERSION],
         "databases": ["mariadb:10.2"],

@@ -75,11 +75,9 @@ class Rule extends Entity implements JsonSerializable {
 	protected $status;
 
 	/**
-	 * Pack data into json
-	 *
-	 * @return array
+	 * Pack data into JSON
 	 */
-	public function jsonSerialize() {
+	public function jsonSerialize(): mixed {
 		return [
 			'id' => $this->id,
 			'group_id' => $this->groupId,
