@@ -1,106 +1,138 @@
-# ownCloud Antivirus App   
+# ownCloud Antivirus App
 
-files_antivirus is an antivirus app for [ownCloud](https://github.com/owncloud) based on [ClamAV](http://www.clamav.net).
+<!-- OSPO-managed README | Generated: 2026-04-16 | v2 -->
 
-## Details
+[![License](https://img.shields.io/badge/License-AGPL--3.0-blue.svg)](COPYING) [![ownCloud OSPO](https://img.shields.io/badge/OSPO-ownCloud-blue)](https://kiteworks.com/opensource) [![Docker Hub](https://img.shields.io/docker/pulls/owncloud)](https://hub.docker.com/r/owncloud/server)
 
-The idea is to check for virus at upload-time, notifying the user (on screen and/or email) and
-remove the file if it's infected.
+An ownCloud Classic (OC10) app that integrates [ClamAV](http://www.clamav.net) antivirus scanning into the file upload pipeline. Files are scanned at upload time; infected files are automatically deleted and users are notified on screen and via email. The app supports ClamAV in executable mode, network daemon mode, and local socket mode, and includes a background job for scanning existing files.
 
-## QA metrics on master branch:
+## Getting Started
 
-[![Build Status](https://drone.owncloud.com/api/badges/owncloud/files_antivirus/status.svg?branch=master)](https://drone.owncloud.com/owncloud/files_antivirus)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=owncloud_files_antivirus&metric=alert_status)](https://sonarcloud.io/dashboard?id=owncloud_files_antivirus)
-[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=owncloud_files_antivirus&metric=security_rating)](https://sonarcloud.io/dashboard?id=owncloud_files_antivirus)
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=owncloud_files_antivirus&metric=coverage)](https://sonarcloud.io/dashboard?id=owncloud_files_antivirus)
+Requirements: ClamAV (binaries or a ClamAV daemon).
 
-## Status
+Enable the app and configure ClamAV mode in the ownCloud admin settings:
 
-The App is not complete yet, the following works/is done:
-* It can be configured to work with the executable or the daemon mode of ClamAV
-* If used in daemon mode it can connect through network- or local file-socket
-* In daemon mode, it sends files to a remote/local server using INSTREAM command
-* When the user uploads a file, it's checked
-* If an uploaded file is infected, it's deleted and a notification is shown to the user on screen and an email is sent with details.
-* Tested in Linux only
-* Background Job to scan all files
-* Test uploading from clients
-* File size limit
+```bash
+sudo -u www-data php occ app:enable files_antivirus
+```
 
-## ToDo
+Configure the connection mode (executable, socket, or network) in the admin panel under the Antivirus section.
 
-* Configurations Tuneups
-* Other OS Testing
-* Look for ideas :P
+## Documentation
 
-## Requirements
+- [ownCloud Antivirus Documentation](https://doc.owncloud.com/server/latest/admin_manual/configuration/server/virus-scanner-support.html)
+- [ClamAV Documentation](https://docs.clamav.net/)
 
-* ClamAV (Binaries or a server running ClamAV in daemon mode)
+## Features
 
+Capabilities of the antivirus integration:
 
-## Install
+### Scanning Modes
 
-* Install and enable the App
-* Go to Admin Panel and [configure](https://doc.owncloud.com/server/next/admin_manual/configuration/server/virus-scanner-support.html) the App
+- **Executable mode** -- uses the ClamAV binary directly
+- **Daemon mode (network socket)** -- connects to a remote/local ClamAV daemon via network
+- **Daemon mode (local socket)** -- connects via local file socket
+- **Background job** -- scans all existing files on a schedule
 
-## Enterprise Feature: ICAP Antivirus integration
+### Enterprise: ICAP Integration
 
-The Files Antivirus app can support the [ICAP](https://tools.ietf.org/html/rfc3507) protocol if you are using the ownCloud Enterprise Edition.
+The Enterprise Edition supports the [ICAP protocol](https://tools.ietf.org/html/rfc3507) for integration with commercial antivirus solutions:
 
-Using the ICAP mode requires a valid enterprise license. If no license key is present, it will trigger the grace period to obtain a valid key.
-After the expiration of the grace period / license key, the files_antivirus app will be disabled.
+| Vendor | Request Service | Response Header |
+|---|---|---|
+| ClamAV (c-icap) | `avscan` | `X-Infection-Found` |
+| Kaspersky ScanEngine | `req` | `X-Virus-ID` |
+| FortiSandbox | `respmod` | `X-Virus-Name` |
+| McAfee/Skyhigh Web Gateway 10.x+ | `respmod` | `X-Virus-Name` |
 
-### Run with c-icap/clamav
+ICAP mode requires a valid enterprise license. Without a license key, it triggers a grace period; after expiration the app is disabled.
 
-c-icap has a built-in clamav module see https://sourceforge.net/p/c-icap/wiki/ModulesConfiguration/
+### Current Capabilities
 
-An out-of-the-box docker image  _for testing purpose_ is available at https://hub.docker.com/r/deepdiver/icap-clamav-service
+- Files are checked at upload time
+- Infected files are automatically deleted with on-screen and email notification
+- Configurable file size limit
+- Background job for full-filesystem scanning
+- Tested on Linux
 
-For simple local testing run docker run -ti deepdiver/icap-clamav-service and get it's ip using docker inspect.
-The IP address needs to be setup in the configuration - see above
+## Part of ownCloud Classic (OC10)
 
-The request service for clamav has to be set to 'avscan' and the response header to 'X-Infection-Found'
+This app extends [ownCloud Server](https://github.com/owncloud/core) with antivirus scanning capabilities. It is shipped as part of the [ownCloud Server Docker image](https://hub.docker.com/r/owncloud/server).
 
+## Community & Support
 
-### Run with Kaspersky
+**[Star](https://github.com/owncloud/files_antivirus)** this repo and **Watch** for release notifications!
 
-Kaspersky provides docker images as well (https://box.kaspersky.com/d/c8d8577dc2494256b45e/)
-Follow the instructions in Kaspersky ScanEngine for Kubernetes.7z
+- [ownCloud Website](https://owncloud.com)
+- [Community Discussions](https://github.com/orgs/owncloud/discussions)
+- [Matrix Chat](https://app.element.io/#/room/#owncloud:matrix.org)
+- [Documentation](https://doc.owncloud.com)
+- [Enterprise Support](https://owncloud.com/contact-us/)
+- [OSPO Home](https://kiteworks.com/opensource)
 
-Additional configuration: 
-Enable Allow204 - this is necessary to tell kav to not send back the file contents.
-see https://support.kaspersky.com/ScanEngine/1.0/en-US/201151.htm
+## Contributing
 
-The request service for clamav has to be set to 'req' and the response header to 'X-Virus-ID'
+We welcome contributions! Please read the [Contributing Guidelines](CONTRIBUTING.md)
+and our [Code of Conduct](CODE_OF_CONDUCT.md) before getting started.
 
+### Workflow
 
-NOTE: The older versions of KAV did not send back the virus/infection name in an icap header.
+- **Rebase Early, Rebase Often!** We use a rebase workflow. Always rebase on the target branch before submitting a PR.
+- **Dependabot**: Automated dependency updates are managed via Dependabot. Review and merge dependency PRs promptly.
+- **Signed Commits**: All commits **must** be PGP/GPG signed. See [GitHub's signing guide](https://docs.github.com/en/authentication/managing-commit-signature-verification).
+- **DCO Sign-off**: Every commit must carry a `Signed-off-by` line:
+  ```
+  git commit -s -S -m "your commit message"
+  ```
+- **GitHub Actions Policy**: Workflows may only use actions that are (a) owned by `owncloud`, (b) created by GitHub (`actions/*`), or (c) verified in the GitHub Marketplace.
 
-In v2.0.0 the header to transport the virus can be configured. Default: No header is sent.
-see https://support.kaspersky.com/ScanEngine/1.0/en-US/201214.htm
+## Translations
 
+Help translate this project on Transifex:
+**<https://explore.transifex.com/owncloud-org/owncloud/>**
 
-### Run with FortiSandbox in ICAP Mode
+Please submit translations via Transifex -- do not open pull requests for translation changes.
 
-Select 'Fortinet' from the dropdown.
+## Security
 
-The request service for FortiSandbox has to be set to 'respmod' and the response header to 'X-Virus-Name'.
+**Do not open a public GitHub issue for security vulnerabilities.**
 
-Fortinet provides product trials of FortiSandbox, please have a look at [Fortinet](https://www.fortinet.com/de/products/sandbox/fortisandbox).
+Report vulnerabilities at **<https://security.owncloud.com>** -- see [SECURITY.md](SECURITY.md).
 
+Bug bounty: [YesWeHack ownCloud Program](https://yeswehack.com/programs/owncloud-bug-bounty-program)
 
-### Run with McAfee Web Gateway 10.x and higher in ICAP Mode
+## License
 
-Select 'McAfee Web Gateway 10.x and higher' from the dropdown.
+This project is licensed under the [AGPL-3.0](COPYING).
 
-The request service for McAfee has to be set to 'respmod' and the response header to 'X-Virus-Name'.
+## About the ownCloud OSPO
 
-McAfee provides product trial for evaluation purposes. Have a look at [the McAfee Webpage](https://www.skyhighsecurity.com/en-us/products/secure-web-gateway.html) for the Web Gateway.
+The [Kiteworks Open Source Program Office](https://kiteworks.com/opensource), operating under
+the [ownCloud](https://owncloud.com) brand, launched on May 5, 2026, to steward the open source
+ecosystem around ownCloud's products. The OSPO ensures transparent governance, license compliance,
+community health, and sustainable collaboration between the open source community and
+[Kiteworks](https://www.kiteworks.com), which acquired ownCloud in 2023.
 
-Note: Product is now called 'Skyhigh Secure Web Gateway'
+- **OSPO Home**: <https://kiteworks.com/opensource>
+- **GitHub**: <https://github.com/owncloud>
+- **ownCloud**: <https://owncloud.com>
 
-Authors:
+For questions about the OSPO or licensing, contact ospo@kiteworks.com.
 
-[Manuel Delgado López](https://github.com/valarauco/) :: manuel.delgado at ucr.ac.cr  
-[Bart Visscher](https://github.com/bartv2/)  
-[Viktar Dubiniuk](https://github.com/vicdeo/)
+### License Migration to Apache 2.0
+
+The OSPO is driving a strategic relicensing of ownCloud repositories toward the
+[Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0), following
+the [Apache Software Foundation's third-party license policy](https://www.apache.org/legal/resolved.html).
+
+Individual repositories will migrate as their audit is completed. The LICENSE file
+in each repo reflects its **current** license status (not the target).
+
+**Current license: AGPL-3.0** (Category X per Apache policy -- cannot be included in Apache-2.0 works).
+
+Migration prerequisites for this repository:
+
+- **CLA/DCO coverage**: All past contributors must have signed agreements permitting relicensing
+- **Copyleft dependency audit**: All AGPL/GPL dependencies must be replaced or isolated
+- **KDE heritage review**: Any code with KDE-era copyrights requires legal analysis
+- **Complete relicensing**: AGPL-3.0 is a strong copyleft license; migration requires full relicensing of all files, not just a header change
