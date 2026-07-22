@@ -12,6 +12,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 ### Changed
 - Maintenance release re-signed with the ownCloud G2 code-signing certificate for the ownCloud 11.0.0 release.
 
+## [1.3.0] - 2026-06-29
+
+### Changed
+- ownCloud 11 compatible release (oc 11.0.0-rc1).
+
 ## [1.2.3] - 2025-06-26
 
 ### Fixed
