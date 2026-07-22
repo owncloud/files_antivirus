@@ -7,6 +7,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 ## [Unreleased] - XXXXXX
 
 
+## [1.3.1] - 2026-07-22
+
+### Changed
+- Maintenance release re-signed with the ownCloud G2 code-signing certificate for the ownCloud 11.0.0 release.
+
 ## [1.2.3] - 2025-06-26
 
 ### Fixed
@@ -380,8 +385,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 - Initial implementation
 
-
-[Unreleased]: https://github.com/owncloud/files_antivirus/compare/v1.2.2...master
+[Unreleased]: https://github.com/owncloud/files_antivirus/compare/v1.3.1..master
+[1.3.1]: https://github.com/owncloud/files_antivirus/compare/v1.3.0..v1.3.1
+[1.3.0]: https://github.com/owncloud/files_antivirus/compare/v1.2.3..v1.3.0
+[1.2.3]: https://github.com/owncloud/files_antivirus/compare/v1.2.2..v1.2.3
 [1.2.2]: https://github.com/owncloud/files_antivirus/compare/v1.2.1...v1.2.2
 [1.2.1]: https://github.com/owncloud/files_antivirus/compare/v1.2.0...v1.2.1
 [1.2.0]: https://github.com/owncloud/files_antivirus/compare/v1.1.0...v1.2.0
@@ -394,3 +401,24 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 [0.14.0]: https://github.com/owncloud/files_antivirus/compare/v0.13.0...v0.14.0
 [0.13.0]: https://github.com/owncloud/files_antivirus/compare/v0.12.0...v0.13.0
 [0.12.0]: https://github.com/owncloud/files_antivirus/compare/v0.11.2...v0.12.0
+[0.11.2]: https://github.com/owncloud/files_antivirus/compare/v0.11.1.0..v0.11.2
+[0.11.1.0]: https://github.com/owncloud/files_antivirus/compare/v0.10.1.0..v0.11.1.0
+[0.10.1.0]: https://github.com/owncloud/files_antivirus/compare/v0.10.0.2..v0.10.1.0
+[0.10.0.2]: https://github.com/owncloud/files_antivirus/compare/v0.10.0.1..v0.10.0.2
+[0.10.0.1]: https://github.com/owncloud/files_antivirus/compare/v0.10.0..v0.10.0.1
+[0.10.0]: https://github.com/owncloud/files_antivirus/compare/v0.9.0.1..v0.10.0
+[0.9.0.1]: https://github.com/owncloud/files_antivirus/compare/v0.9.0.0..v0.9.0.1
+[0.9.0.0]: https://github.com/owncloud/files_antivirus/compare/v0.8.1.0..v0.9.0.0
+[0.8.1.0]: https://github.com/owncloud/files_antivirus/compare/v0.8.0.1..v0.8.1.0
+[0.8.0.1]: https://github.com/owncloud/files_antivirus/compare/v0.8.0..v0.8.0.1
+[0.8.0]: https://github.com/owncloud/files_antivirus/compare/v0.7.0.2..v0.8.0
+[0.7.0.2]: https://github.com/owncloud/files_antivirus/compare/v0.7.0.1..v0.7.0.2
+[0.7.0.1]: https://github.com/owncloud/files_antivirus/compare/v0.7.0..v0.7.0.1
+[0.7.0]: https://github.com/owncloud/files_antivirus/compare/v0.6.1..v0.7.0
+[0.6.1]: https://github.com/owncloud/files_antivirus/compare/v0.6.0..v0.6.1
+[0.6.0]: https://github.com/owncloud/files_antivirus/compare/v0.5.0..v0.6.0
+[0.5.0]: https://github.com/owncloud/files_antivirus/compare/v0.4.1..v0.5.0
+[0.4.1]: https://github.com/owncloud/files_antivirus/compare/v0.4.0..v0.4.1
+[0.4.0]: https://github.com/owncloud/files_antivirus/compare/v0.3.0..v0.4.0
+[0.3.0]: https://github.com/owncloud/files_antivirus/compare/v0.2.0..v0.3.0
+[0.2.0]: https://github.com/owncloud/files_antivirus/compare/v0.1.0..v0.2.0
