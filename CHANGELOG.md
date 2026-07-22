@@ -387,6 +387,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 [Unreleased]: https://github.com/owncloud/files_antivirus/compare/v1.3.1..master
 [1.3.1]: https://github.com/owncloud/files_antivirus/compare/v1.3.0..v1.3.1
+[1.3.0]: https://github.com/owncloud/files_antivirus/compare/v1.2.3..v1.3.0
 [1.2.3]: https://github.com/owncloud/files_antivirus/compare/v1.2.2..v1.2.3
 [1.2.2]: https://github.com/owncloud/files_antivirus/compare/v1.2.1...v1.2.2
 [1.2.1]: https://github.com/owncloud/files_antivirus/compare/v1.2.0...v1.2.1
