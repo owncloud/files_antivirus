@@ -7,6 +7,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 ## [Unreleased] - XXXXXX
 
 
+## [1.3.2] - 2026-08-17
+
+### Fixed
+- The 1.3.1 release archive contained the complete git checkout - `.git`, `tests`, `.github` and the `build` directory - because the tarball was assembled by hand from the checkout root instead of the app payload staged in `build/artifacts/appstore`. The signature manifest shipped with it covered those files as well. 1.3.2 is built and signed by the release workflow, which packages only the app payload and refuses to publish an unsigned artifact.
+
 ## [1.3.1] - 2026-07-22
 
 ### Changed
