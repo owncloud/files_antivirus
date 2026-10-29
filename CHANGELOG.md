@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased] - XXXXXX
 
+### Fixed
+- Control characters in the ICAP settings and the scanned file name no longer end up in the ICAP request.
 
 ## [1.3.2] - 2026-08-17
 
