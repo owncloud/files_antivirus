@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased] - XXXXXX
 
+### Fixed
+
+- [#587](https://github.com/owncloud/files_antivirus/pull/587) - Strip control characters from ICAP request values
 
 ## [1.2.3] - 2025-06-26
 
