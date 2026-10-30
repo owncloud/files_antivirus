@@ -15,6 +15,7 @@ namespace OCA\Files_Antivirus\Dav;
 
 use OCA\DAV\Upload\FutureFile;
 use OCA\Files_Antivirus\AppInfo\Application;
+use OCA\Files_Antivirus\Content;
 use OCA\Files_Antivirus\Resource;
 use OCA\Files_Antivirus\Status;
 use OCP\AppFramework\QueryException;
@@ -99,7 +100,7 @@ class AntivirusPlugin extends ServerPlugin {
 	 * This method is triggered before a new file is created.
 	 *
 	 * @param string $path
-	 * @param resource $data
+	 * @param resource|string $data
 	 * @param INode $parentNode
 	 * @param bool $modified should be set to true, if this event handler
 	 *                           changed &$data
@@ -124,7 +125,7 @@ class AntivirusPlugin extends ServerPlugin {
 	 *
 	 * @param string $path
 	 * @param INode $node
-	 * @param resource $data
+	 * @param resource|string $data
 	 * @param bool $modified should be set to true, if this event handler
 	 *                           changed &$data
 	 * @return bool|null
@@ -145,7 +146,7 @@ class AntivirusPlugin extends ServerPlugin {
 
 	/**
 	 * @param string $path
-	 * @param resource $data
+	 * @param resource|string $data
 	 * @throws Forbidden
 	 * @throws QueryException
 	 */
@@ -154,7 +155,12 @@ class AntivirusPlugin extends ServerPlugin {
 		$appConfig = $container->query('AppConfig');
 		$scannerFactory = $container->query('ScannerFactory');
 		$scanner = $scannerFactory->getScanner();
-		$status = $scanner->scan(new Resource(basename($path), $data, $appConfig->getAvChunkSize()));
+		if (\is_resource($data)) {
+			$item = new Resource(basename($path), $data, $appConfig->getAvChunkSize());
+		} else {
+			$item = new Content(basename($path), (string)$data, $appConfig->getAvChunkSize());
+		}
+		$status = $scanner->scan($item);
 		if ((int)$status->getNumericStatus() === Status::SCANRESULT_INFECTED) {
 			$details = $status->getDetails();
 			$this->logger->warning(

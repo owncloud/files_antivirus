@@ -8,7 +8,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 ### Fixed
 - Control characters in the ICAP settings and the scanned file name no longer end up in the ICAP request.
-- Creating or editing calendar events and contacts no longer fails with HTTP 500 on PHP 8 while the app is enabled.
+- [#590](https://github.com/owncloud/files_antivirus/pull/590) - Creating or editing calendar events and contacts no longer fails with HTTP 500 on PHP 8 while the app is enabled.
 
 ## [1.3.2] - 2026-08-17
 

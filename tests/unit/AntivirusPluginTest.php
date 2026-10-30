@@ -7,8 +7,14 @@
 
 namespace OCA\Files_Antivirus\Tests\unit;
 
+use OCA\Files_Antivirus\AppConfig;
 use OCA\Files_Antivirus\AppInfo\Application;
 use OCA\Files_Antivirus\Dav\AntivirusPlugin;
+use OCA\Files_Antivirus\IScannable;
+use OCA\Files_Antivirus\Scanner\IScanner;
+use OCA\Files_Antivirus\ScannerFactory;
+use OCA\Files_Antivirus\Status;
+use OCP\AppFramework\IAppContainer;
 use OCP\ILogger;
 use OCP\IUser;
 use OCP\IUserSession;
@@ -73,5 +79,59 @@ class AntivirusPluginTest extends TestBase {
 			$modified
 		);
 		$this->assertSame(0, \ftell($data));
+	}
+
+	public function testBeforeWriteContentRewindsStream(): void {
+		$data = \fopen('php://memory', 'r+');
+		\fwrite($data, 'content');
+		$modified = false;
+		$this->plugin->beforeWriteContent(
+			'files/user/file.txt',
+			$this->createMock(IFile::class),
+			$data,
+			$modified
+		);
+		$this->assertSame(0, \ftell($data));
+	}
+
+	public function testPublicUploadScansStringData(): void {
+		$scanned = null;
+		$status = Status::create(Status::SCANRESULT_CLEAN);
+		$scanner = $this->createMock(IScanner::class);
+		$scanner->method('scan')->willReturnCallback(
+			function (IScannable $item) use (&$scanned, $status) {
+				$scanned = '';
+				while (($chunk = $item->fread()) !== false) {
+					$scanned .= $chunk;
+				}
+				return $status;
+			}
+		);
+		$scannerFactory = $this->createMock(ScannerFactory::class);
+		$scannerFactory->method('getScanner')->willReturn($scanner);
+		$appConfig = $this->createMock(AppConfig::class);
+		$appConfig->method('getAvChunkSize')->willReturn(4);
+		$container = $this->createMock(IAppContainer::class);
+		$container->method('query')->willReturnMap([
+			['AppConfig', $appConfig],
+			['ScannerFactory', $scannerFactory],
+		]);
+		$application = $this->createMock(Application::class);
+		$application->method('getContainer')->willReturn($container);
+		$plugin = new AntivirusPlugin(
+			$application,
+			$this->createMock(IUserSession::class),
+			$this->createMock(ILogger::class)
+		);
+
+		$data = "BEGIN:VCALENDAR\r\nEND:VCALENDAR\r\n";
+		$modified = false;
+		$this->assertTrue($plugin->beforeCreateFile(
+			'calendars/user/personal/event.ics',
+			$data,
+			$this->createMock(ICollection::class),
+			$modified
+		));
+		$this->assertSame("BEGIN:VCALENDAR\r\nEND:VCALENDAR\r\n", $scanned);
 	}
 }
