@@ -112,8 +112,10 @@ class AntivirusPlugin extends ServerPlugin {
 		if ($this->userSession->getUser() === null) {
 			$this->scanPublicUpload($path, $data);
 		}
-		/** @phan-suppress-next-line PhanTypeMismatchArgumentInternal */
-		\rewind($data);
+		// CalDAV and CardDAV hand $data on as a string
+		if (\is_resource($data)) {
+			\rewind($data);
+		}
 		return true;
 	}
 
@@ -134,8 +136,10 @@ class AntivirusPlugin extends ServerPlugin {
 		if ($this->userSession->getUser() === null) {
 			$this->scanPublicUpload($path, $data);
 		}
-		/** @phan-suppress-next-line PhanTypeMismatchArgumentInternal */
-		\rewind($data);
+		// CalDAV and CardDAV hand $data on as a string
+		if (\is_resource($data)) {
+			\rewind($data);
+		}
 		return true;
 	}
 
