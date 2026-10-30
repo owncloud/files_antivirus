@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 ### Fixed
 - Control characters in the ICAP settings and the scanned file name no longer end up in the ICAP request.
 - [#590](https://github.com/owncloud/files_antivirus/pull/590) - Creating or editing calendar events and contacts no longer fails with HTTP 500 on PHP 8 while the app is enabled.
+- [#592](https://github.com/owncloud/files_antivirus/pull/592) - Enabling or upgrading the app no longer copies leftover `av_path`/`av_cmd_options` appconfig values into config.php, where they could overwrite the configured scanner path and options.
 
 ## [1.3.2] - 2026-08-17
 
