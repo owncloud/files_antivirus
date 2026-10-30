@@ -17,7 +17,9 @@ use OCP\IDBConnection;
 use OCP\Migration\ISqlMigration;
 
 /**
- * Cleans table before adding etag field
+ * Removes the obsolete av_path and av_cmd_options rows from appconfig. Both keys
+ * are read from config.php only (see AppConfig), so leftover appconfig values are
+ * dropped, not copied into system config.
  */
 class Version20210413110050 implements ISqlMigration {
 	/**
@@ -25,21 +27,6 @@ class Version20210413110050 implements ISqlMigration {
 	 * @return void
 	 */
 	public function sql(IDBConnection $conn) {
-		$conf = \OC::$server->getConfig();
-		$query = 'SELECT `configkey`, `configvalue` FROM `*PREFIX*appconfig` WHERE `appid` = \'files_antivirus\' AND (`configkey` = \'av_path\' OR `configkey` = \'av_cmd_options\')';
-		$result = $conn->executeQuery($query);
-		/** @phan-suppress-next-line PhanDeprecatedFunction */
-		while ($row = $result->fetch()) {
-			try {
-				$conf->setSystemValue('files_antivirus.' . $row['configkey'], $row['configvalue']);
-			} catch (\Exception $e) {
-				echo 'Migration failed: ', $e->getMessage(), '\n';
-				return;
-			}
-		}
-		/** @phan-suppress-next-line PhanDeprecatedFunction */
-		$result->closeCursor();
-
 		$query = 'DELETE FROM `*PREFIX*appconfig` WHERE `appid` = \'files_antivirus\' AND (`configkey` = \'av_path\' OR `configkey` = \'av_cmd_options\')';
 		$result = $conn->executeQuery($query);
 		/** @phan-suppress-next-line PhanDeprecatedFunction */
