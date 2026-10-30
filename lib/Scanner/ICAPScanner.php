@@ -57,6 +57,8 @@ class ICAPScanner implements IScanner {
 	}
 
 	public function initScanner(string $fileName): void {
+		// the name ends up in the encapsulated HTTP headers of some scanners
+		$fileName = ICAPClient::stripControlChars($fileName);
 		// remove .ocTransferId444531916.part from part files
 		$fileName = \preg_replace(
 			'|\.ocTransferId\d+\.part$|',

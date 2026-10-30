@@ -21,7 +21,8 @@ class ICAPClient {
 	public $userAgent = 'ownCloud-icap-client/0.1.0';
 
 	public function __construct(string $host, int $port) {
-		$this->host = $host;
+		// comes from the app config - keep it on its line wherever it is used
+		$this->host = self::stripControlChars($host);
 		$this->port = $port;
 	}
 
@@ -97,8 +98,14 @@ class ICAPClient {
 			}
 		}
 
+		// the service and header values come from the app config - keep them
+		// and the method on their line
+		$method = self::stripControlChars($method);
+		$service = self::stripControlChars($service);
 		$request = "$method icap://$this->host/$service ICAP/1.0\r\n";
 		foreach ($headers as $header => $value) {
+			$header = self::stripControlChars((string)$header);
+			$value = self::stripControlChars((string)$value);
 			$request .= "$header: $value\r\n";
 		}
 
@@ -106,6 +113,10 @@ class ICAPClient {
 		$request .= $bodyData;
 
 		return $request;
+	}
+
+	public static function stripControlChars(string $value): string {
+		return \preg_replace('/[\x00-\x1f\x7f]/', '', $value);
 	}
 
 	/**
