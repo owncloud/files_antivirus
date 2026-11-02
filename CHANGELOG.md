@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 ### Fixed
 
 - [#587](https://github.com/owncloud/files_antivirus/pull/587) - Strip control characters from ICAP request values
+- [#590](https://github.com/owncloud/files_antivirus/pull/590) - Creating or editing calendar events and contacts while the app is enabled no longer logs a `rewind()` error for every request.
 - [#592](https://github.com/owncloud/files_antivirus/pull/592) - Enabling or upgrading the app no longer copies leftover `av_path`/`av_cmd_options` appconfig values into config.php, where they could overwrite the configured scanner path and options. When upgrading from 0.16.0 or earlier, set `files_antivirus.av_path` and `files_antivirus.av_cmd_options` in config.php.
 
 ## [1.2.3] - 2025-06-26
