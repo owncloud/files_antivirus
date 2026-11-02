@@ -6,8 +6,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased] - XXXXXX
 
+
+## [1.3.3] - 2026-11-02
+
 ### Fixed
-- Control characters in the ICAP settings and the scanned file name no longer end up in the ICAP request.
+- [#586](https://github.com/owncloud/files_antivirus/pull/586) - Control characters in the ICAP settings and the scanned file name no longer end up in the ICAP request.
 - [#590](https://github.com/owncloud/files_antivirus/pull/590) - Creating or editing calendar events and contacts no longer fails with HTTP 500 on PHP 8 while the app is enabled.
 - [#592](https://github.com/owncloud/files_antivirus/pull/592) - Enabling or upgrading the app no longer copies leftover `av_path`/`av_cmd_options` appconfig values into config.php, where they could overwrite the configured scanner path and options. When upgrading from 0.16.0 or earlier, set `files_antivirus.av_path` and `files_antivirus.av_cmd_options` in config.php.
 
@@ -399,7 +402,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 - Initial implementation
 
-[Unreleased]: https://github.com/owncloud/files_antivirus/compare/v1.3.1..master
+[Unreleased]: https://github.com/owncloud/files_antivirus/compare/v1.3.3..master
+[1.3.3]: https://github.com/owncloud/files_antivirus/compare/v1.3.2..v1.3.3
+[1.3.2]: https://github.com/owncloud/files_antivirus/compare/v1.3.1..v1.3.2
 [1.3.1]: https://github.com/owncloud/files_antivirus/compare/v1.3.0..v1.3.1
 [1.3.0]: https://github.com/owncloud/files_antivirus/compare/v1.2.3..v1.3.0
 [1.2.3]: https://github.com/owncloud/files_antivirus/compare/v1.2.2..v1.2.3
