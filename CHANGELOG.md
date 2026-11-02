@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased] - XXXXXX
 
+
+## [1.2.4] - 2026-11-02
+
 ### Fixed
 
 - [#587](https://github.com/owncloud/files_antivirus/pull/587) - Strip control characters from ICAP request values
@@ -386,7 +389,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 - Initial implementation
 
 
-[Unreleased]: https://github.com/owncloud/files_antivirus/compare/v1.2.2...master
+[Unreleased]: https://github.com/owncloud/files_antivirus/compare/v1.2.4...release-1.2
+[1.2.4]: https://github.com/owncloud/files_antivirus/compare/v1.2.3...v1.2.4
+[1.2.3]: https://github.com/owncloud/files_antivirus/compare/v1.2.2...v1.2.3
 [1.2.2]: https://github.com/owncloud/files_antivirus/compare/v1.2.1...v1.2.2
 [1.2.1]: https://github.com/owncloud/files_antivirus/compare/v1.2.0...v1.2.1
 [1.2.0]: https://github.com/owncloud/files_antivirus/compare/v1.1.0...v1.2.0
