@@ -6,10 +6,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased] - XXXXXX
 
+
+## [1.2.4] - 2026-11-02
+
 ### Fixed
 
 - [#587](https://github.com/owncloud/files_antivirus/pull/587) - Strip control characters from ICAP request values
-- [#590](https://github.com/owncloud/files_antivirus/pull/590) - Creating or editing calendar events and contacts while the app is enabled no longer logs a `rewind()` error on every save.
+- [#596](https://github.com/owncloud/files_antivirus/pull/596) - Creating or editing calendar events and contacts while the app is enabled no longer logs a `rewind()` error on every save.
 - [#592](https://github.com/owncloud/files_antivirus/pull/592) - Enabling or upgrading the app no longer copies leftover `av_path`/`av_cmd_options` appconfig values into config.php, where they could overwrite the configured scanner path and options. When upgrading from 0.16.0 or earlier, set `files_antivirus.av_path` and `files_antivirus.av_cmd_options` in config.php.
 
 ## [1.2.3] - 2025-06-26
@@ -386,7 +389,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 - Initial implementation
 
 
-[Unreleased]: https://github.com/owncloud/files_antivirus/compare/v1.2.2...master
+[Unreleased]: https://github.com/owncloud/files_antivirus/compare/v1.2.4...release-1.2
+[1.2.4]: https://github.com/owncloud/files_antivirus/compare/v1.2.3...v1.2.4
+[1.2.3]: https://github.com/owncloud/files_antivirus/compare/v1.2.2...v1.2.3
 [1.2.2]: https://github.com/owncloud/files_antivirus/compare/v1.2.1...v1.2.2
 [1.2.1]: https://github.com/owncloud/files_antivirus/compare/v1.2.0...v1.2.1
 [1.2.0]: https://github.com/owncloud/files_antivirus/compare/v1.1.0...v1.2.0
