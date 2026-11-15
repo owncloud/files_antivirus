@@ -18,7 +18,7 @@
     "A malware or virus was detected, your upload was denied. In doubt or for details please contact your system administrator." : "Открит е зловреден софтуер или вирус, качването е отказано. При съмнения или за подробности се свържете със системния администратор.",
     "Greetings {user}," : "Поздрави {user},",
     "This email is a notification from {host}. Please, do not reply." : "Този имейл е от {host}. Моля, не отговаряйте. ",
-    "File uploaded: {file}" : "Качен файл: {file}",
+    "File uploaded: {file}" : "Файлът е качен: {file}",
     "Antivirus Configuration" : "Антивирусна конфигурация",
     "Mode" : "Режим",
     "Executable" : "Изпълним файл",
